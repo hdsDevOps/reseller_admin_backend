@@ -18,6 +18,10 @@ app.get('/adminservices',(req,res)=>{
     res.send("We are calling admin services API");
 })
 
+app.get('/test',(req,res)=>{
+    res.send("We are calling admin services API");
+})
+
 app.get('/adminservices/test',(req,res)=>{
     res.send("We Are Calling User Test API");
 })

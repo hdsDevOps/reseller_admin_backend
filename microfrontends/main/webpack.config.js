@@ -1,6 +1,6 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-const Dotenv = require('dotenv-webpack');
+const Dotenv = require("dotenv-webpack");
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => ({
   output: {
@@ -44,7 +44,9 @@ module.exports = (_, argv) => ({
       name: "main",
       filename: "remoteEntry.js",
       remotes: {
-        customer:"customer@http://localhost:3001/remoteEntry.js",
+        store:"store@http://localhost:3030/remoteEntry.js",
+        auth: "auth@http://localhost:3002/remoteEntry.js",
+        customer: "customer@http://localhost:3001/remoteEntry.js",
       },
       exposes: {
         "./Navbar": "./src/components/Navbar.tsx",
@@ -65,6 +67,6 @@ module.exports = (_, argv) => ({
     new HtmlWebPackPlugin({
       template: "./src/index.html",
     }),
-    new Dotenv()
+    new Dotenv(),
   ],
 });

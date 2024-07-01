@@ -1,17 +1,13 @@
 import React from "react";
-import type { RootState } from '../store';
-import { useSelector, useDispatch } from 'react-redux'
-import { decrement, increment } from '../counterSlice'
+import { useAppSelector } from "store/hooks";
 export default function Footer() {
-const count = useSelector((state: RootState) => state.counter.value)
+  const token = useAppSelector((state) => state.auth.token);
   return (
     <footer>
-      <div
-        className="text-center p-3"
-      >
-        © {count} Copyright:
-        <a className="text-dark" href="https://mdbootstrap.com/">
-          MDBootstrap.com
+      <div className="text-center p-3">
+        © 2024 Copyright:{token}
+        <a className="text-dark" href="#">
+          hordanso
         </a>
       </div>
     </footer>

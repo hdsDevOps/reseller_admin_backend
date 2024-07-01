@@ -1,46 +1,47 @@
-import React, { useState, useEffect } from "react";
-import ReactDOM from 'react-dom/client';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import AddCustomer from 'customer/AddCustomer';
-import ReduxProvider from "./ReduxProvider";
-import './index.css';
-import axios from "axios";
+// src/index.tsx
+import React, { Suspense } from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import ReduxProvider from "store/ReduxProvider";
+import UserAuth from "./hoc/UserAuth.hoc";
+import MainApp from "./pages";
+import AuthApp from "auth/AuthApp";
+import { useAppSelector } from "store/hooks";
+import "./index.css";
 
-const App = () => {
+const App: React.FC = () => {
+  const { token = "" } = useAppSelector((state) => state.auth);
+  if (token) {
+    return (
+      <>
+        <Suspense fallback={<h2>Loading.....</h2>}>
+          <MainApp />
+        </Suspense>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Suspense fallback={<h2>Loading.....</h2>}>
+          <AuthApp />
+        </Suspense>
+      </>
+    );
+  }
+};
 
-  const [data, setData] = useState("");
+const rootElement = document.getElementById("app");
+if (!rootElement) throw new Error("Failed to find the root element");
 
-  const [formData, setFormData] = useState({
-    to: "avijit@schemaphic.com",
-    subject: "Subject Testing...",
-    text:"Body testing....."
-  });
-
-  // Function to fetch data using Axios
-  const fetchData = async () => {
-    try {
-      const response = await axios.post("http://localhost:8000/adminservices/send-email", formData);
-      setData(response.data);
-    } catch (error) {
-        console.error("Error creating post:", error);
-    }
-  };
-
-  return (
-    <div className="container">
-      <Navbar/>
-      <div>Name: main</div>
-      <h3><b>{data}</b></h3>
-      <AddCustomer/>
-      <button onClick={fetchData}>Click me</button>
-      <Footer/>
-    </div>
-  )
-}
-const rootElement = document.getElementById('app')
-if (!rootElement) throw new Error('Failed to find the root element')
-
-const root = ReactDOM.createRoot(rootElement as HTMLElement)
-
-root.render(<ReduxProvider><App /></ReduxProvider>)
+ReactDOM.render(
+  <React.StrictMode>
+    <ReduxProvider>
+      <BrowserRouter>
+        <UserAuth>
+          <App />
+        </UserAuth>
+      </BrowserRouter>
+    </ReduxProvider>
+  </React.StrictMode>,
+  rootElement
+);

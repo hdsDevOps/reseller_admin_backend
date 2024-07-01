@@ -1,4 +1,4 @@
-const admin = require('../firebaseConfig');
+const {admin,db} = require('../firebaseConfig');
 const axios = require('axios');
 var CryptoJS = require("crypto-js");
 const helper = require('../helper');
@@ -10,9 +10,11 @@ async function register_new_admin(data){
           email: data.email,
           password: data.password,
         });
+        await db.collection('users').add(data);
+
         response_result = {status: 200, message: 'User created successfully', userId: userRecord.uid };
       } catch (error) {
-        response_result = {status:400, message: 'Error creating user', error: error.message };
+        response_result = {status:400, message: 'Error creating user test', error: error.message };
       }
       return response_result;
 }

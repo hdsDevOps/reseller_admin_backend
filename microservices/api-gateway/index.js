@@ -13,8 +13,14 @@ app.use(cors({
 
 // Define the routes for the micro services
 const routes = {
-    '/adminservices':"http://microservices_container_adminservices:8001",
-    '/customerservices':"http://microservices_container_customerservices:8002",
+    '/adminservices':"http://adminservices:8001",
+    '/customerservices':"http://customerservices:8002",
+    '/googleservices':"http://googleservices:8003",
+    '/miscservices':"http://miscservices:8004",
+    '/notificationservices':"http://notificationservices:8005",
+    '/reportservices':"http://reportservices:8006",
+    '/subscriptionservices':"http://subscriptionservices:8007",
+    '/voucherservices':"http://voucherservices:8008",
 }
 for(const route in routes){
     const target = routes[route];

@@ -44,10 +44,12 @@ module.exports = (_, argv) => ({
       name: "customer",
       filename: "remoteEntry.js",
       remotes: {
-        main:"main@http://localhost:3000/remoteEntry.js",
+        store:"store@http://localhost:3030/remoteEntry.js",
       },
       exposes: {
-        "./AddCustomer": "./src/components/AddCustomer.tsx",
+        "./Cart": "./src/components/Cart.tsx",
+        "./CustomerApp": "./src/pages/index.tsx",
+        "./Css": "./src/custom.css",
       },
       shared: {
         ...deps,

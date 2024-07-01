@@ -24,5 +24,6 @@
     "request": "^2.88.2",
     "urlencode": "^2.0.0",
     "urlencoder": "^0.1.0"
-  }
+  },
+  "proxy": "http://0.0.0.0:8001"
 }

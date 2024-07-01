@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const logindetails = require('../services/loginservice.js');
 // Create new Admin credentials for login

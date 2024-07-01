@@ -10,6 +10,9 @@ RUN mkdir -p /adminservices
 # Set /app as the working directory
 WORKDIR /adminservices
 
+# Install nodemon globally
+RUN npm install -g nodemon
+
 # Copy package.json and package-lock.json
 # to the /app working directory
 COPY package*.json /adminservices
@@ -24,4 +27,4 @@ COPY . /adminservices
 EXPOSE 8001
 
 # Run yarn dev, as we would via the command line 
-CMD ["node", "index"]
+CMD ["nodemon", "index.js"]

@@ -1,26 +1,7 @@
 version: "3.8"
 services:
-  main:
-    build: ./microfrontends/main
-    container_name: microfrontend_container_main
-    ports:
-    - 3000:3000
-    networks:
-    - dev_network
-    depends_on:
-    - customer
-    - api-gateway
-  customer:
-    build: ./microfrontends/customer
-    container_name: microfrontend_container_customer
-    ports:
-    - 3001:3001
-    networks:
-    - dev_network
-    depends_on:
-    - api-gateway
   api-gateway:
-    build: ./microservices/api-gateway
+    build: ./api-gateway
     container_name: microservices_container_api-gateway
     ports:
     - 8000:8000
@@ -38,7 +19,7 @@ services:
     - subscriptionservices
     - voucherservices
   adminservices:
-    build: ./microservices/adminservices
+    build: ./adminservices
     container_name: microservices_container_adminservices
     ports:
     - 8001:8001
@@ -47,7 +28,7 @@ services:
     networks:
     - dev_network
   customerservices:
-    build: ./microservices/customerservices
+    build: ./customerservices
     container_name: microservices_container_customerservices
     ports:
     - 8002:8002
@@ -57,7 +38,7 @@ services:
     - dev_network
 
   googleservices:
-    build: ./microservices/googleservices
+    build: ./googleservices
     container_name: microservices_container_googleservices
     ports:
       - "8003:8003"
@@ -67,7 +48,7 @@ services:
       - dev_network
 
   miscservices:
-    build: ./microservices/miscservices
+    build: ./miscservices
     container_name: microservices_container_miscservices
     ports:
       - "8004:8004"
@@ -77,7 +58,7 @@ services:
       - dev_network
 
   notificationservices:
-    build: ./microservices/notificationservices
+    build: ./notificationservices
     container_name: microservices_container_notificationservices
     ports:
       - "8005:8005"
@@ -87,7 +68,7 @@ services:
       - dev_network 
 
   reportservices:
-    build: ./microservices/reportservices
+    build: ./reportservices
     container_name: microservices_container_reportservices
     ports:
       - "8006:8006"
@@ -97,7 +78,7 @@ services:
       - dev_network
 
   subscriptionservices:
-    build: ./microservices/subscriptionservices
+    build: ./subscriptionservices
     container_name: microservices_container_subscriptionservices
     ports:
       - "8007:8007"
@@ -107,7 +88,7 @@ services:
       - dev_network
 
   voucherservices:
-    build: ./microservices/voucherservices
+    build: ./voucherservices
     container_name: microservices_container_voucherservices
     ports:
       - "8008:8008"

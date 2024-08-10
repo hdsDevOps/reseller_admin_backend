@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon"
   },
   "author": "",
   "license": "ISC",
@@ -22,8 +24,13 @@
     "nodemailer": "^6.9.13",
     "redis": "^4.6.14",
     "request": "^2.88.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "urlencode": "^2.0.0",
     "urlencoder": "^0.1.0"
   },
-  "proxy": "http://0.0.0.0:8001"
+  "proxy": "http://0.0.0.0:8001",
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
 }

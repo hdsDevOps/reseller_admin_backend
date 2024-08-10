@@ -7,6 +7,11 @@ require('dotenv').config();
 const helper = require('./helper');
 const addEmailToQueue = require('./queue');
 const adminCredentialsRoute  = require('./routes/loginroute.js');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
+const customerRoutes = require('./routes/customerRoutes');
+
 app.use(cors());
 app.use(express.json());
 app.use(
@@ -44,6 +49,12 @@ app.post('/adminservices/send-email', (req, res) => {
     addEmailToQueue(to, subject, text);
     res.send('Email queued for sending');
 });
+
+app.use('/adminservices/forgot-password', forgotPasswordRoutes);
+app.use('/adminservices/customers', customerRoutes);
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Start the server and listen on the specified port
 app.listen(PORT,()=>{

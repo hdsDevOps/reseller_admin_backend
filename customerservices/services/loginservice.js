@@ -39,7 +39,25 @@ async function login_admin(data){
   return response_result;
 }
 
+async function get_all_customers() {
+  let response_result = "";
+  try {
+    const listUsersResult = await admin.auth().listUsers();
+    const customers = listUsersResult.users.map(userRecord => ({
+      uid: userRecord.uid,
+      email: userRecord.email,
+      displayName: userRecord.displayName || null,
+      phoneNumber: userRecord.phoneNumber || null,
+    }));
+    response_result = { status: 200, customers };
+  } catch (error) {
+    response_result = { status: 400, message: 'Error fetching customers', error: error.message };
+  }
+  return response_result;
+}
+
 module.exports = {
     register_new_admin,
-    login_admin
+    login_admin,
+    get_all_customers,
 }

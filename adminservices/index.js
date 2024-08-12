@@ -7,6 +7,34 @@ require('dotenv').config();
 const helper = require('./helper');
 const addEmailToQueue = require('./queue');
 const adminCredentialsRoute  = require('./routes/loginroute.js');
+
+// Add these lines
+const swaggerJsDoc = require("swagger-jsdoc"); 
+const swaggerUi = require("swagger-ui-express"); 
+
+// Add this block
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Admin Services API",
+      description: "Admin Services API Information",
+      version: "1.0.0",
+      contact: {
+        name: "API Support",
+        email: "support@example.com"
+      },
+      servers: [{ url: `http://localhost:${PORT}` }]
+    }
+  },
+  apis: ["./index.js", "./routes/loginroute.js"],
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
+// Add this line
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 app.use(cors());
 app.use(express.json());
 app.use(
@@ -14,6 +42,17 @@ app.use(
       extended: true,
     })
   );
+
+
+/**
+ * @swagger
+ * /adminservices:
+ *   get:
+ *     summary: Get admin services message
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 app.get('/adminservices',(req,res)=>{
     res.send("We are calling admin services API");
 })

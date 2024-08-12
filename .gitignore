@@ -45,3 +45,5 @@ yarn-error.log*
 
 .adminservices/node_modules
 .customeservices/node_modules
+.customeservices/docs
+.adminservices/docs

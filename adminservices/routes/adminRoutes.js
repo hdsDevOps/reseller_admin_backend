@@ -1,8 +1,8 @@
 // adminRoutes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const adminService = require('../services/adminService');
-const authMiddleware = require('../middleware/authMiddleware');
+const authMiddleware = require("../middleware/auth");
+const AdminController = require("../controllers/AdminController");
 
 /**
  * @swagger
@@ -27,11 +27,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *       400:
  *         description: Invalid credentials
  */
-router.post('/api/v1/login', async (req, res) => {
-  const { email, password } = req.body;
-  const result = await adminService.login(email, password);
-  res.status(result.status).json(result);
-});
+router.post("/login", AdminController.login);
 
 /**
  * @swagger
@@ -56,11 +52,7 @@ router.post('/api/v1/login', async (req, res) => {
  *       400:
  *         description: Invalid OTP
  */
-router.post('/api/v1/otpverify', async (req, res) => {
-  const { admin_id, otp } = req.body;
-  const result = await adminService.verifyOtp(admin_id, otp);
-  res.status(result.status).json(result);
-});
+router.post("/otpverify", AdminController.verifyOtp);
 
 /**
  * @swagger
@@ -83,11 +75,7 @@ router.post('/api/v1/otpverify', async (req, res) => {
  *       400:
  *         description: Error resending OTP
  */
-router.post('/api/v1/resendotp', async (req, res) => {
-  const { admin_id } = req.body;
-  const result = await adminService.resendOtp(admin_id);
-  res.status(result.status).json(result);
-});
+router.post("/resendotp", AdminController.resendOtp);
 
 /**
  * @swagger
@@ -103,10 +91,7 @@ router.post('/api/v1/resendotp', async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.get('/api/v1/logout', authMiddleware, async (req, res) => {
-  const result = await adminService.logout(req.user.id);
-  res.status(result.status).json(result);
-});
+router.get("/logout", authMiddleware, AdminController.logout);
 
 /**
  * @swagger
@@ -135,11 +120,7 @@ router.get('/api/v1/logout', authMiddleware, async (req, res) => {
  *       400:
  *         description: Error adding FAQ
  */
-router.post('/api/v1/addfaq', authMiddleware, async (req, res) => {
-  const { question, ans, order } = req.body;
-  const result = await adminService.addFaq(question, ans, order);
-  res.status(result.status).json(result);
-});
+router.post("/faq", authMiddleware, AdminController.addFaq);
 
 /**
  * @swagger
@@ -155,10 +136,7 @@ router.post('/api/v1/addfaq', authMiddleware, async (req, res) => {
  *       400:
  *         description: Error retrieving FAQ list
  */
-router.get('/api/v1/faqlist', authMiddleware, async (req, res) => {
-  const result = await adminService.getFaqList();
-  res.status(result.status).json(result);
-});
+router.get("/faqlist", authMiddleware, AdminController.getFaqList);
 
 /**
  * @swagger
@@ -189,11 +167,7 @@ router.get('/api/v1/faqlist', authMiddleware, async (req, res) => {
  *       400:
  *         description: Error updating FAQ
  */
-router.post('/api/v1/editfaq', authMiddleware, async (req, res) => {
-  const { record_id, question, ans, order } = req.body;
-  const result = await adminService.editFaq(record_id, question, ans, order);
-  res.status(result.status).json(result);
-});
+router.post("/editfaq", authMiddleware, AdminController.editFaq);
 
 /**
  * @swagger
@@ -218,11 +192,7 @@ router.post('/api/v1/editfaq', authMiddleware, async (req, res) => {
  *       400:
  *         description: Error deleting FAQ
  */
-router.post('/api/v1/deletefaq', authMiddleware, async (req, res) => {
-  const { record_id } = req.body;
-  const result = await adminService.deleteFaq(record_id);
-  res.status(result.status).json(result);
-});
+router.post("/deletefaq", authMiddleware, AdminController.deleteFaq);
 
 /**
  * @swagger
@@ -238,10 +208,7 @@ router.post('/api/v1/deletefaq', authMiddleware, async (req, res) => {
  *       400:
  *         description: Error retrieving email log list
  */
-router.get('/api/v1/emailloglist', authMiddleware, async (req, res) => {
-  const result = await adminService.getEmailLogList();
-  res.status(result.status).json(result);
-});
+router.get("/emailloglist", authMiddleware, AdminController.getEmailLogList);
 
 /**
  * @swagger
@@ -266,11 +233,11 @@ router.get('/api/v1/emailloglist', authMiddleware, async (req, res) => {
  *       400:
  *         description: Error retrieving email log details
  */
-router.post('/api/v1/emaillogdetails', authMiddleware, async (req, res) => {
-  const { record_id } = req.body;
-  const result = await adminService.getEmailLogDetails(record_id);
-  res.status(result.status).json(result);
-});
+router.post(
+  "/emaillogdetails",
+  authMiddleware,
+  AdminController.getEmailLogDetails
+);
 
 /**
  * @swagger
@@ -279,7 +246,7 @@ router.post('/api/v1/emaillogdetails', authMiddleware, async (req, res) => {
  *     summary: Update terms & conditions
  *     tags: [CMS]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -292,14 +259,12 @@ router.post('/api/v1/emaillogdetails', authMiddleware, async (req, res) => {
  *     responses:
  *       200:
  *         description: Terms & conditions updated successfully
- *       400:
- *         description: Error updating terms & conditions
  */
-router.post('/api/v1/updateterms', authMiddleware, async (req, res) => {
-  const { content } = req.body;
-  const result = await adminService.updateTerms(content);
-  res.status(result.status).json(result);
-});
+router.post(
+  "/updateterms",
+  authMiddleware,
+  AdminController.updateTermsConditions
+);
 
 /**
  * @swagger
@@ -308,7 +273,7 @@ router.post('/api/v1/updateterms', authMiddleware, async (req, res) => {
  *     summary: Update privacy policy
  *     tags: [CMS]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -321,14 +286,12 @@ router.post('/api/v1/updateterms', authMiddleware, async (req, res) => {
  *     responses:
  *       200:
  *         description: Privacy policy updated successfully
- *       400:
- *         description: Error updating privacy policy
  */
-router.post('/api/v1/updatepolicy', authMiddleware, async (req, res) => {
-  const { content } = req.body;
-  const result = await adminService.updatePolicy(content);
-  res.status(result.status).json(result);
-});
+router.post(
+  "/updatepolicy",
+  authMiddleware,
+  AdminController.updatePrivacyPolicy
+);
 
 /**
  * @swagger
@@ -337,7 +300,7 @@ router.post('/api/v1/updatepolicy', authMiddleware, async (req, res) => {
  *     summary: Update customer agreement
  *     tags: [CMS]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -350,23 +313,21 @@ router.post('/api/v1/updatepolicy', authMiddleware, async (req, res) => {
  *     responses:
  *       200:
  *         description: Customer agreement updated successfully
- *       400:
- *         description: Error updating customer agreement
  */
-router.post('/api/v1/updateagreement', authMiddleware, async (req, res) => {
-  const { content } = req.body;
-  const result = await adminService.updateAgreement(content);
-  res.status(result.status).json(result);
-});
+router.post(
+  "/updateagreement",
+  authMiddleware,
+  AdminController.updateCustomerAgreement
+);
 
 /**
  * @swagger
- * /admin/api/v1/updateheader:
+ * /admin/api/v1/cmsupdateheader:
  *   post:
  *     summary: Update CMS Header Section
  *     tags: [CMS]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -386,16 +347,487 @@ router.post('/api/v1/updateagreement', authMiddleware, async (req, res) => {
  *                 type: string
  *               menu6:
  *                 type: string
+ */
+router.post("/cmsupdateheader", authMiddleware, AdminController.updateHeader);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsgetheader:
+ *   get:
+ *     summary: Get CMS Header Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ */
+router.get("/cmsgetheader", authMiddleware, AdminController.getHeader);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsgetseodata:
+ *   get:
+ *     summary: Get CMS SEO Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ */
+router.get("/cmsgetseodata", authMiddleware, AdminController.getSEOData);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsupdateseodata:
+ *   post:
+ *     summary: Update CMS SEO Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               desc:
+ *                 type: string
+ *               alt_image:
+ *                 type: string
+ *               keywords:
+ *                 type: string
+ *               urllink:
+ *                 type: string
+ *               image_path:
+ *                 type: string
+ */
+router.post("/cmsupdateseodata", authMiddleware, AdminController.updateSEOData);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsgetfooter:
+ *   get:
+ *     summary: Get CMS Footer Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ */
+router.get("/cmsgetfooter", authMiddleware, AdminController.getFooter);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsupdatefooterdata:
+ *   post:
+ *     summary: Update CMS Footer Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               marketing_section_data:
+ *                 type: array
+ *               website_section_data:
+ *                 type: array
+ *               contact_us_section_data:
+ *                 type: array
+ */
+router.post(
+  "/cmsupdatefooterdata",
+  authMiddleware,
+  AdminController.updateFooter
+);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsgetcontactus:
+ *   get:
+ *     summary: Get CMS Contact Us Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ */
+router.get("/cmsgetcontactus", authMiddleware, AdminController.getContactUs);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsupdatecontactus:
+ *   post:
+ *     summary: Update CMS Contact Us Section
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               address:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               content_description:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Header updated successfully
- *       400:
- *         description: Error updating header
+ *         description: Contact us section updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
  */
-router.post('/api/v1/updateheader', authMiddleware, async (req, res) => {
-  const { menu1, menu2, menu3, menu4, menu5, menu6 } = req.body;
-  const result = await adminService.updateHeader(menu1, menu2, menu3, menu4, menu5, menu6);
-  res.status(result.status).json(result);
-});
+router.post(
+  "/cmsupdatecontactus",
+  authMiddleware,
+  AdminController.updateContactUs
+);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsgetresourcedata:
+ *   get:
+ *     summary: Get CMS Resource section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Resource data retrieved successfully
+ */
+router.get(
+  "/cmsgetresourcedata",
+  authMiddleware,
+  AdminController.getResourceData
+);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsgetaboutus:
+ *   get:
+ *     summary: Get CMS About us section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: About us data retrieved successfully
+ */
+router.get("/cmsgetaboutus", authMiddleware, AdminController.getAboutUs);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsupdateaboutus:
+ *   post:
+ *     summary: Update CMS About us Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               heading_section:
+ *                 type: array
+ *               block1:
+ *                 type: array
+ *               block2:
+ *                 type: array
+ *     responses:
+ *       200:
+ *         description: About us data updated successfully
+ */
+router.post("/cmsupdateaboutus", authMiddleware, AdminController.updateAboutUs);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsgetpromotiondata:
+ *   get:
+ *     summary: Get CMS promotions section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Promotions data retrieved successfully
+ */
+router.get(
+  "/cmsgetpromotiondata",
+  authMiddleware,
+  AdminController.getPromotions
+);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsaddpromotion:
+ *   post:
+ *     summary: Add new CMS promotion Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               code:
+ *                 type: string
+ *               start_date:
+ *                 type: string
+ *                 format: date
+ *               end_date:
+ *                 type: string
+ *                 format: date
+ *               html_template:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Promotion added successfully
+ */
+router.post("/cmsaddpromotion", authMiddleware, AdminController.addPromotion);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsupdatepromotion:
+ *   post:
+ *     summary: Update CMS promotion Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               record_id:
+ *                 type: string
+ *               code:
+ *                 type: string
+ *               start_date:
+ *                 type: string
+ *                 format: date
+ *               end_date:
+ *                 type: string
+ *                 format: date
+ *               html_template:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Promotion updated successfully
+ */
+router.post(
+  "/cmsupdatepromotion",
+  authMiddleware,
+  AdminController.updatePromotion
+);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsdeletepromotion:
+ *   post:
+ *     summary: Delete CMS promotion Section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               record_id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Promotion deleted successfully
+ */
+router.post(
+  "/cmsdeletepromotion",
+  authMiddleware,
+  AdminController.deletePromotion
+);
+
+
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsgetbannerdata:
+ *   get:
+ *     summary: Get CMS banner section data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Banner data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   video_url:
+ *                     type: string
+ *                   button_title:
+ *                     type: string
+ *                   button_url:
+ *                     type: string
+ *                   background_image:
+ *                     type: string
+ *                   show_video_status:
+ *                     type: boolean
+ *                   show_promotion_status:
+ *                     type: boolean
+ *                   currency_details:
+ *                     type: object
+ */
+router.get("/cmsgetbannerdata", authMiddleware, AdminController.getBannerData);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsaddbannerdata:
+ *   post:
+ *     summary: Add new banner data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               video_url:
+ *                 type: string
+ *               button_title:
+ *                 type: string
+ *               button_url:
+ *                 type: string
+ *               background_image:
+ *                 type: string
+ *               show_video_status:
+ *                 type: boolean
+ *               show_promotion_status:
+ *                 type: boolean
+ *               currency_details:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: Banner added successfully
+ */
+router.post("/cmsaddbannerdata", authMiddleware, AdminController.addBannerData);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmseditbannerdata:
+ *   post:
+ *     summary: Edit existing banner data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               record_id:
+ *                 type: string
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               video_url:
+ *                 type: string
+ *               button_title:
+ *                 type: string
+ *               button_url:
+ *                 type: string
+ *               background_image:
+ *                 type: string
+ *               show_video_status:
+ *                 type: boolean
+ *               show_promotion_status:
+ *                 type: boolean
+ *               currency_details:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: Banner updated successfully
+ */
+router.post("/cmseditbannerdata", authMiddleware, AdminController.editBannerData);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsdeletebannerdata:
+ *   post:
+ *     summary: Delete banner data
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               record_id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Banner deleted successfully
+ */
+router.post("/cmsdeletebannerdata", authMiddleware, AdminController.deleteBannerData);
+
+/**
+ * @swagger
+ * /admin/api/v1/cmsupdatestatusbannerdata:
+ *   post:
+ *     summary: Update banner status
+ *     tags: [CMS]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               record_id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Banner status updated successfully
+ */
+router.post("/cmsupdatestatusbannerdata", authMiddleware, AdminController.updateBannerStatus);
 
 module.exports = router;

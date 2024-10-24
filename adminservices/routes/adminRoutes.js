@@ -42,7 +42,7 @@ router.post("/login", AdminController.login);
  *           schema:
  *             type: object
  *             properties:
- *               admin_id:
+ *               userId:
  *                 type: string
  *               otp:
  *                 type: string
@@ -120,7 +120,7 @@ router.get("/logout", authMiddleware, AdminController.logout);
  *       400:
  *         description: Error adding FAQ
  */
-router.post("/faq", authMiddleware, AdminController.addFaq);
+router.post("/addfaq", authMiddleware, AdminController.addFaq);
 
 /**
  * @swagger

@@ -1,5 +1,6 @@
 const { admin, db } = require("../firebaseConfig");
-const { generateToken, verifyToken } = require("../utils/jwt");
+const { sendMail } = require("../helper");
+const { generateToken } = require("../utils/jwt");
 const CryptoJS = require("crypto-js");
 
 class AdminService {
@@ -8,6 +9,7 @@ class AdminService {
       const userRecord = await admin.auth().getUserByEmail(email);
 
       const otp = this.generateOtp();
+      
       await this.storeOtp(userRecord.uid, otp);
       await this.sendLoginOtp(email, otp);
 
@@ -21,11 +23,12 @@ class AdminService {
     }
   }
 
-  async verifyOtp({ userId, otp }) {
+  async verifyOtp({ userId, otp }) {    
     try {
       const result = await this.validateOtp(userId, otp);
       if (result.valid) {
         const token = generateToken({ userId });
+        
         return {
           status: 200,
           token,
@@ -547,7 +550,7 @@ class AdminService {
   async storeOtp(userId, otp) {
     const encryptedOtp = CryptoJS.AES.encrypt(
       otp.toString(),
-      process.env.CRYPTO_KEY
+      process.env.CRYPTOTOKEN
     ).toString();
 
     await db
@@ -569,8 +572,10 @@ class AdminService {
 
   async validateOtp(userId, otp) {
     try {
+      
       // Fetch the user data (specifically the OTP and expiry) from the database
       const userDoc = await db.collection("users").doc(userId).get();
+      
       if (!userDoc.exists) {
         throw new Error("User not found");
       }
@@ -578,7 +583,7 @@ class AdminService {
       const { otp: encryptedOtp, otpExpiry } = userDoc.data();
 
       // Decrypt the stored OTP
-      const bytes = CryptoJS.AES.decrypt(encryptedOtp, process.env.CRYPTO_KEY);
+      const bytes = CryptoJS.AES.decrypt(encryptedOtp, process.env.CRYPTOTOKEN);
       const decryptedOtp = bytes.toString(CryptoJS.enc.Utf8);
 
       // Check if the OTP matches

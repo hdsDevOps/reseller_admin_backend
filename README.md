@@ -1,1 +1,1 @@
-# reseller_admin_backend
+# hordanso_googlereseller

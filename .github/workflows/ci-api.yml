@@ -10,6 +10,7 @@ on:
 
 env:
   DOCKER_IMAGE: hordansodevops/reseller_admin_backend_api
+  FIRESTORE_DETAILS: ${{ secrets.FIRESTORE_DETAILS }}
 
 jobs:
   build_and_deploy:

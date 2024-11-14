@@ -58,7 +58,7 @@ app.post("/adminservices/send-email", (req, res) => {
   addEmailToQueue(to, subject, text);
   res.send("Email queued for sending");
 });
-/*
+
 app.use("/adminservices/forgot-password", forgotPasswordRoutes);
 app.use("/adminservices/customers", adminServicesRoutes);
 
@@ -67,7 +67,7 @@ app.use('/subscription/api/v1', subscriptionRoutes);
 app.use('/notification/api/v1', notificationRoutes);
 app.use('/voucher/api/v1', voucherRoutes);
 app.use('/customer/api/v1', customerRoutes);
-*/
+
 //Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   

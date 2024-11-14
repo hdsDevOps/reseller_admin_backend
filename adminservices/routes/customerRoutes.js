@@ -4,7 +4,7 @@ const router = express.Router();
 const CustomerService = require("../services/CustomerService.js");
 const authMiddleware = require("../middleware/auth");
 const CustomerController = require("../controllers/CustomerController.js");
-
+  
 /**
  * @swagger
  * /adminservices/customers/add:

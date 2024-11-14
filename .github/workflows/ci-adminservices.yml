@@ -15,6 +15,8 @@ env:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    env:
+      FIRESTORE_DETAILS: ${{ secrets.FIRESTORE_DETAILS }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

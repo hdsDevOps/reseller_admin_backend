@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const VoucherController = require("../controllers/voucher_controller");
-const authMiddleware = require("../middleware/auth");
+const vouchercontroller = require("../controllers/voucher_controller");
+const authmiddleware = require("../middleware/auth");
 
 
 /**
@@ -52,7 +52,7 @@ const authMiddleware = require("../middleware/auth");
  *       400:
  *         description: Error creating customer group
  */
-router.post("/addcustomergroup", authMiddleware, VoucherController.createCustomerGroup);
+router.post("/addcustomergroup", authmiddleware,  vouchercontroller.createCustomerGroup);
 
 /**
  * @swagger
@@ -97,7 +97,7 @@ router.post("/addcustomergroup", authMiddleware, VoucherController.createCustome
  *       400:
  *         description: Error updating customer group
  */
-router.post("/editcustomergroup", authMiddleware, VoucherController.editCustomerGroup);
+router.post("/editcustomergroup", authmiddleware,  vouchercontroller.editCustomerGroup);
 
 /**
  * @swagger
@@ -113,7 +113,7 @@ router.post("/editcustomergroup", authMiddleware, VoucherController.editCustomer
  *       400:
  *         description: Error retrieving customer groups
  */
-router.post("/customergrouplist", authMiddleware, VoucherController.getCustomerGroupList);
+router.post("/customergrouplist", authmiddleware,  vouchercontroller.getCustomerGroupList);
 
 /**
  * @swagger
@@ -140,6 +140,6 @@ router.post("/customergrouplist", authMiddleware, VoucherController.getCustomerG
  *       400:
  *         description: Error deleting customer group
  */
-router.post("/deletecustomergroup", authMiddleware, VoucherController.deleteCustomerGroup);
+router.post("/deletecustomergroup", authmiddleware,  vouchercontroller.deleteCustomerGroup);
 
 module.exports = router;

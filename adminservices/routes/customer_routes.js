@@ -1,7 +1,7 @@
 const express = require("express");
 const adminServicesRouter = express.Router();
 const router = express.Router();
-const CustomerService = require("../services/customer_service.js");
+const customerservice = require("../services/customer_service.js");
 const authMiddleware = require("../middleware/auth.js");
 const CustomerController = require("../controllers/customer_controller.js");
     
@@ -31,7 +31,7 @@ const CustomerController = require("../controllers/customer_controller.js");
  */
 adminServicesRouter.post("/add", async (req, res) => {
   const customerData = req.body;
-  res.status(200).send(await CustomerService.addCustomer(customerData));
+  res.status(200).send(await  customerservice.addCustomer(customerData));
 });
 
 
@@ -56,7 +56,7 @@ adminServicesRouter.post("/add", async (req, res) => {
  */
 adminServicesRouter.get("/:id", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await CustomerService.getCustomer(customerId));
+  res.status(200).send(await  customerservice.getCustomer(customerId));
 });
 
 // Send notification
@@ -87,7 +87,7 @@ adminServicesRouter.post("/notify", async (req, res) => {
   const { customerId, message } = req.body;
   res
     .status(200)
-    .send(await CustomerService.sendNotification(customerId, message));
+    .send(await  customerservice.sendNotification(customerId, message));
 });
 
 // Edit customer
@@ -121,7 +121,7 @@ adminServicesRouter.put("/:id", async (req, res) => {
   const updateData = req.body;
   res
     .status(200)
-    .send(await CustomerService.editCustomer(customerId, updateData));
+    .send(await  customerservice.editCustomer(customerId, updateData));
 });
 
 
@@ -146,7 +146,7 @@ adminServicesRouter.put("/:id", async (req, res) => {
  */
 adminServicesRouter.delete("/:id", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await CustomerService.deleteCustomer(customerId));
+  res.status(200).send(await  customerservice.deleteCustomer(customerId));
 });
 
 // Cancel subscription
@@ -170,7 +170,7 @@ adminServicesRouter.delete("/:id", async (req, res) => {
  */
 adminServicesRouter.post("/:id/cancel-subscription", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await CustomerService.cancelSubscription(customerId));
+  res.status(200).send(await  customerservice.cancelSubscription(customerId));
 });
 
 // Suspend account
@@ -194,7 +194,7 @@ adminServicesRouter.post("/:id/cancel-subscription", async (req, res) => {
  */
 adminServicesRouter.post("/:id/suspend", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await CustomerService.suspendAccount(customerId));
+  res.status(200).send(await  customerservice.suspendAccount(customerId));
 });
 
 // Transfer account
@@ -230,7 +230,7 @@ adminServicesRouter.post("/:id/transfer", async (req, res) => {
   const { newOwnerId } = req.body;
   res
     .status(200)
-    .send(await CustomerService.transferAccount(customerId, newOwnerId));
+    .send(await  customerservice.transferAccount(customerId, newOwnerId));
 });
 
 /**
@@ -281,7 +281,7 @@ adminServicesRouter.post("/:id/transfer", async (req, res) => {
 adminServicesRouter.get('/', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    res.status(200).send(await CustomerService.getAllCustomers(page, limit));
+    res.status(200).send(await customerservice.getAllCustomers(page, limit));
 });
 
 

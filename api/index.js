@@ -10,7 +10,7 @@ app.use(cors({
     methods: 'GET, POST', // Specify allowed HTTP methods
     credentials: true, // Allow cookies and authentication headers
   }));
-
+  
 // Define the routes for the micro services
 const routes = {
     '/adminservices':"https://adminapi.admin.gworkspace.withhordanso.com",

@@ -4,7 +4,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');// Import the
 const PORT = 8000;// Set the port number for the server
 var cors = require('cors');
 const app = express();
-
+   
 app.use(cors({
     origin: 'http://localhost:8000', // Replace with your frontend URL
     methods: 'GET, POST', // Specify allowed HTTP methods

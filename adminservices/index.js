@@ -12,9 +12,9 @@ const adminCredentialsRoute = require("./routes/loginroute.js");
 const forgotPasswordRoutes = require("./routes/forgotPasswordRoutes");
 //const customerRoutes  = require("./routes/customer_routes.js");
 //const adminServicesRoutes = require("./routes/customer_routes.js");
-const adminRoutes = require("./routes/adminRoutes");
-const subscriptionRoutes = require("./routes/subscriptionRoutes");
-const notificationRoutes = require("./routes/notificationRoutes");
+//const adminRoutes = require("./routes/adminRoutes");
+//const subscriptionRoutes = require("./routes/subscriptionRoutes");
+//const notificationRoutes = require("./routes/notificationRoutes");
 const voucherRoutes = require("./routes/voucherroutes");
    
 app.use(cors());
@@ -40,7 +40,7 @@ app.get("/adminservices/test", (req, res) => {
   res.send("We Are Calling User Test API");
 });
 
- app.use("/adminservices", adminCredentialsRoute);
+//app.use("/adminservices", adminCredentialsRoute);
 app.post("/adminservices/upload", (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
   const fieldName = "file"; // Define the field name in the form
@@ -59,12 +59,12 @@ app.post("/adminservices/send-email", (req, res) => {
   res.send("Email queued for sending");
 });
 
-app.use("/adminservices/forgot-password", forgotPasswordRoutes);
+//app.use("/adminservices/forgot-password", forgotPasswordRoutes);
 //app.use("/adminservices/customers", adminServicesRoutes);
 
-app.use(`/admin/api/v1`, adminRoutes);
-app.use('/subscription/api/v1', subscriptionRoutes);
-app.use('/notification/api/v1', notificationRoutes);
+//app.use(`/admin/api/v1`, adminRoutes);
+//app.use('/subscription/api/v1', subscriptionRoutes);
+//app.use('/notification/api/v1', notificationRoutes);
 app.use('/voucher/api/v1', voucherRoutes);
 //app.use('/customer/api/v1', customerRoutes);
 

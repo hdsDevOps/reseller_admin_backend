@@ -830,4 +830,4 @@ router.post("/cmsdeletebannerdata", authMiddleware, AdminController.deleteBanner
  */
 router.post("/cmsupdatestatusbannerdata", authMiddleware, AdminController.updateBannerStatus);
 
-module.exports = router;
+ module.exports = router;

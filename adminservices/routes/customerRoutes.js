@@ -479,16 +479,5 @@ router.post("/suspendcustomer", authMiddleware, CustomerController.suspendCustom
  */
 router.post("/cancelsubscriptioncustomer", authMiddleware, CustomerController.cancelSubscription);
 
+module.exports = router;
 
-
-
-
-
-
-
-
-
-module.exports = {
-  adminServicesRoutes: adminServicesRouter,
-  customerRoutes: router
-};

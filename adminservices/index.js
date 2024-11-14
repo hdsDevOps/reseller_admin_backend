@@ -10,7 +10,8 @@ const helper = require("./helper");
 const addEmailToQueue = require("./queue");
 const adminCredentialsRoute = require("./routes/loginroute.js");
 const forgotPasswordRoutes = require("./routes/forgotPasswordRoutes");
-const { adminServicesRoutes, customerRoutes } = require("./routes/customerRoutes");
+const customerRoutes  = require("./routes/customerRoutes.js");
+const adminServicesRoutes = require("./routes/customerRoutes.js");
 const adminRoutes = require("./routes/adminRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
@@ -39,7 +40,7 @@ app.get("/adminservices/test", (req, res) => {
   res.send("We Are Calling User Test API");
 });
 
-app.use("/adminservices", adminCredentialsRoute);
+ app.use("/adminservices", adminCredentialsRoute);
 app.post("/adminservices/upload", (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
   const fieldName = "file"; // Define the field name in the form
@@ -67,7 +68,7 @@ app.use('/notification/api/v1', notificationRoutes);
 app.use('/voucher/api/v1', voucherRoutes);
 app.use('/customer/api/v1', customerRoutes);
 
-// Swagger UI
+//Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Start the server and listen on the specified port

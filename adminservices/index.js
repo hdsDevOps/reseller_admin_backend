@@ -3,12 +3,11 @@ const express = require("express"); // Import the Express module
 const app = express();
 const PORT = 8001; // Set the port number for the server
 var cors = require("cors");
-const swaggerUi = require("swagger-ui-express");
-const swaggerSpec = require("./swagger");
-require("dotenv").config();
-const helper = require("./helper");
-const addEmailToQueue = require("./queue");
-//const adminCredentialsRoute = require("./routes/loginroute.js");
+
+require('dotenv').config();
+const helper = require('./helper');
+const addEmailToQueue = require('./queue');
+const loginroute = require('./routes/loginroute.js');
 //const forgotPasswordRoutes = require("./routes/forgotPasswordRoutes");
 //const customerRoutes  = require("./routes/customer_routes.js");
 //const adminServicesRoutes = require("./routes/customer_routes.js");
@@ -40,7 +39,7 @@ app.get("/adminservices/test", (req, res) => {
   res.send("We Are Calling User Test API");
 });
 
-//app.use("/adminservices", adminCredentialsRoute);
+app.use("/adminservices", loginroute);
 app.post("/adminservices/upload", (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
   const fieldName = "file"; // Define the field name in the form
@@ -68,8 +67,6 @@ app.post("/adminservices/send-email", (req, res) => {
 //app.use('/voucher/api/v1', voucherRoutes);
 //app.use('/customer/api/v1', customerRoutes);
 
-//Swagger UI
-//app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   
 // Start the server and listen on the specified port
 app.listen(PORT, () => {

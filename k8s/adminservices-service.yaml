@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: backendadmin-admin-service
+  name: adminbackend-adminapi-ingress
 spec:
   selector:
-    app: backendadmin-admin-service
+    app: adminbackend-adminapi-ingress
   ports:
     - protocol: TCP
       port: 80

@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backendadmin-admin-service
+  name: adminbackend-adminapi-ingress
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: backendadmin-admin-service
+      app: adminbackend-adminapi-ingress
   template:
     metadata:
       labels:
-        app: backendadmin-admin-service
+        app: adminbackend-adminapi-ingress
     spec:
       containers:
-      - name: backendadmin-admin-service
+      - name: adminbackend-adminapi-ingress
         image: hordansodevops/reseller_admin_backend_adminservices:latest
         ports:
         - containerPort: 8001

@@ -1,9 +1,9 @@
-const CustomerService = require("../services/customer_service.js");
+const customerservice = require("../services/customer_service.js");
 
-class CustomerController {
+class customercontroller {
     async addCustomer(req, res) {
       try {
-        const result = await CustomerService.addnewCustomer(req.body);
+        const result = await  customerservice.addnewCustomer(req.body);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });
@@ -13,7 +13,7 @@ class CustomerController {
     async editCustomer(req, res) {
       try {
         const { record_id, ...updateData } = req.body;
-        const result = await CustomerService.edit_Customer(record_id, updateData);
+        const result = await  customerservice.edit_Customer(record_id, updateData);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });
@@ -22,7 +22,7 @@ class CustomerController {
   
     async getCustomerList(req, res) {
       try {
-        const result = await CustomerService.getCustomerList();
+        const result = await  customerservice.getCustomerList();
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });
@@ -32,7 +32,7 @@ class CustomerController {
     async deleteCustomer(req, res) {
       try {
         const { record_id } = req.body;
-        const result = await CustomerService.delete_customer(record_id);
+        const result = await  customerservice.delete_customer(record_id);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });
@@ -42,7 +42,7 @@ class CustomerController {
     async suspendCustomer(req, res) {
       try {
         const { record_id } = req.body;
-        const result = await CustomerService.suspend_customer(record_id);
+        const result = await  customerservice.suspend_customer(record_id);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });
@@ -52,7 +52,7 @@ class CustomerController {
     async cancelSubscription(req, res) {
       try {
         const { record_id } = req.body;
-        const result = await CustomerService.cancel_subscription(record_id);
+        const result = await  customerservice.cancel_subscription(record_id);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });
@@ -63,4 +63,4 @@ class CustomerController {
     
   }
 
-    module.exports = new CustomerController();
+    module.exports = new customercontroller();

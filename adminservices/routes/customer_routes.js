@@ -1,6 +1,8 @@
 const express = require("express");
 const adminServicesRouter = express.Router();
 const router = express.Router();
+const path = require('path');
+console.log(path.resolve(__dirname, '../services/customer_service.js'));
 const customerservice = require("../services/customer_service.js");
 const authMiddleware = require("../middleware/auth.js");
 const CustomerController = require("../controllers/customer_controller.js");

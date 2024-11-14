@@ -17,7 +17,7 @@ services:
     # - notificationservices
     # - reportservices
     # - subscriptionservices
-    # - voucherservices
+    - voucherservices
   adminservices:
     build: ./adminservices
     container_name: microservices_container_adminservices
@@ -98,15 +98,15 @@ services:
   #   networks:
   #     - dev_network
 
-  # voucherservices:
-  #   build: ./voucherservices
-  #   container_name: microservices_container_voucherservices
-  #   ports:
-  #     - "8008:8008"
-  #   expose:
-  #   - "8008"
-  #   networks:
-  #     - dev_network  
+  voucherservices:
+    build: ./voucherservices
+    container_name: reseller_admin_backend_voucherservices
+    ports:
+      - "8008:8008"
+    expose:
+    - "8008"
+    networks:
+      - dev_network  
 networks:
   dev_network:
     driver: bridge

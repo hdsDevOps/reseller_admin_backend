@@ -2,7 +2,8 @@ const { admin, db } = require("../firebaseConfig");
 const { sendmail } = require("../helper");
 const helper = require('../helper');
 const table_name = "vouchers";
-async function getVoucherList(data) {
+
+async function getVoucherList() {
     try {
       let query = db
         .collection(table_name)

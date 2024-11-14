@@ -10,8 +10,7 @@ app.get('/voucherservices',(req,res)=>{
 
 app.get('/voucherservices/test',(req,res)=>{
     res.send("We Are Calling Vouchers Test API by");
-})
-     
+}) 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use('/voucherservices/voucher/api/v1',voucherroute);

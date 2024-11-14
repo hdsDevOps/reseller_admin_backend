@@ -1,9 +1,9 @@
 const express = require("express");
 const adminServicesRouter = express.Router();
 const router = express.Router();
-const CustomerService = require("../services/Customer_service.js");
-const authMiddleware = require("../middleware/auth");
-const CustomerController = require("../controllers/CustomerController.js");
+const CustomerService = require("../services/customer_service.js");
+const authMiddleware = require("../middleware/auth.js");
+const CustomerController = require("../controllers/customer_controller.js");
   
 /**
  * @swagger

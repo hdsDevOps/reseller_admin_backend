@@ -6,26 +6,37 @@ var cors = require('cors');
 const app = express();
    
 app.use(cors({
-    origin: 'http://localhost:8000', // Replace with your frontend URL
+    origin: '*', // Replace with your frontend URL
     methods: 'GET, POST', // Specify allowed HTTP methods
     credentials: true, // Allow cookies and authentication headers
   }));
 
 // Define the routes for the micro services
 const routes = {
-    '/adminservices':"http://adminservices:8001",
-    '/customerservices':"http://customerservices:8002",
-    '/googleservices':"http://googleservices:8003",
-    '/miscservices':"http://miscservices:8004",
-    '/notificationservices':"http://notificationservices:8005",
-    '/reportservices':"http://reportservices:8006",
-    '/subscriptionservices':"http://subscriptionservices:8007",
-    '/voucherservices':"http://voucherservices:8008",
+    '/adminservices':"https://adminapi.admin.gworkspace.withhordanso.com",
+    '/customerservices':"https://customerapi.admin.gworkspace.withhordanso.com",
+    //'/googleservices':"http://googleservices:8003",
+    //'/miscservices':"http://miscservices:8004",
+    //'/notificationservices':"http://notificationservices:8005",
+    //'/reportservices':"http://reportservices:8006",
+    //'/subscriptionservices':"http://subscriptionservices:8007",
+    '/voucherservices':"https://voucherapi.admin.gworkspace.withhordanso.com",
 }
 
 for(const route in routes){
     const target = routes[route];
-    app.use(route, createProxyMiddleware({target}));
+    app.use(route, createProxyMiddleware({
+        target,
+        changeOrigin: true,
+        secure: false,
+        logLevel: 'debug',  // Enable debug logging
+        onProxyReq: (proxyReq, req, res) => {
+            console.log(`Proxying request: ${req.method} ${req.url} to ${target}`);
+        },
+        onProxyRes: (proxyRes, req, res) => {
+            console.log(`Response from ${target}: ${proxyRes.statusCode}`);
+        },
+    }));
 }
 // Check if the middleware is called
 app.use(function (req, res, next) {

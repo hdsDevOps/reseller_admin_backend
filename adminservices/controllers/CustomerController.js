@@ -1,4 +1,4 @@
-const CustomerService = require("../services/CustomerService");
+const CustomerService = require("../services/customerService.js");
 
 class CustomerController {
     async addCustomer(req, res) {

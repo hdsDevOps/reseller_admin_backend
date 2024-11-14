@@ -8,7 +8,7 @@ const swaggerSpec = require("./swagger");
 require("dotenv").config();
 const helper = require("./helper");
 const addEmailToQueue = require("./queue");
-const adminCredentialsRoute = require("./routes/loginroute.js");
+//const adminCredentialsRoute = require("./routes/loginroute.js");
 const forgotPasswordRoutes = require("./routes/forgotPasswordRoutes");
 const customerRoutes  = require("./routes/customer_routes.js");
 const adminServicesRoutes = require("./routes/customer_routes.js");
@@ -40,8 +40,8 @@ app.get("/adminservices/test", (req, res) => {
   res.send("We Are Calling User Test API");
 });
 
- app.use("/adminservices", adminCredentialsRoute);
-app.post("/adminservices/upload", (req, res) => {
+ //app.use("/adminservices", adminCredentialsRoute);
+/*app.post("/adminservices/upload", (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
   const fieldName = "file"; // Define the field name in the form
   const upload = helper.file_upload(uploadPath, fieldName);
@@ -51,25 +51,25 @@ app.post("/adminservices/upload", (req, res) => {
     }
     res.send("File uploaded successfully");
   });
-});
-
+});*/
+/*
 app.post("/adminservices/send-email", (req, res) => {
   const { to, subject, text } = req.body;
   addEmailToQueue(to, subject, text);
   res.send("Email queued for sending");
 });
-
-app.use("/adminservices/forgot-password", forgotPasswordRoutes);
+*/
+//app.use("/adminservices/forgot-password", forgotPasswordRoutes);
 //app.use("/adminservices/customers", adminServicesRoutes);
 
-app.use(`/admin/api/v1`, adminRoutes);
-app.use('/subscription/api/v1', subscriptionRoutes);
-app.use('/notification/api/v1', notificationRoutes);
-app.use('/voucher/api/v1', voucherRoutes);
-app.use('/customer/api/v1', customerRoutes);
+//app.use(`/admin/api/v1`, adminRoutes);
+//app.use('/subscription/api/v1', subscriptionRoutes);
+//app.use('/notification/api/v1', notificationRoutes);
+//app.use('/voucher/api/v1', voucherRoutes);
+//app.use('/customer/api/v1', customerRoutes);
 
 //Swagger UI
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+//app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   
 // Start the server and listen on the specified port
 app.listen(PORT, () => {

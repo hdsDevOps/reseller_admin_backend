@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const VoucherController = require("../controllers/VoucherController");
+const VoucherController = require("../controllers/voucher_controller");
 const authMiddleware = require("../middleware/auth");
 
 

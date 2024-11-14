@@ -10,12 +10,12 @@ const helper = require("./helper");
 const addEmailToQueue = require("./queue");
 const adminCredentialsRoute = require("./routes/loginroute.js");
 const forgotPasswordRoutes = require("./routes/forgotPasswordRoutes");
-const customerRoutes  = require("./routes/customerRoutes.js");
-const adminServicesRoutes = require("./routes/customerRoutes.js");
+const customerRoutes  = require("./routes/customer_routes.js");
+const adminServicesRoutes = require("./routes/customer_routes.js");
 const adminRoutes = require("./routes/adminRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
-const voucherRoutes = require("./routes/voucherRoutes");
+const voucherRoutes = require("./routes/voucherroutes");
  
 app.use(cors());
 app.use(express.json());

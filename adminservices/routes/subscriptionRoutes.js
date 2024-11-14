@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth");
-const SubscriptionController = require("../controllers/SubscriptionController");
+const SubscriptionController = require("../controllers/subscription_controller");
 
 /**
  * @swagger

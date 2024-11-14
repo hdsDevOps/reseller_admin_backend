@@ -1,4 +1,4 @@
-const subscriptionService = require("../services/subscriptionService.js");
+const subscriptionService = require("../services/subscription_service.js");
 
 
 class SubscriptionController {

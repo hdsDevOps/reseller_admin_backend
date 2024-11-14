@@ -35,7 +35,7 @@ services:
 
   customerservices:
     build: ./customerservices
-    container_name: microservices_container_customerservices
+    container_name: reseller_admin_backend_customerservices
     ports:
     - 8002:8002
     expose:

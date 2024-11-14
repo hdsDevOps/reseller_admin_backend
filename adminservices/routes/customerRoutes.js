@@ -1,7 +1,7 @@
 const express = require("express");
 const adminServicesRouter = express.Router();
 const router = express.Router();
-const CustomerService = require("../services/customerService.js");
+const CustomerService = require("../services/CustomerService.js");
 const authMiddleware = require("../middleware/auth");
 const CustomerController = require("../controllers/CustomerController.js");
 

@@ -39,7 +39,7 @@ app.get("/test", (req, res) => {
 app.get("/adminservices/test", (req, res) => {
   res.send("We Are Calling User Test API");
 });
-/*
+
  app.use("/adminservices", adminCredentialsRoute);
 app.post("/adminservices/upload", (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
@@ -58,7 +58,7 @@ app.post("/adminservices/send-email", (req, res) => {
   addEmailToQueue(to, subject, text);
   res.send("Email queued for sending");
 });
-
+/*
 app.use("/adminservices/forgot-password", forgotPasswordRoutes);
 app.use("/adminservices/customers", adminServicesRoutes);
 
@@ -67,10 +67,10 @@ app.use('/subscription/api/v1', subscriptionRoutes);
 app.use('/notification/api/v1', notificationRoutes);
 app.use('/voucher/api/v1', voucherRoutes);
 app.use('/customer/api/v1', customerRoutes);
-
+*/
 //Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-*/  
+  
 // Start the server and listen on the specified port
 app.listen(PORT, () => {
   console.log("Calling admin Service running on port "+ PORT);

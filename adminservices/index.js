@@ -70,7 +70,7 @@ app.use('/customer/api/v1', customerRoutes);
 
 //Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-*/
+*/  
 // Start the server and listen on the specified port
 app.listen(PORT, () => {
   console.log("Calling admin Service running on port "+ PORT);

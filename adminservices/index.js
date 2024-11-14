@@ -61,7 +61,7 @@ app.post("/adminservices/send-email", (req, res) => {
 app.use("/adminservices/forgot-password", forgotPasswordRoutes);
 app.use("/adminservices/customers", adminServicesRoutes);
 
-app.use(`/admin/api/v1`, adminRoutes);
+app.use('/admin/api/v1', adminRoutes);
 app.use('/subscription/api/v1', subscriptionRoutes);
 app.use('/notification/api/v1', notificationRoutes);
 app.use('/voucher/api/v1', voucherRoutes);

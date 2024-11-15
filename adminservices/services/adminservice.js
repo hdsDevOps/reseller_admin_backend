@@ -562,7 +562,7 @@ class AdminService {
       .collection("users")
       .doc(userId)
       .update({
-        otp: otp,
+        otp: encryptedOtp,
         otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
       });
       console.log("OTP and expiry updated successfully.");

@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
-const AdminController = require('../controllers/admin_controller');
+const adminController = require('../controllers/admin_controller');
 
 /**
  * @swagger
@@ -27,7 +27,7 @@ const AdminController = require('../controllers/admin_controller');
  *       400:
  *         description: Invalid credentials
  */
-router.post("/login", AdminController.login);
+router.post("/login", adminController.login);
 
 /**
  * @swagger
@@ -52,7 +52,7 @@ router.post("/login", AdminController.login);
  *       400:
  *         description: Invalid OTP
  */
-router.post("/otpverify", AdminController.verifyOtp);
+router.post("/otpverify", adminController.verifyOtp);
 
 /**
  * @swagger
@@ -75,7 +75,7 @@ router.post("/otpverify", AdminController.verifyOtp);
  *       400:
  *         description: Error resending OTP
  */
-router.post("/resendotp", AdminController.resendOtp);
+router.post("/resendotp", adminController.resendOtp);
 
 /**
  * @swagger
@@ -91,7 +91,7 @@ router.post("/resendotp", AdminController.resendOtp);
  *       401:
  *         description: Unauthorized
  */
-router.get("/logout", authMiddleware, AdminController.logout);
+router.get("/logout", authMiddleware, adminController.logout);
 
 /**
  * @swagger
@@ -120,7 +120,7 @@ router.get("/logout", authMiddleware, AdminController.logout);
  *       400:
  *         description: Error adding FAQ
  */
-router.post("/addfaq", authMiddleware, AdminController.addFaq);
+router.post("/addfaq", authMiddleware, adminController.addFaq);
 
 /**
  * @swagger
@@ -136,7 +136,7 @@ router.post("/addfaq", authMiddleware, AdminController.addFaq);
  *       400:
  *         description: Error retrieving FAQ list
  */
-router.get("/faqlist", authMiddleware, AdminController.getFaqList);
+router.get("/faqlist", authMiddleware, adminController.getFaqList);
 
 /**
  * @swagger
@@ -167,7 +167,7 @@ router.get("/faqlist", authMiddleware, AdminController.getFaqList);
  *       400:
  *         description: Error updating FAQ
  */
-router.post("/editfaq", authMiddleware, AdminController.editFaq);
+router.post("/editfaq", authMiddleware, adminController.editFaq);
 
 /**
  * @swagger
@@ -192,7 +192,7 @@ router.post("/editfaq", authMiddleware, AdminController.editFaq);
  *       400:
  *         description: Error deleting FAQ
  */
-router.post("/deletefaq", authMiddleware, AdminController.deleteFaq);
+router.post("/deletefaq", authMiddleware, adminController.deleteFaq);
 
 /**
  * @swagger
@@ -208,7 +208,7 @@ router.post("/deletefaq", authMiddleware, AdminController.deleteFaq);
  *       400:
  *         description: Error retrieving email log list
  */
-router.get("/emailloglist", authMiddleware, AdminController.getEmailLogList);
+router.get("/emailloglist", authMiddleware, adminController.getEmailLogList);
 
 /**
  * @swagger
@@ -236,7 +236,7 @@ router.get("/emailloglist", authMiddleware, AdminController.getEmailLogList);
 router.post(
   "/emaillogdetails",
   authMiddleware,
-  AdminController.getEmailLogDetails
+  adminController.getEmailLogDetails
 );
 
 /**
@@ -263,7 +263,7 @@ router.post(
 router.post(
   "/updateterms",
   authMiddleware,
-  AdminController.updateTermsConditions
+  adminController.updateTermsConditions
 );
 
 /**
@@ -290,7 +290,7 @@ router.post(
 router.post(
   "/updatepolicy",
   authMiddleware,
-  AdminController.updatePrivacyPolicy
+  adminController.updatePrivacyPolicy
 );
 
 /**
@@ -317,7 +317,7 @@ router.post(
 router.post(
   "/updateagreement",
   authMiddleware,
-  AdminController.updateCustomerAgreement
+  adminController.updateCustomerAgreement
 );
 
 /**
@@ -348,7 +348,7 @@ router.post(
  *               menu6:
  *                 type: string
  */
-router.post("/cmsupdateheader", authMiddleware, AdminController.updateHeader);
+router.post("/cmsupdateheader", authMiddleware, adminController.updateHeader);
 
 /**
  * @swagger
@@ -359,7 +359,7 @@ router.post("/cmsupdateheader", authMiddleware, AdminController.updateHeader);
  *     security:
  *       - BearerAuth: []
  */
-router.get("/cmsgetheader", authMiddleware, AdminController.getHeader);
+router.get("/cmsgetheader", authMiddleware, adminController.getHeader);
 
 /**
  * @swagger
@@ -370,7 +370,7 @@ router.get("/cmsgetheader", authMiddleware, AdminController.getHeader);
  *     security:
  *       - BearerAuth: []
  */
-router.get("/cmsgetseodata", authMiddleware, AdminController.getSEOData);
+router.get("/cmsgetseodata", authMiddleware, adminController.getSEOData);
 
 /**
  * @swagger
@@ -400,7 +400,7 @@ router.get("/cmsgetseodata", authMiddleware, AdminController.getSEOData);
  *               image_path:
  *                 type: string
  */
-router.post("/cmsupdateseodata", authMiddleware, AdminController.updateSEOData);
+router.post("/cmsupdateseodata", authMiddleware, adminController.updateSEOData);
 
 /**
  * @swagger
@@ -411,7 +411,7 @@ router.post("/cmsupdateseodata", authMiddleware, AdminController.updateSEOData);
  *     security:
  *       - BearerAuth: []
  */
-router.get("/cmsgetfooter", authMiddleware, AdminController.getFooter);
+router.get("/cmsgetfooter", authMiddleware, adminController.getFooter);
 
 /**
  * @swagger
@@ -438,7 +438,7 @@ router.get("/cmsgetfooter", authMiddleware, AdminController.getFooter);
 router.post(
   "/cmsupdatefooterdata",
   authMiddleware,
-  AdminController.updateFooter
+  adminController.updateFooter
 );
 
 /**
@@ -450,7 +450,7 @@ router.post(
  *     security:
  *       - BearerAuth: []
  */
-router.get("/cmsgetcontactus", authMiddleware, AdminController.getContactUs);
+router.get("/cmsgetcontactus", authMiddleware, adminController.getContactUs);
 
 /**
  * @swagger
@@ -486,7 +486,7 @@ router.get("/cmsgetcontactus", authMiddleware, AdminController.getContactUs);
 router.post(
   "/cmsupdatecontactus",
   authMiddleware,
-  AdminController.updateContactUs
+  adminController.updateContactUs
 );
 
 /**
@@ -504,7 +504,7 @@ router.post(
 router.get(
   "/cmsgetresourcedata",
   authMiddleware,
-  AdminController.getResourceData
+  adminController.getResourceData
 );
 
 /**
@@ -519,7 +519,7 @@ router.get(
  *       200:
  *         description: About us data retrieved successfully
  */
-router.get("/cmsgetaboutus", authMiddleware, AdminController.getAboutUs);
+router.get("/cmsgetaboutus", authMiddleware, adminController.getAboutUs);
 
 /**
  * @swagger
@@ -546,7 +546,7 @@ router.get("/cmsgetaboutus", authMiddleware, AdminController.getAboutUs);
  *       200:
  *         description: About us data updated successfully
  */
-router.post("/cmsupdateaboutus", authMiddleware, AdminController.updateAboutUs);
+router.post("/cmsupdateaboutus", authMiddleware, adminController.updateAboutUs);
 
 /**
  * @swagger
@@ -563,7 +563,7 @@ router.post("/cmsupdateaboutus", authMiddleware, AdminController.updateAboutUs);
 router.get(
   "/cmsgetpromotiondata",
   authMiddleware,
-  AdminController.getPromotions
+  adminController.getPromotions
 );
 
 /**
@@ -595,7 +595,7 @@ router.get(
  *       200:
  *         description: Promotion added successfully
  */
-router.post("/cmsaddpromotion", authMiddleware, AdminController.addPromotion);
+router.post("/cmsaddpromotion", authMiddleware, adminController.addPromotion);
 
 /**
  * @swagger
@@ -631,7 +631,7 @@ router.post("/cmsaddpromotion", authMiddleware, AdminController.addPromotion);
 router.post(
   "/cmsupdatepromotion",
   authMiddleware,
-  AdminController.updatePromotion
+  adminController.updatePromotion
 );
 
 /**
@@ -658,7 +658,7 @@ router.post(
 router.post(
   "/cmsdeletepromotion",
   authMiddleware,
-  AdminController.deletePromotion
+  adminController.deletePromotion
 );
 
 
@@ -702,7 +702,7 @@ router.post(
  *                   currency_details:
  *                     type: object
  */
-router.get("/cmsgetbannerdata", authMiddleware, AdminController.getBannerData);
+router.get("/cmsgetbannerdata", authMiddleware, adminController.getBannerData);
 
 /**
  * @swagger
@@ -741,7 +741,7 @@ router.get("/cmsgetbannerdata", authMiddleware, AdminController.getBannerData);
  *       200:
  *         description: Banner added successfully
  */
-router.post("/cmsaddbannerdata", authMiddleware, AdminController.addBannerData);
+router.post("/cmsaddbannerdata", authMiddleware, adminController.addBannerData);
 
 /**
  * @swagger
@@ -782,7 +782,7 @@ router.post("/cmsaddbannerdata", authMiddleware, AdminController.addBannerData);
  *       200:
  *         description: Banner updated successfully
  */
-router.post("/cmseditbannerdata", authMiddleware, AdminController.editBannerData);
+router.post("/cmseditbannerdata", authMiddleware, adminController.editBannerData);
 
 /**
  * @swagger
@@ -805,7 +805,7 @@ router.post("/cmseditbannerdata", authMiddleware, AdminController.editBannerData
  *       200:
  *         description: Banner deleted successfully
  */
-router.post("/cmsdeletebannerdata", authMiddleware, AdminController.deleteBannerData);
+router.post("/cmsdeletebannerdata", authMiddleware, adminController.deleteBannerData);
 
 /**
  * @swagger
@@ -828,6 +828,6 @@ router.post("/cmsdeletebannerdata", authMiddleware, AdminController.deleteBanner
  *       200:
  *         description: Banner status updated successfully
  */
-router.post("/cmsupdatestatusbannerdata", authMiddleware, AdminController.updateBannerStatus);
+router.post("/cmsupdatestatusbannerdata", authMiddleware, adminController.updateBannerStatus);
 
  module.exports = router;

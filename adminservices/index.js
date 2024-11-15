@@ -8,13 +8,13 @@ require('dotenv').config();
 const helper = require('./helper');
 const addEmailToQueue = require('./queue');
 const loginroute = require('./routes/loginroute.js');
-const forgotPasswordRoutes = require('./routes/forgotpasswordroute');
-const customerRoutes  = require('./routes/customer_route.js');
-const adminServicesRoutes = require('./routes/customer_route.js');
+//const forgotPasswordRoutes = require('./routes/forgotpasswordroute');
+//const customerRoutes  = require('./routes/customer_route.js');
+//const adminServicesRoutes = require('./routes/customer_route.js');
 const adminRoutes = require('./routes/adminroute');
-const subscriptionRoutes = require('./routes/subscriptionroute');
-const notificationRoutes = require('./routes/notificationroute');
-const voucherroutes = require('./routes/voucherroute.js');
+//const subscriptionRoutes = require('./routes/subscriptionroute');
+//const notificationRoutes = require('./routes/notificationroute');
+//const voucherroutes = require('./routes/voucherroute.js');
    
 app.use(cors());
 app.use(express.json());
@@ -61,7 +61,7 @@ app.post('/adminservices/send-email', (req, res) => {
 //app.use('/adminservices/forgot-password', forgotPasswordRoutes);
 //app.use('/adminservices/customers', adminServicesRoutes);
 
-//app.use('/admin/api/v1', adminRoutes);
+app.use('/admin/api/v1', adminRoutes);
 //app.use('/subscription/api/v1', subscriptionRoutes);
 //app.use('/notification/api/v1', notificationRoutes);
 //app.use('/voucher/api/v1', voucherRoutes);

@@ -30,12 +30,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Generate .env File
         run: |
-          echo "FIRESTORE_DETAILS=${{ secrets.FIRESTORE_DETAILS }}" >> voucherservices/.env
-          echo "Generated .env file:"
+          echo " FIRESTORE_DETAILS=${{ secrets.FIRESTORE_DETAILS }}" >> voucherservices/.env
+          echo " Generated .env file:"
           cat voucherservices/.env
-          
+
       - name: Display .env file
-        run: cat .env
+        run: cat voucherservices/.env
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5

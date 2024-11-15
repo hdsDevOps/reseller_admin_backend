@@ -12,7 +12,7 @@ app.use(cors({
   }));
   
 // Define the routes for the micro services
-const routes = {
+/*const routes = {
     '/adminservices':"https://adminapi.admin.gworkspace.withhordanso.com",
     '/customerservices':"https://customerapi.admin.gworkspace.withhordanso.com",
     //'/googleservices':"http://googleservices:8003",
@@ -21,6 +21,17 @@ const routes = {
     //'/reportservices':"http://reportservices:8006",
     //'/subscriptionservices':"http://subscriptionservices:8007",
     '/voucherservices':"https://voucherapi.admin.gworkspace.withhordanso.com",
+}*/
+
+const routes = {
+    '/adminservices':"https://adminservices:8001",
+    //'/customerservices':"https://customerapi.admin.gworkspace.withhordanso.com",
+    //'/googleservices':"http://googleservices:8003",
+    //'/miscservices':"http://miscservices:8004",
+    //'/notificationservices':"http://notificationservices:8005",
+    //'/reportservices':"http://reportservices:8006",
+    //'/subscriptionservices':"http://subscriptionservices:8007",
+    //'/voucherservices':"https://voucherapi.admin.gworkspace.withhordanso.com",
 }
 
 for(const route in routes){

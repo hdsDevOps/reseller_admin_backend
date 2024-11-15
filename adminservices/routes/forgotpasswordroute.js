@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const forgotPasswordService = require('../services/forgot_password_service.js');
+const forgotPasswordService = require('../services/forgotpasswordservice.js');
 
 /**
  * @swagger

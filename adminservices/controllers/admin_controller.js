@@ -1,4 +1,4 @@
-const AdminService = require("../services/admin_service");
+const AdminService = require("../services/adminservice");
 const { admin, db } = require("../firebaseConfig");
 class AdminController {
   async login(req, res) {

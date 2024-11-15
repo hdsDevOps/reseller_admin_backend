@@ -7,9 +7,9 @@ var cors = require("cors");
 require('dotenv').config();
 const helper = require('./helper');
 const addEmailToQueue = require('./queue');
-const loginroute = require('./routes/loginroute.js');
+//const loginroute = require('./routes/loginroute.js');
 //const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
-const customerRoutes  = require('./routes/customer_routes.js');
+//const customerRoutes  = require('./routes/customer_routes.js');
 //const adminServicesRoutes = require('./routes/customer_routes.js');
 //const adminRoutes = require('./routes/adminRoutes');
 //const subscriptionRoutes = require('./routes/subscriptionRoutes');
@@ -39,7 +39,7 @@ app.get('/adminservices/test', (req, res) => {
   res.send("We Are Calling User Test API");
 });
 
-app.use('/adminservices', loginroute);
+//app.use('/adminservices', loginroute);
 app.post('/adminservices/upload', (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
   const fieldName = "file"; // Define the field name in the form
@@ -65,7 +65,7 @@ app.post('/adminservices/send-email', (req, res) => {
 //app.use('/subscription/api/v1', subscriptionRoutes);
 //app.use('/notification/api/v1', notificationRoutes);
 app.use('/voucher/api/v1', voucherRoutes);
-app.use('/customer/api/v1', customerRoutes);
+//app.use('/customer/api/v1', customerRoutes);
 
   
 // Start the server and listen on the specified port

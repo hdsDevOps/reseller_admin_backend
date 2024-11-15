@@ -14,7 +14,8 @@ const addEmailToQueue = require('./queue');
 //const adminRoutes = require('./routes/adminRoutes');
 //const subscriptionRoutes = require('./routes/subscriptionRoutes');
 //const notificationRoutes = require('./routes/notificationRoutes');
-const voucherRoutes = require('./routes/voucherroutes.js');
+//const voucherroutes = require('./routes/voucherroutes.js');
+const voucherroute = require('./routes/voucherroute');
    
 app.use(cors());
 app.use(express.json());

@@ -30,7 +30,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Generate .env File
         run: |
-          echo " FIRESTORE_DETAILS=ttttt" >> voucherservices/.env
+          echo ' FIRESTORE_DETAILS= "ttttt"' >> voucherservices/.env
           echo " Generated .env file:"
           cat voucherservices/.env
 

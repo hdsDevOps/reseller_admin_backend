@@ -61,11 +61,11 @@ app.post('/adminservices/send-email', (req, res) => {
 app.use('/adminservices/forgotpassword', forgotpasswordroutes);
 app.use('/adminservices/customers', adminservicesroutes);
 
-app.use('/admin/api/v1', adminroutes);
-app.use('/subscription/api/v1', subscriptionroutes);
-app.use('/notification/api/v1', notificationroutes);
-app.use('/voucher/api/v1', voucherroutes);
-app.use('/customer/api/v1', customerroutes);
+app.use('/adminservices/admin/api/v1', adminroutes);
+app.use('/adminservices/subscription/api/v1', subscriptionroutes);
+app.use('/adminservices/notification/api/v1', notificationroutes);
+app.use('/adminservices/voucher/api/v1', voucherroutes);
+app.use('/adminservices/customer/api/v1', customerroutes);
 
   
 // Start the server and listen on the specified port

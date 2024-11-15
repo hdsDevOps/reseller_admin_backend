@@ -1,5 +1,5 @@
-// const express = require('express');
-// const router = express.Router();
+ const express = require('express');
+ const router = express.Router();
 // const vouchercontroller = require('../controllers/voucher_controller');
 // const authmiddleware = require('../middleware/auth');
 
@@ -142,4 +142,4 @@
 //  */
 // router.post("/deletecustomergroup", authmiddleware,  vouchercontroller.deleteCustomerGroup);
 
-// module.exports = router;
+ module.exports = router;

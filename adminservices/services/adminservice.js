@@ -1,4 +1,4 @@
-const { admin, db } = require("../firebaseConfig");
+const { admin, db } = require("../firebaseconfig");
 const { sendMail } = require("../helper");
 const { generateToken } = require("../utils/jwt");
 const CryptoJS = require("crypto-js");

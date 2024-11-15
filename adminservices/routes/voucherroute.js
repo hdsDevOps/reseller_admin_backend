@@ -1,31 +1,145 @@
-const express = require('express');
-const router = express.Router();
-const voucherservice = require('../services/voucherservice.js');
-const { verifyToken } = require('../middleware/auth');
+ const express = require('express');
+ const router = express.Router();
+// const vouchercontroller = require('../controllers/voucher_controller');
+// const authmiddleware = require('../middleware/auth');
 
-// Get all the voucher List excluding Deleted records
-router.post('/voucherlist',verifyToken, async (req, res) => {
-    //const { email, password } = req.body;
-    res.status(200).send(await voucherservice.getVoucherList());
-})
 
-router.post('/addnewvoucher',verifyToken, async (req, res) => {
-    //const { email, password } = req.body;
-    res.status(200).send(await voucherservice.addnewvoucher(req.body));
-})
+// /**
+//  * @swagger
+//  * /voucher/api/v1/addcustomergroup:
+//  *   post:
+//  *     summary: Create new customer group
+//  *     tags: [Customer Group]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             required:
+//  *               - group_name
+//  *               - country
+//  *               - region
+//  *               - plan
+//  *               - start_date
+//  *               - end_date
+//  *               - license_usage
+//  *               - no_customer
+//  *             properties:
+//  *               group_name:
+//  *                 type: string
+//  *               country:
+//  *                 type: string
+//  *               region:
+//  *                 type: string
+//  *               plan:
+//  *                 type: string
+//  *               start_date:
+//  *                 type: string
+//  *                 format: date
+//  *               end_date:
+//  *                 type: string
+//  *                 format: date
+//  *               license_usage:
+//  *                 type: integer
+//  *               no_customer:
+//  *                 type: integer
+//  *     responses:
+//  *       200:
+//  *         description: Customer group created successfully
+//  *       400:
+//  *         description: Error creating customer group
+//  */
+// router.post("/addcustomergroup", authmiddleware,  vouchercontroller.createCustomerGroup);
 
-router.post('/editvoucher',verifyToken, async (req, res) => {
-    //const { email, password } = req.body;
-    res.status(200).send(await voucherservice.editvoucher(req.body));
-})
+// /**
+//  * @swagger
+//  * /voucher/api/v1/editcustomergroup:
+//  *   post:
+//  *     summary: Edit existing customer group
+//  *     tags: [Customer Group]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             required:
+//  *               - record_id
+//  *             properties:
+//  *               record_id:
+//  *                 type: string
+//  *               group_name:
+//  *                 type: string
+//  *               country:
+//  *                 type: string
+//  *               region:
+//  *                 type: string
+//  *               plan:
+//  *                 type: string
+//  *               start_date:
+//  *                 type: string
+//  *                 format: date
+//  *               end_date:
+//  *                 type: string
+//  *                 format: date
+//  *               license_usage:
+//  *                 type: integer
+//  *               no_customer:
+//  *                 type: integer
+//  *     responses:
+//  *       200:
+//  *         description: Customer group updated successfully
+//  *       400:
+//  *         description: Error updating customer group
+//  */
+// router.post("/editcustomergroup", authmiddleware,  vouchercontroller.editCustomerGroup);
 
-router.post('/deletevoucher',verifyToken, async (req, res) => {
-    //const { email, password } = req.body;
-    res.status(200).send(await voucherservice.deletevoucher(req.body));
-})
+// /**
+//  * @swagger
+//  * /voucher/api/v1/customergrouplist:
+//  *   post:
+//  *     summary: Get all customer groups
+//  *     tags: [Customer Group]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     responses:
+//  *       200:
+//  *         description: Customer groups retrieved successfully
+//  *       400:
+//  *         description: Error retrieving customer groups
+//  */
+// router.post("/customergrouplist", authmiddleware,  vouchercontroller.getCustomerGroupList);
 
-router.post('/sendvochermail',verifyToken, async (req, res) => {
-    res.status(200).send(await voucherservice.sendvochermail(req.body));
-})
+// /**
+//  * @swagger
+//  * /voucher/api/v1/deletecustomergroup:
+//  *   post:
+//  *     summary: Delete customer group
+//  *     tags: [Customer Group]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             required:
+//  *               - record_id
+//  *             properties:
+//  *               record_id:
+//  *                 type: string
+//  *     responses:
+//  *       200:
+//  *         description: Customer group deleted successfully
+//  *       400:
+//  *         description: Error deleting customer group
+//  */
+// router.post("/deletecustomergroup", authmiddleware,  vouchercontroller.deleteCustomerGroup);
 
-module.exports = router;
+ module.exports = router;

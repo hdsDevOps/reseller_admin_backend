@@ -555,18 +555,28 @@ class AdminService {
       otp.toString(),
       process.env.CRYPTOTOKEN
     ).toString();
-console.log(otp.toString());
-    await db
-      .collection("users")
-      .doc(userId)
-      .update({
+    
+    try {
+      // Attempt to update the document
+      await docRef.update({
         otp: encryptedOtp,
         otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
-      })
-      .then((result)=>{
-          console.log(result)
-      })
+      });
+      console.log("OTP and expiry updated successfully.");
+    } catch (error) {
+      if (error.code === 'not-found') {
+        // If document doesn't exist, create it with the new data
+        console.log("User document not found, creating new document.");
+        await docRef.set({
+          otp: encryptedOtp,
+          otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        });
+        console.log("New user document created with OTP.");
+      }
     }
+  }
     catch(error)
     {
       throw new Error("Failed to update banner status: " + error.message);

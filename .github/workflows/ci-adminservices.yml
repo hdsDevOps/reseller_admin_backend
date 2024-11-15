@@ -30,6 +30,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Generate .env File
+        run: |
+          echo "NODE_ENV=production" > adminservices/.env
+          echo "FIRESTORE_DETAILS=${{ secrets.FIRESTORE_DETAILS }}" >> adminservices/.env
+          echo "PORT=8080" >> adminservices/.env
+          echo "Generated .env file:"
+          cat adminservices/.env
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:

@@ -1,4 +1,4 @@
-const { db } = require('../firebaseconfig');
+const { db } = require('../firebaseConfig');
 
 class VoucherService {
 

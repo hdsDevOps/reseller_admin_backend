@@ -1,4 +1,4 @@
-const {admin,db} = require('../firebaseconfig');
+const {admin,db} = require('../firebaseConfig');
 const axios = require('axios');
 var CryptoJS = require("crypto-js");
 const helper = require('../helper');

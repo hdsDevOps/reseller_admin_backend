@@ -558,8 +558,11 @@ class AdminService {
     
     try {
       // Attempt to update the document
-      await docRef.update({
-        otp: encryptedOtp,
+      await db
+      .collection("users")
+      .doc(userId)
+      .update({
+        otp: otp,
         otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
       });
       console.log("OTP and expiry updated successfully.");
@@ -567,7 +570,7 @@ class AdminService {
       if (error.code === 'not-found') {
         // If document doesn't exist, create it with the new data
         console.log("User document not found, creating new document.");
-        await docRef.set({
+        await db.collection("users").doc(userRecord.uid).set({
           otp: encryptedOtp,
           otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
           createdAt: Date.now(),

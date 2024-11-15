@@ -1,5 +1,5 @@
 name: CI for Admin Service
-   
+      
 on:
   push:
     branches:

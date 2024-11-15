@@ -32,9 +32,7 @@ jobs:
 
       - name: Generate .env File
         run: |
-          echo "NODE_ENV=production" > adminservices/.env
           echo "FIRESTORE_DETAILS=${{ secrets.FIRESTORE_DETAILS }}" >> adminservices/.env
-          echo "PORT=8080" >> adminservices/.env
           echo "Generated .env file:"
           cat adminservices/.env
 

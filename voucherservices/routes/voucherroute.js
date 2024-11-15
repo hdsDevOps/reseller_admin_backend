@@ -8,7 +8,7 @@ router.post('/voucherlist', async (req, res) => {
     //const { email, password } = req.body;
     res.status(200).send(await voucherservice.getVoucherList());
 })
-
+  
 router.post('/addnewvoucher',verifyToken, async (req, res) => {
     //const { email, password } = req.body;
     res.status(200).send(await voucherservice.addnewvoucher(req.body));

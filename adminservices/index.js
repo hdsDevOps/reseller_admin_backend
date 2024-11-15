@@ -15,7 +15,7 @@ const addEmailToQueue = require('./queue');
 //const subscriptionRoutes = require('./routes/subscriptionRoutes');
 //const notificationRoutes = require('./routes/notificationRoutes');
 const voucherRoutes = require('./routes/voucherroutes');
-     
+   
 app.use(cors());
 app.use(express.json());
 app.use(
@@ -36,10 +36,10 @@ app.get('/test', (req, res) => {
 });
 
 app.get('/adminservices/test', (req, res) => {
-  res.send("We Are Calling User Test API");
+  res.send("We Are Calling admin Test API");
 });
 
-//app.use('/adminservices', loginroute);
+app.use('/adminservices', loginroute);
 app.post('/adminservices/upload', (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
   const fieldName = "file"; // Define the field name in the form

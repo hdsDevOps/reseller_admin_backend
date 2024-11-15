@@ -11,12 +11,13 @@ class AdminService {
       const otp = this.generateOtp();
       
       await this.storeOtp(userRecord.uid, otp);
-      await this.sendLoginOtp(email, otp);
+      //await this.sendLoginOtp(email, otp);
 
       return {
         status: 200,
         message: "OTP sent successfully",
         userId: userRecord.uid,
+        otp:otp,
       };
     } catch (error) {
       throw new Error("Login failed.Please check: " + error.message);

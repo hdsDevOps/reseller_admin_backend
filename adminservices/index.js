@@ -2,12 +2,12 @@
 const express = require("express"); // Import the Express module
 const app = express();
 const PORT = 8001; // Set the port number for the server
-var cors = require("cors");
+//var cors = require("cors");
 
 require('dotenv').config();
 const helper = require('./helper');
 const addEmailToQueue = require('./queue');
-//const loginroute = require('./routes/loginroute.js');
+const loginroute = require('./routes/loginroute.js');
 //const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
 //const customerRoutes  = require('./routes/customer_routes.js');
 //const adminServicesRoutes = require('./routes/customer_routes.js');

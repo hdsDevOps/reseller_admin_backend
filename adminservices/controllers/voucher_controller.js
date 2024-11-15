@@ -1,4 +1,4 @@
-const voucherService = require("../services/voucher_service");
+const voucherService = require('../services/voucher_service');
 
 class VoucherController {
   async createCustomerGroup(req, res) {

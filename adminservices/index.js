@@ -24,23 +24,23 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   res.redirect("/api-docs");
 });
-app.get("/adminservices", (req, res) => {
+app.get('/adminservices', (req, res) => {
   res.send("We are calling admin services API");
 });
 
-app.get("/test", (req, res) => {
+app.get('/test', (req, res) => {
   res.send("We are calling admin services API");
 });
 
-app.get("/adminservices/test", (req, res) => {
+app.get('/adminservices/test', (req, res) => {
   res.send("We Are Calling User Test API");
 });
 
-app.use("/adminservices", loginroute);
-app.post("/adminservices/upload", (req, res) => {
+app.use('/adminservices', loginroute);
+app.post('/adminservices/upload', (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
   const fieldName = "file"; // Define the field name in the form
   const upload = helper.file_upload(uploadPath, fieldName);
@@ -52,14 +52,14 @@ app.post("/adminservices/upload", (req, res) => {
   });
 });
 
-app.post("/adminservices/send-email", (req, res) => {
+app.post('/adminservices/send-email', (req, res) => {
   const { to, subject, text } = req.body;
   addEmailToQueue(to, subject, text);
   res.send("Email queued for sending");
 });
 
-app.use("/adminservices/forgot-password", forgotPasswordRoutes);
-app.use("/adminservices/customers", adminServicesRoutes);
+app.use('/adminservices/forgot-password', forgotPasswordRoutes);
+app.use('/adminservices/customers', adminServicesRoutes);
 
 app.use('/admin/api/v1', adminRoutes);
 app.use('/subscription/api/v1', subscriptionRoutes);

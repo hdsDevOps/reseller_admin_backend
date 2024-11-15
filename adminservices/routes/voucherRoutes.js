@@ -1,7 +1,7 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const vouchercontroller = require("../controllers/voucher_controller");
-const authmiddleware = require("../middleware/auth");
+const vouchercontroller = require('../controllers/voucher_controller');
+const authmiddleware = require('../middleware/auth');
 
 
 /**

@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: api-config
-data:
-  BASE_URL: "https://api.admin.gworkspace.withhordanso.com"

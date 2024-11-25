@@ -226,32 +226,77 @@ class CustomerService {
       const customersRef = db.collection('customers');
 
       // Queries for partial matches on firstname, lastname, and email
-      const firstnameQuery = await db.collection('customers')
-      .where('country', '==', data.country)
-      .where('state_name', '==', data.state_name)
-      .where('authentication', '==', data.authentication)
-      .orderBy('first_name')
-      .startAt(searchKey)
-      .endAt(searchKey + '\uf8ff')
-      .get();
+      let query = db.collection('customers');
+
+      // Add filters dynamically based on available data
+      if (data.country) {
+          query = query.where('country', '==', data.country);
+      }
+      
+      if (data.state_name) {
+          query = query.where('state_name', '==', data.state_name);
+      }
+      
+      if (data.authentication) {
+          query = query.where('authentication', '==', data.authentication);
+      }
+      
+      // Add sorting and search functionality
+      query = query
+          .orderBy('first_name')
+          .startAt(searchKey)
+          .endAt(searchKey + '\uf8ff');
+      
+      // Fetch the records
+      const firstnameQuery = await query.get();
+
+      query = customersRef;
+
+// Dynamically add filters
+if (data.country) {
+    query = query.where('country', '==', data.country);
+}
+if (data.state_name) {
+    query = query.where('state_name', '==', data.state_name);
+}
+if (data.authentication) {
+    query = query.where('authentication', '==', data.authentication);
+}
+
+// Add sorting and search
+query = query
+    .orderBy('last_name')
+    .startAt(searchKey)
+    .endAt(searchKey + '\uf8ff');
+
+// Execute the query
+const lastnameQuery = await query.get();
   
-      const lastnameQuery = customersRef
-        .where('country', '==', data.country)
-        .where('state_name', '==', data.state_name)
-        .where('authentication', '==', data.authentication)
-        .orderBy('last_name')
-        .startAt(searchKey)
-        .endAt(searchKey + '\uf8ff')
-        .get();
+
   
-      const emailQuery = customersRef
-        .where('country', '==', data.country)
-        .where('state_name', '==', data.state_name)
-        .where('authentication', '==', data.authentication)
-        .orderBy('email')
-        .startAt(searchKey)
-        .endAt(searchKey + '\uf8ff')
-        .get();
+query = customersRef;
+
+// Add filters dynamically
+if (data.country) {
+    query = query.where('country', '==', data.country);
+}
+
+if (data.state_name) {
+    query = query.where('state_name', '==', data.state_name);
+}
+
+if (data.authentication) {
+    query = query.where('authentication', '==', data.authentication);
+}
+
+// Add sorting and search functionality
+query = query
+    .orderBy('email')
+    .startAt(searchKey)
+    .endAt(searchKey + '\uf8ff');
+
+// Execute the query
+const emailQuery = await query.get();
   
       // Execute all queries in parallel
       const [firstnameSnap, lastnameSnap, emailSnap] = await Promise.all([firstnameQuery, lastnameQuery, emailQuery]);

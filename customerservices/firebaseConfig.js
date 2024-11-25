@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 
 let key_details = process.env.FIRESTORE_DETAILS;
 
+
 let key = JSON.parse(Buffer.from(key_details, 'base64').toString('utf-8'));
 
 const serviceAccount = key;

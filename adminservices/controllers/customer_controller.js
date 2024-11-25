@@ -1,4 +1,5 @@
 const customerservice = require("../services/customerservice.js");
+const {hashPassword} = require("../helper");
 
 class customercontroller {
     async addCustomer(req, res) {
@@ -22,7 +23,8 @@ class customercontroller {
   
     async getCustomerList(req, res) {
       try {
-        const result = await  customerservice.getCustomerList();
+        const search_data = req.body;
+        const result = await  customerservice.getCustomerList(search_data);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });
@@ -53,6 +55,28 @@ class customercontroller {
       try {
         const { record_id } = req.body;
         const result = await  customerservice.cancel_subscription(record_id);
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json({ status: "error", message: error.message });
+      }
+    }
+
+    async activeCustomer(req, res){
+      try {
+        const { record_id } = req.body;
+        const result = await  customerservice.active_subscription(record_id);
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json({ status: "error", message: error.message });
+      }
+    }
+
+    async resetcustomerpassword(req, res){
+      try {
+        const { record_id,password } = req.body;
+        const { salt, hash } = hashPassword(password);
+        const {...updateData} = {salt, hash};
+        const result = await  customerservice.edit_Customer(record_id, updateData);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });

@@ -3,6 +3,7 @@ const multer = require("multer");
 const nodemailer = require("nodemailer");
 var request = require('request');
 const urlencode = require("urlencode");
+const crypto = require("crypto");
 
 function getOffset(currentPage = 1, listPerPage) {
   return (currentPage - 1) * [listPerPage];
@@ -76,10 +77,19 @@ const sendMail = async (to, subject, text) => {
   
     return firstLetters;
   }
+
+  function hashPassword(password) {
+    const salt = crypto.randomBytes(16).toString("hex");
+    const hash = crypto
+      .pbkdf2Sync(password, salt, 1000, 64, "sha512")
+      .toString("hex");
+    return { salt, hash };
+  }
 module.exports = {
   getOffset,
   emptyOrRows,
   file_upload,
   sendMail,
-  getFirstLetters
+  getFirstLetters,
+  hashPassword,
 }

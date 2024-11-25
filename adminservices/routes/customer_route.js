@@ -279,9 +279,6 @@ adminServicesRouter.get('/', async (req, res) => {
     res.status(200).send(await customerservice.getAllCustomers(page, limit));
 });
 
-
-
-
 /**
  * @swagger
  * /customer/api/v1/customerlist:
@@ -297,7 +294,6 @@ adminServicesRouter.get('/', async (req, res) => {
  *         description: Error retrieving customers
  */
 router.post("/customerlist", authmiddleware,  customercontroller.getCustomerList);
-
 
 /**
  * @swagger
@@ -473,6 +469,9 @@ router.post("/suspendcustomer",  authmiddleware,  customercontroller.suspendCust
  *         description: Error cancelling customer subscription
  */
 router.post("/cancelsubscriptioncustomer",  authmiddleware,  customercontroller.cancelSubscription);
+
+
+router.post("/resetcustomerpassword", authmiddleware, customercontroller.resetcustomerpassword);
 
 module.exports = router;
 

@@ -3,6 +3,9 @@ const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const NotificationController = require('../controllers/notification_controller');
 
+
+router.post("/addnotificationtemplatedetails",authMiddleware,NotificationController.addnotificationrecord);
+
 /**
  * @swagger
  * /notification/api/v1/getnotificationlist:

@@ -94,6 +94,24 @@ class NotificationService {
       throw new Error('Failed to send test emails: ' + error.message);
     }
   }
-}
 
+  async addTemplate(template_header) {
+    try {
+      console.log(template_header);
+      const templatesRef = db.collection('notification_templates');
+      await templatesRef.add({
+        template_header,
+        created_at: new Date()
+      });
+  
+      return {
+        status: 'success 111',
+        message: 'New template add successfully'
+      };
+    } catch (error) {
+      throw new Error('Failed to update template: ' + error.message);
+    }
+  }
+
+}
 module.exports = new NotificationService();

@@ -220,17 +220,61 @@ class CustomerService {
     }
   }
 
-  async getCustomerList() {
+  async getCustomerList(data) {
     try {
-      const snapshot = await db.collection("customers").get();
+      const searchKey = data.search_data;
+      const customersRef = db.collection('customers');
+
+      // Queries for partial matches on firstname, lastname, and email
+      const firstnameQuery = await db.collection('customers')
+      .where('country', '==', data.country)
+      .where('state_name', '==', data.state_name)
+      .where('authentication', '==', data.authentication)
+      .orderBy('first_name')
+      .startAt(searchKey)
+      .endAt(searchKey + '\uf8ff')
+      .get();
+  
+      const lastnameQuery = customersRef
+        .where('country', '==', data.country)
+        .where('state_name', '==', data.state_name)
+        .where('authentication', '==', data.authentication)
+        .orderBy('last_name')
+        .startAt(searchKey)
+        .endAt(searchKey + '\uf8ff')
+        .get();
+  
+      const emailQuery = customersRef
+        .where('country', '==', data.country)
+        .where('state_name', '==', data.state_name)
+        .where('authentication', '==', data.authentication)
+        .orderBy('email')
+        .startAt(searchKey)
+        .endAt(searchKey + '\uf8ff')
+        .get();
+  
+      // Execute all queries in parallel
+      const [firstnameSnap, lastnameSnap, emailSnap] = await Promise.all([firstnameQuery, lastnameQuery, emailQuery]);
+  
+      // Combine results into a Map to avoid duplicates
+      const results = new Map();
+  
+      firstnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
+      lastnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
+      emailSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
+  
+      // Convert Map to an array of unique customers
+      const uniqueCustomers = Array.from(results.values());
+      
+      //const snapshot = await db.collection("customers").get();
+
       const customers = [];
-      snapshot.forEach((doc) => {
+      uniqueCustomers.forEach((doc) => {
         customers.push({
           record_id: doc.id,
-          ...doc.data(),
+          ...doc,
         });
       });
-
       return {
         status: 200,
         data: customers,
@@ -285,6 +329,25 @@ class CustomerService {
       );
     }
   }
+
+  async active_subscription(record_id) {
+    try {
+      await db.collection("customers").doc(record_id).update({
+        status: "active",
+        cancelled_at: new Date(),
+      });
+
+      return {
+        status: 200,
+        message: "Customer subscription active successfully",
+      };
+    } catch (error) {
+      throw new Error(
+        "Failed to active customer subscription: " + error.message
+      );
+    }
+  }
+
 }
 
 module.exports = new CustomerService();

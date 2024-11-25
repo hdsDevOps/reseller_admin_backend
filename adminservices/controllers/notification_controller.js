@@ -1,6 +1,17 @@
 const NotificationService = require('../services/notificationservice');
 
 class NotificationController {
+  
+  async addnotificationrecord(req, res) {
+    try {
+      const {template_heading} = req.body;
+      const result = await NotificationService.addTemplate(template_heading);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ status: 'error', message: error.message });
+    }
+  }
+  
   async getNotificationList(req, res) {
     try {
       const result = await NotificationService.getNotificationList();

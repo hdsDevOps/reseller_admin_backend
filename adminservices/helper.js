@@ -85,6 +85,10 @@ const sendMail = async (to, subject, text) => {
       .toString("hex");
     return { salt, hash };
   }
+
+  function generateOtp() {
+    return Math.floor(100000 + Math.random() * 900000);
+  }
 module.exports = {
   getOffset,
   emptyOrRows,
@@ -92,4 +96,5 @@ module.exports = {
   sendMail,
   getFirstLetters,
   hashPassword,
+  generateOtp
 }

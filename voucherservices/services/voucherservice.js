@@ -3,7 +3,7 @@ const { sendmail } = require("../helper");
 const helper = require('../helper');
 const table_name = "vouchers";
 
-async function getVoucherList() {
+async function getVoucherList(data) {
     try {
       let query = db
         .collection(table_name)

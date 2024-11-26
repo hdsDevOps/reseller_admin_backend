@@ -473,5 +473,7 @@ router.post("/cancelsubscriptioncustomer",  authmiddleware,  customercontroller.
 
 router.post("/resetcustomerpassword", authmiddleware, customercontroller.resetcustomerpassword);
 
+router.post("/activecustomer",  authmiddleware,  customercontroller.activeCustomer);
+
 module.exports = router;
 

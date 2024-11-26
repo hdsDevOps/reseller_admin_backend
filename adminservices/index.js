@@ -8,7 +8,7 @@ require('dotenv').config();
 const helper = require('./helper');
 const addEmailToQueue = require('./queue');
 const loginroute = require('./routes/loginroute.js');
-const forgotpasswordroutes = require('./routes/forgotpasswordroute');
+const forgotpasswordroutes = require('./routes/forgotpasswordroute.js');
 const customerroutes  = require('./routes/customer_route.js');
 const adminservicesroutes = require('./routes/customer_route.js');
 const adminroutes = require('./routes/adminroute');
@@ -58,7 +58,7 @@ app.post('/adminservices/send-email', (req, res) => {
   res.send("Email queued for sending");
 });
   
-app.use('/adminservices/forgotpassword', forgotpasswordroutes);
+app.use('/adminservices/forgotpassword/api/v1', forgotpasswordroutes);
 app.use('/adminservices/customers', adminservicesroutes);
 
 app.use('/adminservices/admin/api/v1', adminroutes);

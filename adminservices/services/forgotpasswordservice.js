@@ -20,7 +20,7 @@ async function generateOTP(data) {
         // Send OTP via email
         helper.sendMail(email, 'Password Reset OTP', `Your OTP for password reset is: ${otp}`);
 
-        response_result = {status: 200, message: 'OTP sent to user email address.'};
+        response_result = {status: 200, message: 'OTP sent to user email address.',otp:otp};
     } catch (error) {
         response_result = {status: 400, message: 'Error generating OTP', error: error.message};
     }
@@ -39,9 +39,10 @@ async function verifyOTP(data) {
         }
 
         const storedOtp = otpDoc.data().otp;
+      
         const decrypted_otp = CryptoJS.AES.decrypt(storedOtp, process.env.CRYPTOTOKEN).toString(CryptoJS.enc.Utf8);
 
-        if (otp === decrypted_otp) {
+        if (otp.toString() === decrypted_otp) {
             response_result = {status: 200, message: 'OTP verified successfully'};
         } else {
             response_result = {status: 400, message: 'Invalid OTP'};

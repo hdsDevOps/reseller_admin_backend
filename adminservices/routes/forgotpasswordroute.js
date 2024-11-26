@@ -25,7 +25,7 @@ const forgotPasswordService = require('../services/forgotpasswordservice.js');
  *       400:
  *         description: Error generating OTP
  */
-router.post('/generate-otp', async (req, res) => {
+router.post('/generateotp', async (req, res) => {
     const { email } = req.body;
     res.status(200).send(await forgotPasswordService.generateOTP({ email }));
 });
@@ -56,7 +56,7 @@ router.post('/generate-otp', async (req, res) => {
  *       400:
  *         description: Error verifying OTP
  */
-router.post('/verify-otp', async (req, res) => {
+router.post('/verifyotp', async (req, res) => {
     const { email, otp } = req.body;
     res.status(200).send(await forgotPasswordService.verifyOTP({ email, otp }));
 });
@@ -90,9 +90,16 @@ router.post('/verify-otp', async (req, res) => {
  *       400:
  *         description: Error resetting password
  */
-router.post('/reset-password', async (req, res) => {
-    const { email, newPassword, otp } = req.body;
-    res.status(200).send(await forgotPasswordService.resetPassword({ email, newPassword, otp }));
+router.post('/resetpassword', async (req, res) => {
+    const { email, newpassword, otp } = req.body;
+    res.status(200).send(await forgotPasswordService.resetPassword({ email, newpassword, otp }));
 });
+
+
+router.post('/resendotp', async (req, res) => {
+    const { email } = req.body;
+    res.status(200).send(await forgotPasswordService.generateOTP({ email }));
+});
+
 
 module.exports = router;

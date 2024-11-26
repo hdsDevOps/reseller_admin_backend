@@ -2,11 +2,25 @@ const { admin, db } = require("../firebaseConfig");
 const { sendMail } = require("../helper");
 const { generateToken } = require("../utils/jwt");
 const CryptoJS = require("crypto-js");
+const axios = require('axios');
 
 class AdminService {
   async login({ email, password }) {
     try {
       const userRecord = await admin.auth().getUserByEmail(email);
+
+      const firebaseConfig = {
+        apiKey: 'AIzaSyBDhOqLuQygzeZL-V1xqJkW37kpfiyHrgA',
+      };
+  
+      const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseConfig.apiKey}`, {
+        email,
+        password,
+        returnSecureToken: true,
+      });
+  
+      const { idToken } = response.data;
+
 
       const otp = this.generateOtp();
       

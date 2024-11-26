@@ -2,8 +2,19 @@
 const express = require("express"); // Import the Express module
 const app = express();
 const PORT = 8008; // Set the port number for the server
+var cors = require("cors");
+require('dotenv').config(); 
 const voucherroute = require('./routes/voucherroute');
-require('dotenv').config();  
+ 
+
+app.use(cors());
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
 app.get('/voucherservices',(req,res)=>{
     res.send("We are calling voucher services API");
 })        

@@ -50,11 +50,16 @@ async function generate_forget_password_link(data){
   let response_result = "";
     try {
       const { email } = data;
-      const user = await admin.auth().getUserByEmail(email);
-      const link = await admin.auth().generatePasswordResetLink(email);
+      await admin.auth().getUserByEmail(email)
+      .then(result=>{
+        //console.log(result);
+        const otp = helper.generateOtp();
+        response_result = {status: 200, message: 'Password reset OTP send to email.', otp: otp };
+        //helper.sendMail(email, 'Password Reset OTP', otp);
+      })
+      //const link = await admin.auth().generatePasswordResetLink(email);
 
-        response_result = {status: 200, message: 'Password reset link for send to user email address.', link: link };
-        helper.sendMail(email, 'Password Reset Link', link);
+       
       } catch (error) {
         response_result = {status:400, message: 'Error creating user', error: error.message };
       }

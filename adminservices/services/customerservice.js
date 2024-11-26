@@ -344,7 +344,8 @@ const emailQuery = await query.get();
   async suspend_customer(record_id) {
     try {
       await db.collection("customers").doc(record_id).update({
-        status: "suspended",
+        status: false,
+        account_status:"suspended",
         suspended_at: new Date(),
       });
 
@@ -360,7 +361,8 @@ const emailQuery = await query.get();
   async cancel_subscription(record_id) {
     try {
       await db.collection("customers").doc(record_id).update({
-        status: "cancelled",
+        subscription_status: "cancelled",
+        status:false,
         cancelled_at: new Date(),
       });
 
@@ -378,7 +380,8 @@ const emailQuery = await query.get();
   async active_subscription(record_id) {
     try {
       await db.collection("customers").doc(record_id).update({
-        status: "active",
+        status: true,
+        subscription_status:"active",
         cancelled_at: new Date(),
       });
 

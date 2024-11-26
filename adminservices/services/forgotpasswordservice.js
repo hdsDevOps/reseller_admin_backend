@@ -57,7 +57,7 @@ async function verifyOTP(data) {
 async function resetPassword(data) {
     let response_result = "";
     try {
-        const { email, newPassword, otp } = data;
+        const { email, newpassword, otp } = data;
         
         // Verify OTP again
         const otpVerification = await verifyOTP({ email, otp });
@@ -67,12 +67,12 @@ async function resetPassword(data) {
 
         // Update password in Firebase Auth
         const user = await admin.auth().getUserByEmail(email);
+        
         await admin.auth().updateUser(user.uid, {
-            password: newPassword
-        });
-
+            password: newpassword
+        })
         // Delete the used OTP
-        await db.collection('otps').doc(email).delete();
+        //await db.collection('otps').doc(email).delete();
 
         response_result = {status: 200, message: 'Password reset successfully'};
     } catch (error) {

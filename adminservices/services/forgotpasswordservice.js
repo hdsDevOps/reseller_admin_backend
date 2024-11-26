@@ -72,7 +72,7 @@ async function resetPassword(data) {
             password: newpassword
         })
         // Delete the used OTP
-        //await db.collection('otps').doc(email).delete();
+        await db.collection('otps').doc(email).delete();
 
         response_result = {status: 200, message: 'Password reset successfully'};
     } catch (error) {

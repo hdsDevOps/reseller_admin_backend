@@ -83,7 +83,23 @@ class customercontroller {
       }
     }
 
+    async getcountrylist(req, res){
+      try {
+        const result = await  customerservice.getcountrylist();
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json({ status: "error", message: error.message });
+      }
+    }
 
+    async getregionlist(req, res){
+      try {
+        const result = await  customerservice.getregionlist();
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json({ status: "error", message: error.message });
+      }
+    }
     
   }
 

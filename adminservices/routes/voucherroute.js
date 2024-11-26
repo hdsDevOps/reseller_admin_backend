@@ -142,4 +142,6 @@ router.post("/customergrouplist", authmiddleware,  vouchercontroller.getCustomer
  */
 router.post("/deletecustomergroup", authmiddleware,  vouchercontroller.deleteCustomerGroup);
 
+router.post("/getcustomer_number", authmiddleware,  vouchercontroller.getgroupcustomernumber);
+
  module.exports = router;

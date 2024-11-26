@@ -475,5 +475,9 @@ router.post("/resetcustomerpassword", authmiddleware, customercontroller.resetcu
 
 router.post("/activecustomer",  authmiddleware,  customercontroller.activeCustomer);
 
+router.get("/getcountry_list", authmiddleware,  customercontroller.getcountrylist);
+
+router.get("/getregion_list", authmiddleware,  customercontroller.getregionlist);
+
 module.exports = router;
 

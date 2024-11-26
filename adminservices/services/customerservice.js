@@ -188,6 +188,7 @@ class CustomerService {
         email,
         authentication,
         status: "active",
+        account_status: "active",
         created_at: new Date(),
       });
 
@@ -229,18 +230,18 @@ class CustomerService {
       let query = db.collection('customers');
 
       // Add filters dynamically based on available data
-      if (data.country) {
+      if (data.country !== undefined) {
           query = query.where('country', '==', data.country);
       }
       
-      if (data.state_name) {
+      if (data.state_name !== undefined) {
           query = query.where('state_name', '==', data.state_name);
       }
       
-      if (data.authentication) {
-          query = query.where('authentication', '==', data.authentication);
-      }
-      
+      if (data.authentication !== undefined) { // Check if the value exists (not undefined)
+        query = query.where("authentication", "==", data.authentication);
+    }
+
       // Add sorting and search functionality
       query = query
           .orderBy('first_name')
@@ -393,6 +394,107 @@ const emailQuery = await query.get();
       throw new Error(
         "Failed to active customer subscription: " + error.message
       );
+    }
+  }
+
+  async getgroupcustomernumber(data) {
+    try {
+
+      const customerCollection = db.collection("customers");
+
+        const filters = {
+            country: data.country, // Set to null/undefined if not needed
+            state_name: data.state_name, // Set to null/undefined if not needed
+        };
+
+        // Start the base query
+        let query = customerCollection;
+        query = query.where("account_status", "==", "active");
+
+        // Add dynamic filters
+        if (filters.country) {
+            query = query.where("country", "==", filters.country);
+        }
+        if (filters.state_name) {
+            query = query.where("state_name", "==", filters.state_name);
+        }
+        
+        // Execute the query
+        const querySnapshot = await query.get();
+
+        const customers = [];
+        querySnapshot.forEach(doc => {
+            customers.push({ id: doc.id, ...doc.data() });
+        });
+
+  return {status:200,customer_count:customers.length,message:"Total customer count against filter"};
+    } catch (error) {
+      return {
+        status: 400,
+        message: "Error sending notification",
+        error: error.message,
+      };
+    }
+  }
+
+  async getcountrylist(data) {
+    try {
+
+      const customerCollection = db.collection("customers");
+        // Start the base query
+        let query = customerCollection;
+        query = query.where("account_status", "==", "active");
+
+        // Execute the query
+        const querySnapshot = await query.get();
+
+        const countrylist = [];
+        querySnapshot.forEach(doc => {
+          const data = doc.data(); // Get the document data
+          if (data.country) { // Check if the country field exists
+            countrylist.push(data.country);
+          }
+        });
+
+        const uniquecountrylist = [...new Set(countrylist)];
+  return {status:200,countrylist:uniquecountrylist,message:"Country List for customer"};
+    } catch (error) {
+      return {
+        status: 400,
+        message: "Error sending notification",
+        error: error.message,
+      };
+    }
+  }
+
+  async getregionlist(data) {
+    try {
+
+      const customerCollection = db.collection("customers");
+        // Start the base query
+        let query = customerCollection;
+        query = query.where("account_status", "==", "active");
+
+        // Execute the query
+        const querySnapshot = await query.get();
+
+        const regionlist = [];
+        querySnapshot.forEach(doc => {
+          const data = doc.data(); // Get the document data
+          if (data.state_name) { // Check if the country field exists
+            regionlist.push(data.state_name);
+          }
+        });
+
+        const uniqueregionlist = [...new Set(regionlist)];
+
+  return {status:200,regionlist:uniqueregionlist,message:"Region List for customer"};
+    } catch (error) {
+      return {
+        status: 400,
+        message: "Error sending notification",
+        error: error.message,
+      };
     }
   }
 

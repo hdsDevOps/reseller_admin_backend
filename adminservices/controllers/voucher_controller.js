@@ -1,3 +1,4 @@
+const customerservice = require('../services/customerservice');
 const voucherService = require('../services/voucherservice');
 
 class VoucherController {
@@ -41,6 +42,18 @@ class VoucherController {
       res.status(400).json({ status: "error", message: error.message });
     }
   }
+
+  async getgroupcustomernumber(req, res) {
+    try {
+      const data = req.body;
+      const result = await customerservice.getgroupcustomernumber(data);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ status: "error", message: error.message });
+    }
+  }
+
 }
+
 
 module.exports = new VoucherController();

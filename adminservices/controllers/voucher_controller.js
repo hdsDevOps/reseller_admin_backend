@@ -26,7 +26,7 @@ class VoucherController {
 
   async getCustomerGroupList(req, res) {
     try {
-      const result = await voucherService.getCustomerGroupList();
+      const result = await voucherService.getCustomerGroupList(req.body);
       res.status(200).json(result);
     } catch (error) {
       res.status(400).json({ status: "error", message: error.message });

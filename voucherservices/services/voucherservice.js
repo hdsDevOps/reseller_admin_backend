@@ -5,19 +5,44 @@ const table_name = "vouchers";
 
 async function getVoucherList(data) {
     try {
-      let query = db
-        .collection(table_name)
-        .where("is_deleted", "==", 1);
-  
-      // Search functionality if search_text is provided
-     
+      const filter = {
+        currency: data.currency,
+        voucher_code: data.voucher_code,
+        start_date: data.start_date,
+        end_date: data.end_date,
+      };
       
+      let query = db.collection(table_name).where("is_deleted", "==", 1);
+      
+      // Apply filters dynamically
+      if (filter.currency) {
+        query = query.where("currency", "==", filter.currency);
+      }
+      
+      if (filter.voucher_code) {
+        query = query.where("voucher_code", "==", filter.voucher_code);
+      }
+      
+      if (filter.start_date) {
+        const startDate = new Date(filter.start_date);
+        query = query.where("start_date", ">=", startDate);
+      }
+      
+      if (filter.end_date) {
+        const endDate = new Date(filter.end_date);
+        query = query.where("end_date", "<=", endDate);
+      }
+      
+      // Execute the query
       const voucherSnapshot = await query.get();
-     
+      
       const voucherList = voucherSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
+        start_date: doc.data().start_date ? doc.data().start_date.toDate() : null,
+        end_date: doc.data().end_date ? doc.data().end_date.toDate() : null,
         created_at: doc.data().created_at ? doc.data().created_at.toDate() : null,
+        updated_at: doc.data().updated_at ? doc.data().updated_at.toDate() : null,
       }));
   if(voucherSnapshot.empty){
     return {
@@ -60,8 +85,8 @@ async function getVoucherList(data) {
       // Create new staff document
       const newStaff = {
         voucher_code: data.voucher_code,
-        start_date: data.start_date,
-        end_date: data.end_date,
+        start_date: new Date(data.start_date),
+        end_date: new Date(data.end_date),
         discount_rate: data.discount_rate,
         template_details: data.template_details,
         currency: data.currency,
@@ -110,8 +135,8 @@ async function getVoucherList(data) {
 
             await voucherRef.update({
                 voucher_code: data.voucher_code,
-                start_date: data.start_date,
-                end_date: data.end_date,
+                start_date: new Date(data.start_date),
+                end_date: new Date(data.end_date),
                 discount_rate: data.discount_rate,
                 template_details: data.template_details,
                 currency: data.currency,

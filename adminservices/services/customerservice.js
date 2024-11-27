@@ -143,7 +143,8 @@ class CustomerService {
       customersSnapshot.forEach((doc) => {
         customers.push({
           id: doc.id,
-          ...doc.data(),
+          customer_id:"HDS-"+doc.customer_count,
+          //...doc.data(),
         });
       });
 
@@ -175,7 +176,16 @@ class CustomerService {
     email,
     authentication,
   }) {
+   
     try {
+      const customersRef = db.collection("customers");
+
+      // Fetch all documents in the 'customers' collection
+      const snapshot = await customersRef.get();
+
+      const recordCount = snapshot.size;
+
+      let currentCount = recordCount + 1;
       const customerRef = await db.collection("customers").add({
         first_name,
         last_name,
@@ -190,6 +200,7 @@ class CustomerService {
         status: "active",
         account_status: "active",
         created_at: new Date(),
+        customer_count: currentCount,
       });
 
       return {
@@ -197,6 +208,8 @@ class CustomerService {
         message: "Customer added successfully",
         customerId: customerRef.id,
       };
+ 
+
     } catch (error) {
       throw new Error("Failed to add customer: " + error.message);
     }
@@ -318,6 +331,7 @@ const emailQuery = await query.get();
       uniqueCustomers.forEach((doc) => {
         customers.push({
           record_id: doc.id,
+          customer_id:"HDS-"+doc.customer_count,
           ...doc,
         });
       });

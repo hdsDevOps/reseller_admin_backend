@@ -15,6 +15,7 @@ class VoucherService {
     try {
       const groupRef = await db.collection("customer_groups").add({
         group_name,
+        group_name_lower:group_name.toLowerCase(),
         country,
         region,
         plan,
@@ -54,16 +55,34 @@ class VoucherService {
     }
   }
 
-  async getCustomerGroupList() {
+  async getCustomerGroupList(data) {
     try {
-      const snapshot = await db.collection("customer_groups").get();
-      const groups = [];
-      snapshot.forEach((doc) => {
-        groups.push({
-          record_id: doc.id,
-          ...doc.data(),
-        });
-      });
+      let query = db.collection("customer_groups");
+      const filter = {
+        group_name: data.group_name.toLowerCase(), // The group name to search for
+        create_date: data.create_date, // The creation date to search for
+      };
+      // Filter by group_name if provided
+      if (filter.group_name) {
+        
+        query = query.where("group_name_lower", "==", filter.group_name);
+      }
+      // Filter by create_date if provided
+      if (filter.create_date) {
+        const startOfDay = new Date(filter.create_date);
+        startOfDay.setHours(0, 0, 0, 0); // Start of the day
+        const endOfDay = new Date(filter.create_date);
+        endOfDay.setHours(23, 59, 59, 999); // End of the day
+        query = query.where("created_at", ">=", startOfDay).where("created_at", "<=", endOfDay);
+      }
+      // Execute the query
+      const snapshot = await query.get();
+      // Collect the results
+      const groups = snapshot.docs.map((doc) => ({
+        record_id: doc.id,
+        ...doc.data(),
+        create_date: doc.data().created_at? doc.data().created_at.toDate(): null,
+      }));
 
       return {
         status: 200,

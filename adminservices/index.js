@@ -52,7 +52,7 @@ app.post('/adminservices/upload', (req, res) => {
     res.send("File uploaded successfully");
   });
 });
-  
+    
 app.post('/adminservices/send-email', (req, res) => {
   const { to, subject, text } = req.body;
   addEmailToQueue(to, subject, text);

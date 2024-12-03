@@ -58,7 +58,7 @@ router.get(
  *         description: Payment method status updated successfully
  */
 router.post(
-  "/getpaymentmethods",
+  "/updatepaymentmethodstatus",
   authMiddleware,
   SubscriptionController.updatePaymentMethodStatus
 );

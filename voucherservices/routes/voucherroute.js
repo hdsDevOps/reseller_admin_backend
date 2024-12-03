@@ -27,5 +27,5 @@ router.post('/deletevoucher',verifyToken, async (req, res) => {
 router.post('/sendvochermail',verifyToken, async (req, res) => {
     res.status(200).send(await voucherservice.sendvochermail(req.body));
 })
-
+    
 module.exports = router;

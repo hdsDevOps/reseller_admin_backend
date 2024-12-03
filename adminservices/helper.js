@@ -46,8 +46,9 @@ let file_upload = (uploadPath, fieldName) => multer({
 
 
 const transporter = nodemailer.createTransport({
-  service: process.env.SMTP,
+  host: process.env.SERVICE,
     port: 587,
+    secure: false,
     auth: {
       user: process.env.MAILUSER,
       pass: process.env.MAILPASS
@@ -57,9 +58,9 @@ const transporter = nodemailer.createTransport({
 const sendMail = async (to, subject, text) => {
     const mailOptions = {
         from: process.env.MAILUSER,
-        to,
-        subject,
-        text
+        to:to.to,
+        subject:to.subject,
+        text:to.text
     };
 
     try {

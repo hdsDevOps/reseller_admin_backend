@@ -54,6 +54,6 @@ node_modules
 /voucherservices/.env
 
 /customerservices/dev-hds-gworkspace-firebase-adminsdk-6ke7i-aab97fb726.jsonvoucherservices/dev-hds-gworkspace-firebase-adminsdk-6ke7i-aab97fb726.json
-adminservices/dbconfig.js
-adminservices/dbconfig.js
+# adminservices/dbconfig.js
+# adminservices/dbconfig.js
 

@@ -832,7 +832,6 @@ router.post("/cmsdeletebannerdata", authMiddleware, adminController.deleteBanner
 router.post("/cmsupdatestatusbannerdata", authMiddleware, adminController.updateBannerStatus);
 
 
-
 // Configure Multer
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -845,7 +844,6 @@ const upload = multer({
         new Error(`File upload only supports the following file types: ${allowedExtensions.join(', ')}`)
       );
     }
-
     cb(null, true);
   },
 });

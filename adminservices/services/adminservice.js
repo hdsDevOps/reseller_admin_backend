@@ -25,7 +25,7 @@ class AdminService {
       const otp = this.generateOtp();
       
       await this.storeOtp(userRecord.uid, otp);
-      //await this.sendLoginOtp(email, otp);
+      await this.sendLoginOtp(email, otp);
 
       return {
         status: 200,

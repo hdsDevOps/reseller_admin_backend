@@ -6,6 +6,6 @@ data:
   BASE_URL: "https://api.admin.gworkspace.withhordanso.com"
   APITOKEN: AIzaSyBDhOqLuQygzeZL-V1xqJkW37kpfiyHrgA
   CRYPTOTOKEN: RMC20zWsjodRWzCacXasuGcJxXoLDvmHD2fctZwHs7eEUNVgaXKY7HfzA6F1
-  SERVICE: gmail
-  USER: saunak.bhattacharya@schemaphic.com
-  PASSWORD: saunak@123
+  SERVICE = "smtp.gmail.com"
+MAILUSER = "hdsadmin@reseller.hordanso.com"
+MAILPASS = "vuxmgpmrxfbrahzt"

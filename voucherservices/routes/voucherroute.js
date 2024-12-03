@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const voucherservice = require('../services/voucherservice.js');
 const { verifyToken } = require('../middleware/auth');
-  
+      
 // Get all the voucher List excluding Deleted records
 router.post('/voucherlist', async (req, res) => {
     //const { email, password } = req.body;

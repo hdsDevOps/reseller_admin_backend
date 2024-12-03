@@ -1,5 +1,7 @@
 const AdminService = require("../services/adminservice");
-const { admin, db } = require("../firebaseConfig");
+const { admin, db,bucket } = require("../firebaseConfig");
+const path = require('path');
+
 class AdminController {
   async login(req, res) {
     try {
@@ -352,6 +354,44 @@ class AdminController {
       res.status(200).json(result);
     } catch (error) {
       res.status(400).json({ status: "error", message: error.message });
+    }
+  }
+
+  async uploadimage(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).send({status: "error",message:'No file uploaded.'});
+      }
+      const fileExtension = path.extname(req.file.originalname);
+      const fileName = `${Date.now()}-HDS${fileExtension}`;
+      const file = bucket.file(fileName);
+  
+      // Create a write stream to Firebase Storage
+      const blobStream = file.createWriteStream({
+        metadata: {
+          contentType: req.file.mimetype, // Use the uploaded file's MIME type
+        },
+      });
+  
+      blobStream.on('error', (err) => {
+        console.error(err);
+        res.status(400).send({status: "error",message:'Error uploading file.'});
+      });
+  
+      blobStream.on('finish', async () => {
+        // Make the file publicly accessible
+        await file.makePublic();
+  
+        // Get the public URL
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+        res.status(200).send({ message: 'File uploaded successfully!', url: publicUrl });
+      });
+  
+      // End the stream by writing the file buffer
+      blobStream.end(req.file.buffer);
+    } catch (error) {
+      console.error(error);
+      res.status(400).send({status: "error",message:'Error handling file upload.'});
     }
   }
 }

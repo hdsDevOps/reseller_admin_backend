@@ -3,7 +3,8 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const adminController = require('../controllers/admin_controller');
-
+const multer = require('multer');
+const path = require('path');
 /**
  * @swagger
  * /admin/api/v1/login:
@@ -829,5 +830,39 @@ router.post("/cmsdeletebannerdata", authMiddleware, adminController.deleteBanner
  *         description: Banner status updated successfully
  */
 router.post("/cmsupdatestatusbannerdata", authMiddleware, adminController.updateBannerStatus);
+
+
+
+// Configure Multer
+const upload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, cb) => {
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    const allowedExtensions = ['.png', '.jpeg', '.jpg'];
+
+    if (!allowedExtensions.includes(fileExtension)) {
+      return cb(
+        new Error(`File upload only supports the following file types: ${allowedExtensions.join(', ')}`)
+      );
+    }
+
+    cb(null, true);
+  },
+});
+
+// Error-handling middleware for Multer
+const uploadImageMiddleware = (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err instanceof Error) {
+      // If Multer or fileFilter throws an error, send a JSON response
+      return res.status(400).send({status: "error",message:err.message});
+    }
+    next();
+  });
+};
+
+
+
+router.post("/uploadimage", authMiddleware,uploadImageMiddleware, adminController.uploadimage);
 
  module.exports = router;

@@ -15,6 +15,7 @@ const adminroutes = require('./routes/adminroute');
 const subscriptionroutes = require('./routes/subscriptionroute');
 const notificationroutes = require('./routes/notificationroute');
 const voucherroutes = require('./routes/voucherroute.js');
+
    
 app.use(cors());
 app.use(express.json());

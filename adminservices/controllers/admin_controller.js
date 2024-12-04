@@ -198,11 +198,15 @@ class AdminController {
         marketing_section_data,
         website_section_data,
         contact_us_section_data,
+        newsletter_section_data,
+        social_section_data
       } = req.body;
       const result = await AdminService.updateFooter({
         marketing_section_data,
         website_section_data,
         contact_us_section_data,
+        newsletter_section_data,
+        social_section_data
       });
       res.json(result);
     } catch (error) {

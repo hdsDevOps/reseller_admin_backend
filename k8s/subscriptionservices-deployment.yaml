@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adminbackend-subscriptionapi-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: adminbackend-subscriptionapi-service
+  template:
+    metadata:
+      labels:
+        app: adminbackend-subscriptionapi-service
+    spec:
+      containers:
+      - name: adminbackend-subscriptionapi-service
+        image: hordansodevops/reseller_admin_backend_subscriptionservices:latest
+        ports:
+        - containerPort: 8007
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: subscriptionservices-config

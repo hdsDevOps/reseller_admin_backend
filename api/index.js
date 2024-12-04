@@ -19,7 +19,7 @@ const routes = {
     //'/miscservices':"http://miscservices:8004",
     //'/notificationservices':"http://notificationservices:8005",
     //'/reportservices':"http://reportservices:8006",
-    //'/subscriptionservices':"http://subscriptionservices:8007",
+    '/subscriptionservices':"https://subscriptionapi.admin.gworkspace.withhordanso.com",
     '/voucherservices':"https://voucherapi.admin.gworkspace.withhordanso.com",
 }
 

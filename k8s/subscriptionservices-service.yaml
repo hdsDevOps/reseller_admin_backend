@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: adminbackend-subscriptionapi-service
+spec:
+  selector:
+    app: adminbackend-subscriptionapi-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8007

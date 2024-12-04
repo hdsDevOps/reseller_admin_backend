@@ -1,4 +1,4 @@
-name: CI for Voucher API Service
+name: CI for subscriptions API Service
    
 on:
   push:

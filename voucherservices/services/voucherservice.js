@@ -25,12 +25,12 @@ async function getVoucherList(data) {
       
       if (filter.start_date) {
         const startDate = new Date(filter.start_date);
-        query = query.where("start_date", ">=", startDate);
+        query = query.where("created_at", ">=", startDate);
       }
       
       if (filter.end_date) {
         const endDate = new Date(filter.end_date);
-        query = query.where("end_date", "<=", endDate);
+        query = query.where("created_at", "<=", endDate);
       }
       
       // Execute the query
@@ -39,10 +39,10 @@ async function getVoucherList(data) {
       const voucherList = voucherSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-        start_date: doc.data().start_date ? doc.data().start_date.toDate() : null,
-        end_date: doc.data().end_date ? doc.data().end_date.toDate() : null,
-        created_at: doc.data().created_at ? doc.data().created_at.toDate() : null,
-        updated_at: doc.data().updated_at ? doc.data().updated_at.toDate() : null,
+        //start_date: doc.data().start_date ? doc.data().start_date.toDate() : null,
+        //end_date: doc.data().end_date ? doc.data().end_date.toDate() : null,
+        //created_at: doc.data().created_at ? doc.data().created_at.toDate() : null,
+        //updated_at: doc.data().updated_at ? doc.data().updated_at.toDate() : null,
       }));
   if(voucherSnapshot.empty){
     return {

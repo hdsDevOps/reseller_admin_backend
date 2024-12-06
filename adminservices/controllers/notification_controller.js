@@ -60,6 +60,15 @@ class NotificationController {
       res.status(400).json({ status: 'error', message: error.message });
     }
   }
+
+  async emaillogdetails(req, res) {
+    try {
+      const result = await NotificationService.getemaillogs();
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ status: 'error', message: error.message });
+    }
+  }
 }
 
 module.exports = new NotificationController();

@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const { db } = require('../firebaseConfig');
+const { admin, db } = require('../firebaseConfig');
 // Configure your email transport here
 const transporter = nodemailer.createTransport({
   host: process.env.SERVICE,
@@ -28,7 +28,7 @@ const sendEmail = async ({ to, subject, html }) => {
         subject:subject,
         content:html,
         no_receipt:1,
-        created_at: new Date()
+        created_at: admin.firestore.FieldValue.serverTimestamp(),
       });
     }
     const info = await transporter.sendMail(mailOptions);

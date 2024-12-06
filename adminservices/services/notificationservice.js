@@ -178,5 +178,29 @@ class NotificationService {
     }
   }
 
+  async getemaillogs() {
+    try {
+      const emaillogRef = db.collection('email_logs');
+      const snapshot = await emaillogRef.get();
+      const emaillogs = [];
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+  emaillogs.push({
+    id: doc.id,
+    ...data,
+    created_at: data.created_at ? data.created_at.toDate() : null // Convert to Date if exists
+  });
+      });
+
+      return {
+        status: 'success',
+        data: emaillogs
+      };
+    } catch (error) {
+      throw new Error('Failed to fetch email log details: ' + error.message);
+    }
+  }
+
 }
 module.exports = new NotificationService();

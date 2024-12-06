@@ -117,4 +117,10 @@ router.post(
   NotificationController.sendmailtocustomer
 );
 
+router.get(
+  "/emaillog",
+
+  NotificationController.emaillogdetails
+);
+
 module.exports = router;

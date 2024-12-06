@@ -25,12 +25,12 @@ async function getVoucherList(data) {
       
       if (filter.start_date) {
         const startDate = new Date(filter.start_date);
-        query = query.where("created_at", ">=", startDate);
+        query = query.where("start_date", ">=", startDate);
       }
       
       if (filter.end_date) {
         const endDate = new Date(filter.end_date);
-        query = query.where("created_at", "<=", endDate);
+        query = query.where("end_date", "<=", endDate);
       }
       
       // Execute the query

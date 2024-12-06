@@ -17,48 +17,39 @@ async function getrecordlist(data) {
   let startDate = "";
   let domain = "";
       // Queries for partial matches on firstname, lastname, and email
-      let query = db.collection('billing_history');
-
+      let query1 = db.collection('billing_history');
+      let query2 = db.collection('billing_history');
       if (filter.domain) {
         domain = filter.domain;
-        
+        query1.where("domain", "==", domain);
+        query2.where("domain", "==", domain);
       }
 
       if (filter.start_date) {
         startDate = new Date(filter.start_date);
+        query1.where("created_at", ">=", startDate);
+        query2.where("created_at", ">=", startDate);
+  
         
       }
 
       if (filter.end_date) {
         endDate = new Date(filter.end_date);
+        query1.where("created_at", "<=", endDate);
+        query2.where("created_at", "<=", endDate);
         
       }
 
       if (filter.searchKey_start && filter.searchKey_end) {
         searchKeyStart = filter.searchKey_start;
         searchKeyEnd = filter.searchKey_end;
+        query1.where("customer_name", ">=", searchKeyStart);
+        query1.where("customer_name", "<=", searchKeyEnd);
+        query2.where("transaction_id", ">=", searchKeyStart);
+        query2.where("transaction_id", "<=", searchKeyEnd);
 
       }
       
-      
-
-
-      const query1 = db
-  .collection("billing_history")
-  .where("customer_name", ">=", searchKeyStart)
-  .where("domain", "==", domain)
-  .where("created_at", ">=", startDate)
-  .where("created_at", "<=", endDate)
-  .where("customer_name", "<=", searchKeyEnd);
-
-const query2 = db
-  .collection("billing_history")
-  .where("transaction_id", ">=", searchKeyStart)
-  .where("domain", "==", domain)
-  .where("created_at", ">=", startDate)
-  .where("created_at", "<=", endDate)
-  .where("transaction_id", "<=", searchKeyEnd);
-
 const [result1, result2] = await Promise.all([query1.get(), query2.get()]);
 
 // Merge results
@@ -73,7 +64,7 @@ const uniqueCustomers = customers.filter(
 );
       return {
         status: 200,
-        data: customers,
+        data: uniqueCustomers,
       };
     } catch (error) {
       throw new Error("Failed to fetch billing history: " + error.message);

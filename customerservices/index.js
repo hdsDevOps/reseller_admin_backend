@@ -3,6 +3,7 @@ const express = require("express"); // Import the Express module
 const app = express();
 const PORT = 8002; // Set the port number for the server
 var cors = require('cors');
+require('dotenv').config(); 
 app.use(cors());
 const adminCredentialsRoute  = require('./routes/loginroute.js');
 app.use(express.json());

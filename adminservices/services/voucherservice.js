@@ -62,10 +62,15 @@ class VoucherService {
         group_name: data.group_name.toLowerCase(), // The group name to search for
         create_date: data.create_date, // The creation date to search for
       };
+      const start = data.group_name.toLowerCase();
+        const end = data.group_name.toLowerCase() + '\uf8ff';
       // Filter by group_name if provided
       if (filter.group_name) {
         
-        query = query.where("group_name_lower", "==", filter.group_name);
+        //query = query.where("group_name_lower", "==", filter.group_name);
+        query = query.where("group_name_lower", ">=", start)
+        query = query.where("group_name_lower", "<=", end)
+
       }
       // Filter by create_date if provided
       if (filter.create_date) {

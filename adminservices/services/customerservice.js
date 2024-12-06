@@ -312,6 +312,7 @@ query = query
 // Execute the query
 const emailQuery = await query.get();
   
+
       // Execute all queries in parallel
       const [firstnameSnap, lastnameSnap, emailSnap] = await Promise.all([firstnameQuery, lastnameQuery, emailQuery]);
   

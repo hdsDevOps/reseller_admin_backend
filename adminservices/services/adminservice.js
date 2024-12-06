@@ -437,7 +437,7 @@ class AdminService {
       });
       return { success: true, message: "Promotion updated successfully" };
     } catch (error) {
-      throw new Error("Failed to update promotion");
+      throw new Error("Failed to update promotion "+error);
     }
   }
 
@@ -657,6 +657,19 @@ class AdminService {
       };
     } catch (error) {
       throw new Error("Failed to fetch user: " + error.message);
+    }
+  }
+
+  async updateresourcedata(aboutData) {
+    try {
+      const docRef = db.collection("cms").doc("resources");
+      await docRef.set({
+        ...aboutData,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      return { success: true, message: "About us data updated successfully" };
+    } catch (error) {
+      throw new Error("Failed to update about us data");
     }
   }
 }

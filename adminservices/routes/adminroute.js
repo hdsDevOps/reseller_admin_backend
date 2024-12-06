@@ -863,4 +863,11 @@ const uploadImageMiddleware = (req, res, next) => {
 
 router.post("/uploadimage", authMiddleware,uploadImageMiddleware, adminController.uploadimage);
 
+
+router.post(
+  "/cmsupdateresourcedata",
+  authMiddleware,
+  adminController.updateresourcedata
+);
+
  module.exports = router;

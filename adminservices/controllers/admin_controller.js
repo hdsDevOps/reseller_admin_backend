@@ -291,12 +291,13 @@ class AdminController {
 
   async updatePromotion(req, res) {
     try {
-      const { record_id, code, start_date, end_date, html_template } = req.body;
+      const { record_id, code, start_date, end_date, html_template,status } = req.body;
       const result = await AdminService.updatePromotion(record_id, {
         code,
         start_date,
         end_date,
         html_template,
+        status
       });
       res.json(result);
     } catch (error) {
@@ -396,6 +397,16 @@ class AdminController {
     } catch (error) {
       console.error(error);
       res.status(400).send({status: "error",message:'Error handling file upload.'});
+    }
+  }
+
+  async updateresourcedata(req, res) {
+    try {
+      const resourceData = req.body;
+      const result = await AdminService.updateresourcedata(resourceData);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   }
 }

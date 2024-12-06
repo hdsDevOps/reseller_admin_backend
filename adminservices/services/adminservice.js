@@ -326,6 +326,8 @@ class AdminService {
         marketing_section_data: footerData.marketing_section_data,
         website_section_data: footerData.website_section_data,
         contact_us_section_data: footerData.contact_us_section_data,
+        newsletter_section_data: footerData.newsletter_section_data,
+        social_section_data: footerData.social_section_data,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
       return { success: true, message: "Footer data updated successfully" };

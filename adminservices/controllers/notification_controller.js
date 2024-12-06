@@ -50,6 +50,16 @@ class NotificationController {
       res.status(400).json({ status: 'error', message: error.message });
     }
   }
+
+  async sendmailtocustomer(req, res) {
+    try {
+      const { email_ids, record_id } = req.body;
+      const result = await NotificationService.sendmailtocustomer(email_ids, record_id);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ status: 'error', message: error.message });
+    }
+  }
 }
 
 module.exports = new NotificationController();

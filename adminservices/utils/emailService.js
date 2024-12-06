@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-
+const { db } = require('../firebaseConfig');
 // Configure your email transport here
 const transporter = nodemailer.createTransport({
   host: process.env.SERVICE,
@@ -20,6 +20,17 @@ const sendEmail = async ({ to, subject, html }) => {
       html
     };
 
+    if(subject !='Test Email')
+    {
+      const templatesRef = db.collection('email_logs');
+      await templatesRef.add({
+        email:to,
+        subject:subject,
+        content:html,
+        no_receipt:1,
+        created_at: new Date()
+      });
+    }
     const info = await transporter.sendMail(mailOptions);
     return info;
   } catch (error) {

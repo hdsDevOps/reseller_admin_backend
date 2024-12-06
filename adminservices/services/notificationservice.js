@@ -76,7 +76,7 @@ class NotificationService {
       const templateData = template.data();
 
       // Send email to each recipient
-      const emailPromises = email_ids.map(email => 
+      const emailPromises = email_ids.map(email =>
         sendEmail({
           to: email,
           subject: templateData.subject || 'Test Email',
@@ -105,11 +105,76 @@ class NotificationService {
       });
   
       return {
-        status: 'success 111',
+        status: 'success',
         message: 'New template add successfully'
       };
     } catch (error) {
       throw new Error('Failed to update template: ' + error.message);
+    }
+  }
+
+  async sendTestEmail(email_ids, record_id) {
+    try {
+      // First get the template
+      const templateRef = db.collection('notification_templates').doc(record_id);
+      const template = await templateRef.get();
+
+      if (!template.exists) {
+        throw new Error('Template not found');
+      }
+
+      const templateData = template.data();
+
+      // Send email to each recipient
+      const emailPromises = email_ids.map(email =>
+        sendEmail({
+          to: email,
+          subject: templateData.subject || 'Test Email',
+          html: templateData.template_content,
+        })
+      );
+
+      await Promise.all(emailPromises);
+
+      return {
+        status: 'success',
+        message: 'Test emails sent successfully'
+      };
+    } catch (error) {
+      throw new Error('Failed to send test emails: ' + error.message);
+    }
+  }
+
+  async sendmailtocustomer(email_ids, record_id) {
+    try {
+      // First get the template
+      const templateRef = db.collection('notification_templates').doc(record_id);
+      const template = await templateRef.get();
+
+      if (!template.exists) {
+        throw new Error('Template not found');
+      }
+
+      const templateData = template.data();
+
+
+      // Send email to each recipient
+      const emailPromises = email_ids.map(email =>
+        sendEmail({
+          to: email,
+          subject: templateData.template_header || 'Test Email',
+          html: templateData.template_content,
+        })
+      );
+
+      await Promise.all(emailPromises);
+
+      return {
+        status: 'success',
+        message: 'Test emails sent successfully'
+      };
+    } catch (error) {
+      throw new Error('Failed to send test emails: ' + error.message);
     }
   }
 

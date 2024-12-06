@@ -111,4 +111,10 @@ router.post(
   NotificationController.sendTestEmail
 );
 
+router.post(
+  "/sendmailtocustomer",
+  authMiddleware,
+  NotificationController.sendmailtocustomer
+);
+
 module.exports = router;

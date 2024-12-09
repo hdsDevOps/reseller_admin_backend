@@ -62,10 +62,6 @@ const updateuser = async (id, updatedData) => {
   
   // List Users
   const getallusers = async (role,searchValue) => {
-    const snapshot = await db.collection(USERS_COLLECTION)
-    .where('role', '==', role)
-    .get();
-    console.log(searchValue)
     try {
       // Validate input
       if (!searchValue || searchValue.trim() === '') {

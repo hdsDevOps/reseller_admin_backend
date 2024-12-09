@@ -674,6 +674,63 @@ class AdminService {
       throw new Error("Failed to update about us data");
     }
   }
+
+  async gettermsconditions() {
+    try {
+      const docRef = db.collection('cms').doc('terms_conditions');
+      const docSnapshot = await docRef.get();
+  
+      if (!docSnapshot.exists) {
+        console.log('No document found!');
+        return null;
+      }
+  
+      const data = docSnapshot.data();
+    
+      return data;
+    } catch (error) {
+      console.error('Error fetching document:', error);
+      throw error;
+    }
+  }
+  async getcustomeragreement() {
+    try {
+      const docRef = db.collection('cms').doc('customer_agreement');
+      const docSnapshot = await docRef.get();
+  
+      if (!docSnapshot.exists) {
+        console.log('No document found!');
+        return null;
+      }
+  
+      const data = docSnapshot.data();
+    
+      return data;
+    } catch (error) {
+      console.error('Error fetching document:', error);
+      throw error;
+    }
+  }
+
+  async getprivacypolicy() {
+    try {
+      const docRef = db.collection('cms').doc('privacy_policy');
+      const docSnapshot = await docRef.get();
+  
+      if (!docSnapshot.exists) {
+        console.log('No document found!');
+        return null;
+      }
+  
+      const data = docSnapshot.data();
+    
+      return data;
+    } catch (error) {
+      console.error('Error fetching document:', error);
+      throw error;
+    }
+  }
+
 }
 
 module.exports = new AdminService();

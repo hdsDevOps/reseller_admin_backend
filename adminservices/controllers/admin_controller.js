@@ -409,6 +409,31 @@ class AdminController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async gettermsconditions(req, res) {
+    try {
+      const result = await AdminService.gettermsconditions();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+  async getcustomeragreement(req, res) {
+    try {
+      const result = await AdminService.getcustomeragreement();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+  async getprivacypolicy(req, res) {
+    try {
+      const result = await AdminService.getprivacypolicy();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new AdminController();

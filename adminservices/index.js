@@ -15,6 +15,8 @@ const adminroutes = require('./routes/adminroute');
 const subscriptionroutes = require('./routes/subscriptionroute');
 const notificationroutes = require('./routes/notificationroute');
 const voucherroutes = require('./routes/voucherroute.js');
+const userroutes = require('./routes/userroute.js');
+const roleroutes = require('./routes/roleroute.js');
 
       
 app.use(cors());
@@ -67,7 +69,8 @@ app.use('/adminservices/subscription/api/v1', subscriptionroutes);
 app.use('/adminservices/notification/api/v1', notificationroutes);
 app.use('/adminservices/voucher/api/v1', voucherroutes);
 app.use('/adminservices/customer/api/v1', customerroutes);
-
+app.use('/adminservices/users/api/v1', userroutes);
+app.use('/adminservices/users/api/v1', roleroutes);
   
 // Start the server and listen on the specified port
 app.listen(PORT, () => {

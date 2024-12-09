@@ -7,7 +7,7 @@ const emailQueue = new Queue('emailQueue');
 // Process the queue
 emailQueue.process(async (job) => {
     const { to, subject, text } = job.data;
-    console.log(job.data);
+    
     await helper.sendMail(to, subject, text);
 });
 

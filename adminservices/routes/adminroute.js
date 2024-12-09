@@ -870,4 +870,23 @@ router.post(
   adminController.updateresourcedata
 );
 
+
+router.get(
+  "/getterms",
+  authMiddleware,
+  adminController.gettermsconditions
+);
+
+router.get(
+  "/customer_agreement",
+  authMiddleware,
+  adminController.getcustomeragreement
+);
+
+router.get(
+  "/privacy_policy",
+  authMiddleware,
+  adminController.getprivacypolicy
+);
+
  module.exports = router;

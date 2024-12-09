@@ -61,12 +61,74 @@ const updateuser = async (id, updatedData) => {
   };
   
   // List Users
-  const getallusers = async (role,searchdata) => {
+  const getallusers = async (role,searchValue) => {
     const snapshot = await db.collection(USERS_COLLECTION)
     .where('role', '==', role)
     .get();
-    const users = snapshot.docs.map((doc) => doc.data());
-    return users;
+    console.log(searchValue)
+    try {
+      // Validate input
+      if (!searchValue || searchValue.trim() === '') {
+        console.log('Search value is empty. Please provide a valid input.');
+        return [];
+      }
+  
+      const searchText = searchValue.toLowerCase();
+  
+    const rolequery = await db.collection(USERS_COLLECTION)
+    .where('role', '==', role)
+    .get();
+
+      // Query each field separately
+      const firstNameQuery = db.collection(USERS_COLLECTION)
+        .orderBy('first_name')
+        .startAt(searchText)
+        .endAt(searchText + '\uf8ff')
+        .get();
+  
+      const lastNameQuery = db.collection(USERS_COLLECTION)
+        .orderBy('last_name')
+        .startAt(searchText)
+        .endAt(searchText + '\uf8ff')
+        .get();
+  
+      const emailQuery = db.collection(USERS_COLLECTION)
+        .orderBy('email')
+        .startAt(searchText)
+        .endAt(searchText + '\uf8ff')
+        .get();
+  
+      // Wait for all queries to resolve
+      const [firstNameSnapshot, lastNameSnapshot, emailSnapshot,roleSnapshot] = await Promise.all([
+        firstNameQuery,
+        lastNameQuery,
+        emailQuery,
+        rolequery
+      ]);
+  
+      // Combine results
+      const results = new Map();
+  
+      const addToResults = (snapshot) => {
+        snapshot.forEach((doc) => {
+          results.set(doc.id, { id: doc.id, ...doc.data() });
+        });
+      };
+  
+      addToResults(firstNameSnapshot);
+      addToResults(lastNameSnapshot);
+      addToResults(emailSnapshot);
+      addToResults(roleSnapshot);
+  
+      // Convert results to an array
+      const combinedResults = Array.from(results.values());
+  
+      return combinedResults;
+    } catch (error) {
+      console.error('Error performing wildcard search:', error);
+      throw error;
+    }
+   
   };
   
   module.exports = { createuser, updateuser, deleteuser, getallusers };

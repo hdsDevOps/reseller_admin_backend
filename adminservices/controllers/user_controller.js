@@ -32,10 +32,17 @@ const edituser = async (req, res) => {
 
   try {
     const user = await userService.updateuser(id, updatedData);
+    if(user != 'User not found'){
     res.status(200).json({
       message: 'User updated successfully',
       user,
     });
+  }else{
+    res.status(200).json({
+      message: 'User record not exist',
+      status:400      
+    });
+  }
   } catch (error) {
     console.error('Error editing user:', error);
     res.status(500).json({ error: 'Failed to edit user.' });

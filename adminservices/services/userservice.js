@@ -40,7 +40,7 @@ const updateuser = async (id, updatedData) => {
     const userDoc = await userRef.get();
   
     if (!userDoc.exists) {
-      throw new Error('User not found');
+      return ('User not found');
     }
   
     await userRef.update(updatedData);
@@ -54,7 +54,7 @@ const updateuser = async (id, updatedData) => {
     const userDoc = await userRef.get();
   
     if (!userDoc.exists) {
-      throw new Error('User not found');
+      return ('User not found');
     }
   
     await userRef.delete();

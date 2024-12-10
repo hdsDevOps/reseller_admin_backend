@@ -892,4 +892,10 @@ router.get(
 router.post('/updateprofile',authMiddleware, adminController.updateProfile); // Update Profile
 router.post('/getdetails', authMiddleware, adminController.getProfileDetails); // Get Profile Details by Email
 
+// Get currency data by customer ID
+router.post('/getcurrency_default', authMiddleware, adminController.getCurrencyByCustomerId);
+
+// Update default currency
+router.post('/update_defaultgetcurrency',authMiddleware, adminController.updateDefaultCurrency);
+
  module.exports = router;

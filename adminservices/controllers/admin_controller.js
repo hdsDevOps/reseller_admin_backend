@@ -1,4 +1,5 @@
 const AdminService = require("../services/adminservice");
+const currencyservice = require('../services/currencyservice');
 const { admin, db,bucket } = require("../firebaseConfig");
 const path = require('path');
 
@@ -456,6 +457,34 @@ class AdminController {
           res.status(500).json({ message: error.message });
       }
   };
+
+
+  async getCurrencyByCustomerId(req, res){
+    try {
+        const { userid } = req.body;
+     
+        const currencyData = await currencyservice.getCurrencyDataService(userid);
+        if (!currencyData) {
+            return res.status(404).json({ message: 'Currency data not found for the given customer ID' });
+        }
+        res.status(200).json({ message: 'Currency data retrieved successfully', data: currencyData });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+  async updateDefaultCurrency(req, res){
+    try {
+        const { userid, defaultCurrency } = req.body;
+        if (!userid || !defaultCurrency) {
+            return res.status(400).json({ message: 'Customer ID and default currency are required' });
+        }
+        await currencyservice.updateDefaultCurrencyService(userid, defaultCurrency);
+        res.status(200).json({ message: 'Default currency updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 }
 
 module.exports = new AdminController();

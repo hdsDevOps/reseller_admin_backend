@@ -67,28 +67,27 @@ const updateuser = async (id, updatedData) => {
   
     await userRef.delete();
   };
-  
+  // Helper function to create a query
+const createQuery = (field,searchText,role) => {
+  let query = db.collection(USERS_COLLECTION);
+  if (role) {
+      query = query.where('role', '==', role);
+  }
+  return query
+      .orderBy(field)
+      .startAt(searchText)
+      .endAt(searchText + '\uf8ff');
+};
   // List Users
   const getallusers = async (role,searchValue) => {
-    const searchText = searchValue.toLowerCase();
-
-// Helper function to create a query
-const createQuery = (field) => {
-    let query = db.collection(USERS_COLLECTION);
-    if (role) {
-        query = query.where('role', '==', role);
-    }
-    return query
-        .orderBy(field)
-        .startAt(searchText)
-        .endAt(searchText + '\uf8ff');
-};
-
+    const searchText = searchValue;
 try {
     // Build queries
-    const firstNameQuery = createQuery('first_name').get();
-    const lastNameQuery = createQuery('last_name').get();
-    const emailQuery = createQuery('email').get();
+    const firstNameQuery = createQuery('first_name',searchText,role).get();
+
+    const lastNameQuery = createQuery('last_name',searchText,role).get();
+ 
+    const emailQuery = createQuery('email',searchText,role).get();
 
     // Wait for all queries to resolve
     const [firstNameSnapshot, lastNameSnapshot, emailSnapshot] = await Promise.all([

@@ -1,4 +1,4 @@
-const { db } = require('../firebaseConfig');
+const { admin,db } = require('../firebaseConfig');
 const bcrypt = require('bcrypt');
 const helper = require('../helper');
 // Collection name in Firestore
@@ -19,16 +19,24 @@ const createuser = async (userData) => {
   userData.created_at = new Date();
   const rawPassword = generatePassword(); // Generate dynamic password
   const hashedPassword = await bcrypt.hash(rawPassword, 10); // Hash the password
-  const newUserRef = db.collection(USERS_COLLECTION).doc();
   const subject = "New account created";
   const text = "New Login details : uname : "+userData.email+" and password : "+rawPassword;
   let to_ary = {to:userData.email,subject:subject,text:text};
+  const userRecord = await admin.auth().createUser({
+    email: userData.email,
+    disabled: false,
+  });
   await helper.sendMail(to_ary, subject, text);
-  const newUser = { id: newUserRef.id,
+  const newUser = {
     password: hashedPassword,
     ...userData };
 
-  await newUserRef.set(newUser); // Save user data to Firestore
+    await db.collection(USERS_COLLECTION).doc(userRecord.uid).set({
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      ...newUser
+    });
+
+
   return newUser;
 };
 

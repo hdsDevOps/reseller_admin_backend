@@ -19,8 +19,7 @@ const adduser = async (req, res) => {
       status:200
     });
   } catch (error) {
-    console.error('Error adding user:', error);
-    res.status(500).json({ error: 'Failed to add user.' });
+    res.status(500).json({ error: 'Failed to add user.'+error });
   }
 };
 

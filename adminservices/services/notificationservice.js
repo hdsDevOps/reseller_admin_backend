@@ -202,5 +202,31 @@ class NotificationService {
     }
   }
 
+  getNotificationSettingsService = async (userId) => {
+    const settingsDoc = await db.collection('notification_settings').doc(userId).get();
+    return settingsDoc.exists ? settingsDoc.data() : null;
+};
+
+  updateNotificationStatusService = async (userId, status) => {
+    const userRef = db.collection('notification_settings').doc(userId);
+
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) {
+        // If no record exists, create a new one
+        const newSettings = {
+            userId,
+            status,
+            createdAt: new Date().toISOString(),
+        };
+        await userRef.set(newSettings);
+    } else {
+        // Update existing record
+        await userRef.update({
+            status,
+            updatedAt: new Date().toISOString(),
+        });
+      }
+    };
 }
+
 module.exports = new NotificationService();

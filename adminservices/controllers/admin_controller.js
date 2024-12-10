@@ -1,5 +1,6 @@
 const AdminService = require("../services/adminservice");
 const currencyservice = require('../services/currencyservice');
+const notificationservices = require('../services/notificationservice');
 const { admin, db,bucket } = require("../firebaseConfig");
 const path = require('path');
 
@@ -485,6 +486,34 @@ class AdminController {
         res.status(500).json({ message: error.message });
     }
 };
+
+async getstatus(req, res){
+  try {
+      const { userid } = req.body;
+      if (!userid) {
+          return res.status(400).json({ message: 'Customer ID required' });
+      }
+      const response_data = await notificationservices.getNotificationSettingsService(userid);
+      res.status(200).json({data:response_data, message: 'Get user notification updated successfully' });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
+
+async update_status(req, res){
+  try {
+      const { userid,status } = req.body;
+      if (!userid) {
+          return res.status(400).json({ message: 'Customer ID required' });
+      }
+      await notificationservices.updateNotificationStatusService(userid,status);
+      res.status(200).json({ message: 'Notification status updated successfully' });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
+
+
 }
 
 module.exports = new AdminController();

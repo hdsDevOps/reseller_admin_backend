@@ -898,4 +898,10 @@ router.post('/getcurrency_default', authMiddleware, adminController.getCurrencyB
 // Update default currency
 router.post('/update_defaultgetcurrency',authMiddleware, adminController.updateDefaultCurrency);
 
+// Get notification settings for a user
+router.post('/getnotification_status', authMiddleware, adminController.getstatus);
+
+// Update a specific notification type status
+router.post('/update_notification_status',authMiddleware, adminController.update_status);
+
  module.exports = router;

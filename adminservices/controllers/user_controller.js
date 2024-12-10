@@ -27,11 +27,10 @@ const adduser = async (req, res) => {
 
 // Edit User
 const edituser = async (req, res) => {
-  const id = req.body.record_id;
+  const id = req.body.id;
   const updatedData = req.body;
 
   try {
-   
     const user = await userService.updateuser(id, updatedData);
     res.status(200).json({
       message: 'User updated successfully',

@@ -3,7 +3,7 @@ const { sendMail } = require("../helper");
 const { generateToken } = require("../utils/jwt");
 const CryptoJS = require("crypto-js");
 const axios = require('axios');
-
+const PROFILE_COLLECTION = 'users';
 class AdminService {
   async login({ email, password }) {
     try {
@@ -730,6 +730,39 @@ class AdminService {
       throw error;
     }
   }
+
+  updateProfileService = async (data) => {
+    const { userid,password, ...rest } = data;
+
+    if (!userid) {
+        throw new Error('Email is required for updating profile.');
+    }
+
+    const profileRef = db.collection(PROFILE_COLLECTION).doc(userid);
+    await profileRef.set(rest, { merge: true }); // Merges with existing data
+    const updatedProfile = await profileRef.get();
+
+  if(password !=""){  
+    await admin.auth().updateUser(userid, {
+      password: password
+    })
+  }
+    return updatedProfile.data();
+};
+
+getProfileDetailsService = async (userid) => {
+    if (!userid) {
+        throw new Error('USer ID is required to fetch profile.');
+    }
+
+    const profileRef = db.collection(PROFILE_COLLECTION).doc(userid);
+    const doc = await profileRef.get();
+
+    if (!doc.exists) {
+        return null;
+    }
+    return doc.data();
+};
 
 }
 

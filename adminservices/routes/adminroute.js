@@ -889,4 +889,7 @@ router.get(
   adminController.getprivacypolicy
 );
 
+router.post('/updateprofile',authMiddleware, adminController.updateProfile); // Update Profile
+router.post('/getdetails', authMiddleware, adminController.getProfileDetails); // Get Profile Details by Email
+
  module.exports = router;

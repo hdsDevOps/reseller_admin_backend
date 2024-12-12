@@ -8,7 +8,6 @@ class AdminService {
   async login({ email, password }) {
     try {
       const userRecord = await admin.auth().getUserByEmail(email);
-
       const firebaseConfig = {
         apiKey: 'AIzaSyBDhOqLuQygzeZL-V1xqJkW37kpfiyHrgA',
       };

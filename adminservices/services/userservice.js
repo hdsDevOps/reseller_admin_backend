@@ -24,6 +24,7 @@ const createuser = async (userData) => {
   let to_ary = {to:userData.email,subject:subject,text:text};
   const userRecord = await admin.auth().createUser({
     email: userData.email,
+    password: rawPassword,
     disabled: false,
   });
   await helper.sendMail(to_ary, subject, text);

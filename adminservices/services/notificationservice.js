@@ -227,6 +227,33 @@ class NotificationService {
         });
       }
     };
+
+    getnotificationdetails = async (data) => {
+      const role = data.user_role; // The value you're filtering by
+      try {
+        const notifications = [];
+        const querySnapshot = await db
+          .collection("notifications")
+          .where("role", "==", role)
+          .get();
+        if (querySnapshot.empty) {
+          notifications.push({status:200,message:"Error",data:"No matching documents"});
+          return notifications; // Return an empty array if no documents match
+        }
+    
+        
+        querySnapshot.forEach((doc) => {
+          let data = doc.data();
+          notifications.push({status:200,message:"Success",data:data.notification_details});
+        });
+    
+        return notifications; // Return the notifications array
+      } catch (error) {
+        console.error("Error fetching documents:", error);
+        throw error; // Throw the error for the calling function to handle
+      }
+    };
+    
 }
 
 module.exports = new NotificationService();

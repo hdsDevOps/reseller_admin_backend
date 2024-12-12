@@ -48,6 +48,7 @@ class AdminService {
           status: 200,
           token,
           message: "Login successful",
+          user_role: result.user_role,
         };
       }
       throw new Error("Invalid OTP");
@@ -617,8 +618,7 @@ class AdminService {
       if (!userDoc.exists) {
         throw new Error("User not found");
       }
-
-      const { otp: encryptedOtp, otpExpiry } = userDoc.data();
+      const { otp: encryptedOtp, otpExpiry,role } = userDoc.data();
 
       // Decrypt the stored OTP
       const bytes = CryptoJS.AES.decrypt(encryptedOtp, process.env.CRYPTOTOKEN);
@@ -636,7 +636,7 @@ class AdminService {
       }
 
       // If both the OTP matches and hasn't expired
-      return { valid: true, message: "OTP is valid" };
+      return { valid: true, message: "OTP is valid", user_role:role };
     } catch (error) {
       throw new Error("Failed to validate OTP: " + error.message);
     }

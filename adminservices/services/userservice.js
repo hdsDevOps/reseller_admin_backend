@@ -2,7 +2,7 @@ const { admin,db } = require('../firebaseConfig');
 const bcrypt = require('bcrypt');
 const helper = require('../helper');
 // Collection name in Firestore
-const USERS_COLLECTION = 'system_users';
+const USERS_COLLECTION = 'users';
 
 // Function to generate a random password
 const generatePassword = (length = 10) => {

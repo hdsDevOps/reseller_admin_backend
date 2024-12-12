@@ -123,4 +123,6 @@ router.get(
   NotificationController.emaillogdetails
 );
 
+router.post("/getnotifications",NotificationController.getnotificationdetails);
+
 module.exports = router;

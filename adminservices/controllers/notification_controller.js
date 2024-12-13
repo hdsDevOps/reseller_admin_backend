@@ -81,6 +81,17 @@ class NotificationController {
     }
   }
 
+  async getnotificationdetails(req, res) {
+    try {
+      const data = req.body;
+      const notifications = await NotificationService.getnotificationdetails(data);
+   
+      res.status(200).json(notifications);
+    } catch (error) {
+      res.status(400).json({ status: 'error', message: error.message });
+    }
+  }
+
 }
 
 module.exports = new NotificationController();

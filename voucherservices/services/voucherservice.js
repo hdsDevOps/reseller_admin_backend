@@ -202,19 +202,49 @@ async function getVoucherList(data) {
         ) {
           return { status: 400, message: "Missing required fields" };
         }
-  
         const voucherRef = db.collection(table_name).doc(data.record_id);
             const doc = await voucherRef.get();
 
             if (!doc.exists) {
             return { status: 404, message: "Voucher record not found" };
             }
-        
+          
+      if(data.customer_type == 1){  
         const customeRef = db.collection("customers").doc(data.customer_id);
         const customerdoc = await customeRef.get();    
         const email = customerdoc.data().email;
         const template = doc.data().template_details;
         sendmail(email, 'Email Voucher from Hordanso', template);
+        
+      }else if(data.customer_type == 2){
+        const customeRef = db.collection("customer_groups").doc(data.customer_id);
+        const customerdoc = await customeRef.get();    
+        let country = customerdoc.data().country;
+        let region = customerdoc.data().region;
+        let license_usage = customerdoc.data().license_usage;
+
+        const customersRef = db.collection('customers');
+        // Build the query with filters
+        let query = customersRef;
+        if (country) query = query.where('country', '==', country);
+        if (region) query = query.where('state_name', '==', region);
+        if (license_usage) query = query.where('customer_count', '==', license_usage);
+
+        // Execute the query
+        const querySnapshot = await query.get();
+        
+
+        // Collect results
+        const results = [];
+        querySnapshot.forEach(doc => {
+          results.push(doc.data().email);
+        });
+        const emails = results.join(',');
+        const template = doc.data().template_details;
+        sendmail(emails, 'Email Voucher from Hordanso', template);
+      }
+
+        
         return {
           status: 200,
           message: "Voucher email sent successfully",

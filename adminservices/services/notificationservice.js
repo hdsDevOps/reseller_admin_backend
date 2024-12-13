@@ -244,10 +244,27 @@ class NotificationService {
         
         querySnapshot.forEach((doc) => {
           let data = doc.data();
-          notifications.push({status:200,message:"Success",data:data.notification_details});
+          notifications.push({status:200,message:"Success",record_id:doc.id, data:data.notification_details,read_status:data.read_status});
         });
     
         return notifications; // Return the notifications array
+      } catch (error) {
+        console.error("Error fetching documents:", error);
+        throw error; // Throw the error for the calling function to handle
+      }
+    };
+
+    readnotification = async (data) => {
+      try {
+        const record_id = data.record_id; // The value you're filtering by
+       const result = [];
+       const docRef = db.collection("notifications").doc(record_id); // Reference the document by its ID
+        // Update the status field
+        await docRef.update({ read_status: 1 });
+        
+        result.push({status:200,message:"success",data:"Notification status updated successfully"});
+          return result; // Return an empty array if no documents match
+
       } catch (error) {
         console.error("Error fetching documents:", error);
         throw error; // Throw the error for the calling function to handle

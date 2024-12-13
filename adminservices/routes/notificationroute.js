@@ -125,4 +125,6 @@ router.get(
 
 router.post("/getnotifications",NotificationController.getnotificationdetails);
 
+router.post("/readnotification",NotificationController.readnotification);
+
 module.exports = router;

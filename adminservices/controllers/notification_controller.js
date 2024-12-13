@@ -90,6 +90,17 @@ class NotificationController {
       res.status(400).json({ status: 'error', message: error.message });
     }
   }
+
+  async readnotification(req, res){
+    try {
+      const data = req.body;
+      const notifications = await NotificationService.readnotification(data);
+      res.status(200).json(notifications);
+    } catch (error) {
+      res.status(400).json({ status: 'error', message: error.message });
+    }
+  }
+
 }
 
 module.exports = new NotificationController();

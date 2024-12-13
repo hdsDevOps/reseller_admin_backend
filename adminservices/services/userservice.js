@@ -90,11 +90,14 @@ try {
  
     const emailQuery = createQuery('email',searchText,role).get();
 
+    const phoneQuery = createQuery('phone',searchText,role).get();
+
     // Wait for all queries to resolve
-    const [firstNameSnapshot, lastNameSnapshot, emailSnapshot] = await Promise.all([
+    const [firstNameSnapshot, lastNameSnapshot, emailSnapshot, phoneSnapshot] = await Promise.all([
         firstNameQuery,
         lastNameQuery,
         emailQuery,
+        phoneQuery,
     ]);
 
     // Combine results using a Map to prevent duplicates
@@ -109,6 +112,7 @@ try {
     addToResults(firstNameSnapshot);
     addToResults(lastNameSnapshot);
     addToResults(emailSnapshot);
+    addToResults(phoneSnapshot);
 
     // Convert results to an array
     const combinedResults = Array.from(results.values());

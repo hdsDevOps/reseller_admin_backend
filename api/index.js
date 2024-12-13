@@ -18,7 +18,7 @@ const routes = {
     //'/googleservices':"http://googleservices:8003",
     //'/miscservices':"http://miscservices:8004",
     //'/notificationservices':"http://notificationservices:8005",
-    '/reportservices':"https://reportapi.admin.gworkspace.withhordanso.com",
+    '/reportservices':"https://apireport.admin.gworkspace.withhordanso.com",
     '/subscriptionservices':"https://subscriptionapi.admin.gworkspace.withhordanso.com",
     '/voucherservices':"https://voucherapi.admin.gworkspace.withhordanso.com",
 }

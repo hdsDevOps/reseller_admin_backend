@@ -3,7 +3,7 @@
 const authmiddleware = require('../middleware/auth');
 const usercontroller = require('../controllers/user_controller');
 
-router.post('/addusers',authmiddleware, usercontroller.adduser);
+router.post('/addusers', usercontroller.adduser);
 
 router.post('/editusers', authmiddleware,usercontroller.edituser);
 router.post('/deleteusers',authmiddleware, usercontroller.deleteuser);

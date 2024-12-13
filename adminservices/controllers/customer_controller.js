@@ -1,10 +1,15 @@
 const customerservice = require("../services/customerservice.js");
+const currencyservice = require("../services/currencyservice.js");
+
 const {hashPassword} = require("../helper");
 
 class customercontroller {
     async addCustomer(req, res) {
       try {
         const result = await  customerservice.addnewCustomer(req.body);
+        const userid = result.customerId;
+        const defaultCurrency = "USD";
+        await currencyservice.updateDefaultCurrencyService(userid, defaultCurrency);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });

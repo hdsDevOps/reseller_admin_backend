@@ -15,7 +15,7 @@ services:
     # - googleservices
     # - miscservices
     # - notificationservices
-    # - reportservices
+    - reportservices
     # - subscriptionservices
     - voucherservices
   adminservices:
@@ -74,15 +74,15 @@ services:
   #   networks:
   #     - dev_network 
 
-  # reportservices:
-  #   build: ./reportservices
-  #   container_name: microservices_container_reportservices
-  #   ports:
-  #     - "8006:8006"
-  #   expose:
-  #   - "8006"
-  #   networks:
-  #     - dev_network
+  reportservices:
+    build: ./reportservices
+    container_name: microservices_container_reportservices
+    ports:
+      - "8006:8006"
+    expose:
+    - "8006"
+    networks:
+      - dev_network
 
   # subscriptionservices:
   #   build: ./subscriptionservices

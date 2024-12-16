@@ -23,7 +23,7 @@ const routes = {
     '/voucherservices':"https://voucherapi.admin.gworkspace.withhordanso.com",
 }
 
-
+   
 for(const route in routes){
     const target = routes[route];
     app.use(route, createProxyMiddleware({

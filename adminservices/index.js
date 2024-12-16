@@ -60,7 +60,7 @@ app.post('/adminservices/send-email', (req, res) => {
   addEmailToQueue(to, subject, text);
   res.send("Email queued for sending");
 });
-  
+    
 app.use('/adminservices/forgotpassword/api/v1', forgotpasswordroutes);
 app.use('/adminservices/customers', adminservicesroutes);
 

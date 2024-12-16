@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: adminbackend-adminapi-services
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: adminbackend-adminapi-services

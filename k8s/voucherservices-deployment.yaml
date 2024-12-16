@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: adminbackend-voucherapi-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: adminbackend-voucherapi-service

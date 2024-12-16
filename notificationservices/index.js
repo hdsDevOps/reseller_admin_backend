@@ -6,7 +6,7 @@ const PORT = 8005; // Set the port number for the server
 app.get('/notificationservices',(req,res)=>{
     res.send("We are calling notification services API");
 })
- 
+    
 app.get('/customerservices/test',(req,res)=>{
     res.send("We Are Calling User Test API");
 })

@@ -22,7 +22,7 @@ const routes = {
     '/subscriptionservices':"https://subscriptionapi.admin.gworkspace.withhordanso.com",
     '/voucherservices':"https://voucherapi.admin.gworkspace.withhordanso.com",
 }
-// Deploy To server  
+// Deploy To server     
        
 for(const route in routes){
     const target = routes[route];

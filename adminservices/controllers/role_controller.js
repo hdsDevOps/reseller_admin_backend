@@ -55,7 +55,8 @@ const deleterole = async (req, res) => {
 // List Roles
 const listroles = async (req, res) => {
   try {
-    const roles = await roleService.getallroles();
+    let data = req.body;
+    const roles = await roleService.getallroles(data);
     res.status(200).json({ roles });
   } catch (error) {
     console.error('Error listing roles:', error);

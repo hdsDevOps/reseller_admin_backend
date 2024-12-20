@@ -46,10 +46,15 @@ const deleterole = async (id) => {
 
 // List All Roles
 const getallroles = async (data) => {
-  console.log(data);
-  const snapshot = await db.collection(ROLES_COLLECTION)
-  .where("role_name", "==", data.user_type)
-  .get();
+  
+let query = db.collection(ROLES_COLLECTION);
+
+if (data.user_type && data.user_type.trim() !== "") {
+  query = query.where("role_name", "==", data.user_type);
+}
+
+const snapshot = await query.get();
+
   const roles = snapshot.docs.map((doc) => doc.data());
   return roles;
 };

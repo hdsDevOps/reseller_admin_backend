@@ -242,18 +242,20 @@ class CustomerService {
       // Queries for partial matches on firstname, lastname, and email
       let query = db.collection('customers');
 
+      
+      if (data.domain && data.domain.trim() !== "") {
+        query = query.where('domain', '==', data.domain);
+    }
       // Add filters dynamically based on available data
-      if (data.country !== undefined) {
+      if (data.country && data.country.trim() !== "") {
           query = query.where('country', '==', data.country);
       }
       
-      if (data.state_name !== undefined) {
+      if (data.state_name && data.state_name.trim() !== "") {
           query = query.where('state_name', '==', data.state_name);
       }
       
-      if (data.authentication !== undefined) { // Check if the value exists (not undefined)
-        query = query.where("authentication", "==", data.authentication);
-    }
+      if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
 
       // Add sorting and search functionality
       query = query
@@ -266,16 +268,19 @@ class CustomerService {
 
       query = customersRef;
 
-// Dynamically add filters
-if (data.country) {
-    query = query.where('country', '==', data.country);
-}
-if (data.state_name) {
-    query = query.where('state_name', '==', data.state_name);
-}
-if (data.authentication) {
-    query = query.where('authentication', '==', data.authentication);
-}
+      if (data.domain && data.domain.trim() !== "") {
+        query = query.where('domain', '==', data.domain);
+    }
+      // Add filters dynamically based on available data
+      if (data.country && data.country.trim() !== "") {
+          query = query.where('country', '==', data.country);
+      }
+      
+      if (data.state_name && data.state_name.trim() !== "") {
+          query = query.where('state_name', '==', data.state_name);
+      }
+      
+      if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
 
 // Add sorting and search
 query = query
@@ -290,18 +295,19 @@ const lastnameQuery = await query.get();
   
 query = customersRef;
 
-// Add filters dynamically
-if (data.country) {
+if (data.domain && data.domain.trim() !== "") {
+  query = query.where('domain', '==', data.domain);
+}
+// Add filters dynamically based on available data
+if (data.country && data.country.trim() !== "") {
     query = query.where('country', '==', data.country);
 }
 
-if (data.state_name) {
+if (data.state_name && data.state_name.trim() !== "") {
     query = query.where('state_name', '==', data.state_name);
 }
 
-if (data.authentication) {
-    query = query.where('authentication', '==', data.authentication);
-}
+if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
 
 // Add sorting and search functionality
 query = query

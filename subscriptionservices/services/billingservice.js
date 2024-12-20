@@ -67,7 +67,29 @@ if (filter.searchKey_start && filter.searchKey_start.trim() !== "") {
         .endAt(filter.searchKey_start.toLowerCase() + '\uf8ff');
 }
 // Fetch the records
-//const transQuery = await query.get();
+const transQuery = await query.get();
+
+const [firstnameSnap, transSnap] = await Promise.all([firstnameQuery, transQuery]);
+  
+      // Combine results into a Map to avoid duplicates
+      const results = new Map();
+  
+      firstnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
+      transSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
+      
+  
+      // Convert Map to an array of unique customers
+      const uniqueTrans = Array.from(results.values());
+      
+      //const snapshot = await db.collection("customers").get();
+
+      const customers = [];
+      uniqueTrans.forEach((doc) => {
+        customers.push({
+          record_id: doc.id,
+          ...doc,
+        });
+      });
 
 const billing_history = [];
 firstnameQuery.forEach(doc => {

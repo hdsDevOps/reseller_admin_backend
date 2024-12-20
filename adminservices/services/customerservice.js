@@ -255,7 +255,7 @@ class CustomerService {
           query = query.where('state_name', '==', data.state_name);
       }
       
-      if (data.authentication && data.authentication.trim() !== "" && data.authentication !== undefined) 
+      if (data.authentication && data.authentication !== "" && data.authentication !== undefined) 
         { query = query.where("authentication", "==", data.authentication); }
 
       // Add sorting and search functionality

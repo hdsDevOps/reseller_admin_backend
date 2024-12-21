@@ -27,12 +27,12 @@ if (data.domain && data.domain.trim() !== "") {
 
 if (filter.start_date && filter.start_date.trim() !== "") {
   startDate = new Date(filter.start_date);
-  query.where("created_at", ">=", startDate); 
+  query = query.where("created_at", ">=", admin.firestore.Timestamp.fromDate(startDate)); 
 }
 
 if (filter.end_date && filter.end_date.trim() !== "") {
   endDate = new Date(filter.end_date);
-  query.where("created_at", "<=", endDate); 
+  query = query.where("created_at", "<=", admin.firestore.Timestamp.fromDate(endDate)); 
 }
 if (filter.searchKey_start && filter.searchKey_start.trim() !== "") {
     query = query

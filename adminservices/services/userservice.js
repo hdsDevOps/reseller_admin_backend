@@ -71,7 +71,7 @@ const updateuser = async (id, updatedData) => {
   // Helper function to create a query
 const createQuery = (field,searchText,role) => {
   let query = db.collection(USERS_COLLECTION);
-  if (role) {
+  if (role && role.trim() !== "") {
       query = query.where('role', '==', role);
   }
   return query

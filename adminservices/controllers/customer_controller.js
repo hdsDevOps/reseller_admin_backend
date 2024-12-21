@@ -6,11 +6,19 @@ const {hashPassword} = require("../helper");
 class customercontroller {
     async addCustomer(req, res) {
       try {
+
+        const checkcustomerexist = await  customerservice.getCustomerbyemail(req.body.email);
+
+        if (checkcustomerexist.status == 400) {    
         const result = await  customerservice.addnewCustomer(req.body);
         const userid = result.customerId;
         const defaultCurrency = "USD";
         await currencyservice.updateDefaultCurrencyService(userid, defaultCurrency);
         res.status(200).json(result);
+        }
+        else{
+          res.status(400).json({ status: 400, message: "Customer already exist" });
+        }
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });
       }

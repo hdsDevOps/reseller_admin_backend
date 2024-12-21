@@ -1,4 +1,4 @@
-const { db } = require("../firebaseConfig");
+const { admin,db } = require("../firebaseConfig");
 const helper = require("../helper");
 
 class CustomerService {
@@ -180,11 +180,15 @@ class CustomerService {
     try {
       const customersRef = db.collection("customers");
 
+      const checkcustomerexist = await db.collection('customers') 
+      .where('email', '==', email) 
+      .get();
+      if (checkcustomerexist.empty) {  
       // Fetch all documents in the 'customers' collection
       const snapshot = await customersRef.get();
-
+      
       const recordCount = snapshot.size;
-
+      const password = "12345678";  
       let currentCount = recordCount + 1;
       const customerRef = await db.collection("customers").add({
         first_name,
@@ -202,14 +206,21 @@ class CustomerService {
         created_at: new Date(),
         customer_count: currentCount,
       });
-
+      await admin.auth().createUser({
+          email: email,
+          password: password,
+        });
       return {
         status: 200,
         message: "Customer added successfully",
         customerId: customerRef.id,
       };
- 
-
+    } else {
+      return {
+        status: 400,
+        message: "Customer already exist",
+      };
+    }
     } catch (error) {
       throw new Error("Failed to add customer: " + error.message);
     }
@@ -217,6 +228,12 @@ class CustomerService {
 
   async edit_Customer(record_id, updateData) {
     try {
+      const checkcustomerexist = await db.collection('customers') 
+        .where('email', '==', updateData.email)
+        .where('record_id', '!=', record_id) 
+        .get();
+
+      if (checkcustomerexist.empty) {
       await db
         .collection("customers")
         .doc(record_id)
@@ -229,6 +246,13 @@ class CustomerService {
         status: 200,
         message: "Customer updated successfully",
       };
+    } else {
+      return {
+        status: 400,
+        message: "Customer already exist",
+      };
+    }
+
     } catch (error) {
       throw new Error("Failed to update customer: " + error.message);
     }
@@ -515,6 +539,32 @@ const emailQuery = await query.get();
       return {
         status: 400,
         message: "Error sending notification",
+        error: error.message,
+      };
+    }
+  }
+
+  async getCustomerbyemail(email) {
+    try {
+      const checkcustomerexist = await db.collection('customers') 
+        .where('email', '==', email) 
+        .get();
+      if (checkcustomerexist.empty) {
+        return {
+          status: 400,
+          message: "Customer not found",
+        };
+      }else{
+        return {
+          status: 200,
+          message: "Customer found",
+          data: checkcustomerexist.docs[0].data(),
+        };
+      }
+    } catch (error) {
+      return {
+        status: 400,
+        message: "Error getting customer",
         error: error.message,
       };
     }

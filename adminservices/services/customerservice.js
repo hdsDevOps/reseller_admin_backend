@@ -228,12 +228,17 @@ class CustomerService {
 
   async edit_Customer(record_id, updateData) {
     try {
+      let exist_status = 0;
       const checkcustomerexist = await db.collection('customers') 
         .where('email', '==', updateData.email)
-        .where('record_id', '!=', record_id) 
         .get();
 
-      if (checkcustomerexist.empty) {
+        checkcustomerexist.forEach(doc => {
+          if(doc.id != record_id){
+            exist_status = 1;
+          }
+        });
+if(exist_status == 0){
       await db
         .collection("customers")
         .doc(record_id)
@@ -246,13 +251,12 @@ class CustomerService {
         status: 200,
         message: "Customer updated successfully",
       };
-    } else {
-      return {
-        status: 400,
-        message: "Customer already exist",
-      };
-    }
-
+}else{
+  return {
+    status: 400,
+    message: "Customer already exist",
+  };
+}
     } catch (error) {
       throw new Error("Failed to update customer: " + error.message);
     }

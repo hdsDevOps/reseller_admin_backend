@@ -28,6 +28,7 @@ class customercontroller {
       try {
         const { record_id, ...updateData } = req.body;
         const result = await  customerservice.edit_Customer(record_id, updateData);
+        console.log(result);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });

@@ -45,16 +45,28 @@ const createuser = async (userData) => {
 
 // Edit User
 const updateuser = async (id, updatedData) => {
+
+  let exist_status = 0;
+  let query = await db.collection(USERS_COLLECTION).where('email', '==', updatedData.email).get();
+      query.forEach(doc => {
+        if(doc.id != id){
+          exist_status = 1;
+        }
+      });
+if(exist_status == 0){
     const userRef = db.collection(USERS_COLLECTION).doc(id);
     const userDoc = await userRef.get();
-  
     if (!userDoc.exists) {
       return ('User not found');
     }
-  
+
     await userRef.update(updatedData);
     const updatedUser = await userRef.get();
     return updatedUser.data();
+  }
+  else{
+    return ('User not found');
+  }
   };
   
   // Delete User

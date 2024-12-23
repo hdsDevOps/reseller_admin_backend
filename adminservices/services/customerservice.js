@@ -282,9 +282,17 @@ if(exist_status == 0){
       if (data.state_name && data.state_name.trim() !== "") {
           query = query.where('state_name', '==', data.state_name);
       }
-      
-      if (data.authentication && data.authentication !== "" && data.authentication !== undefined) 
-        { query = query.where("authentication", "==", data.authentication); }
+  
+      if (data.authentication !== "" && data.authentication !== undefined) 
+        { 
+          if(data.authentication == true){
+     
+            query = query.where("authentication", "==", true); 
+          }else{
+   
+            query = query.where("authentication", "==", false);
+          }
+        }
 
       // Add sorting and search functionality
       query = query

@@ -18,7 +18,7 @@ async function getrecordlist(data) {
   
 
       let query = db.collection('billing_history');
-      const transref = db.collection('customers');
+      const transref = db.collection('billing_history');
 
 // Add filters dynamically based on available data
 if (data.domain && data.domain.trim() !== "") {
@@ -62,7 +62,7 @@ query.where("created_at", "<=", endDate);
 }
 if (filter.searchKey_start && filter.searchKey_start.trim() !== "") {
   query = query
-        .orderBy('customer_name')
+        .orderBy('transaction_id')
         .startAt(filter.searchKey_start.toLowerCase())
         .endAt(filter.searchKey_start.toLowerCase() + '\uf8ff');
 }
@@ -77,24 +77,19 @@ const [firstnameSnap, transSnap] = await Promise.all([firstnameQuery, transQuery
       firstnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
       transSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
       
-  
+     
       // Convert Map to an array of unique customers
       const uniqueTrans = Array.from(results.values());
-      
+   
       //const snapshot = await db.collection("customers").get();
 
-      const customers = [];
+      const billing_history = [];
       uniqueTrans.forEach((doc) => {
-        customers.push({
+        billing_history.push({
           record_id: doc.id,
           ...doc,
         });
       });
-
-const billing_history = [];
-firstnameQuery.forEach(doc => {
-  billing_history.push({ id: doc.id, ...doc.data() });
-});
 
       return {
         status: 200,

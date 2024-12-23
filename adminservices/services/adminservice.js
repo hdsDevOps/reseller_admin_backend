@@ -20,7 +20,6 @@ class AdminService {
   
       const { idToken } = response.data;
 
-
       const otp = this.generateOtp();
       
       await this.storeOtp(userRecord.uid, otp);
@@ -581,7 +580,7 @@ class AdminService {
         otp: encryptedOtp,
         otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
       });
-      console.log("OTP and expiry updated successfully.");
+      
     } catch (error) {
       if (error.code === 'not-found') {
         // If document doesn't exist, create it with the new data
@@ -603,11 +602,7 @@ class AdminService {
   }
 
   async sendLoginOtp(email, otp) {
-    await sendMail({
-      to: email,
-      subject: "Login OTP",
-      text: `Your login OTP is: ${otp}`,
-    });
+    await sendMail(email,"Login OTP",`Your login OTP is: ${otp}`);
   }
 
   async validateOtp(userId, otp) {

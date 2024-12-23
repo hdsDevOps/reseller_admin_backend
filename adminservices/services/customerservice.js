@@ -463,6 +463,10 @@ const emailQuery = await query.get();
         const filters = {
             country: data.country, // Set to null/undefined if not needed
             state_name: data.state_name, // Set to null/undefined if not needed
+            customer_count: data.license_usage,
+            plan: data.plan,
+            start_date: data.start_date,
+            end_date: data.end_date,
         };
 
         // Start the base query
@@ -476,6 +480,19 @@ const emailQuery = await query.get();
         if (filters.state_name) {
             query = query.where("state_name", "==", filters.state_name);
         }
+
+        if (filters.customer_count) {
+          query = query.where("customer_count", "==", filters.customer_count);
+      }
+      if (filters.plan) {
+        query = query.where("plan", "==", filters.plan);
+      }
+      if (filters.start_date) {
+        query = query.where("start_date", "==", filters.start_date);
+      }
+      if (filters.end_date) {
+        query = query.where("end_date", "==", filters.end_date);
+      }
         
         // Execute the query
         const querySnapshot = await query.get();

@@ -55,7 +55,7 @@ async function generate_forget_password_link(data){
         //console.log(result);
         const otp = helper.generateOtp();
         response_result = {status: 200, message: 'Password reset OTP send to email.', otp: otp };
-        //helper.sendMail(email, 'Password Reset OTP', otp);
+        helper.sendMail(email, 'Password Reset OTP', otp);
       })
       //const link = await admin.auth().generatePasswordResetLink(email);
 

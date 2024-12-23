@@ -1,14 +1,37 @@
 const { admin, db,bucket } = require("../firebaseConfig");
 const path = require('path');
-
+const { Timestamp } = require('firebase-admin').firestore;
 class dashboard_report {
     async getreportdata(req, res){
-        try {             
+        try {       
+            // Get the current date 
+            const now = new Date(); // Calculate the first day of the month
+             const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); 
+             // Calculate the first day of the next month
+            const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+            // Convert dates to Firestore Timestamps
+            const startTimestamp = Timestamp.fromDate(startOfMonth); 
+            const endTimestamp = Timestamp.fromDate(startOfNextMonth);
+            // Query the collection for documents within the current month 
+            const snapshot = await db.collection('customers') 
+            .where('created_at', '>=', startTimestamp) 
+            .where('created_at', '<', endTimestamp) 
+            .get(); 
+            if (snapshot.empty) 
+                { 
+                    console.log('No matching documents.'); return []; 
+                } // Collect the records 
+                
+                const records = [];
+                 snapshot.forEach(doc => { 
+                    records.push({ id: doc.id, ...doc.data() }); 
+                }); 
+             
             const data_json = {
-                "last_month_revenue":"1234",
-                "current_month_recurring_income":"400",
-                "customers_who_use_stripe":"50",
-                "new_customers_count_this_month":"10"
+                "last_month_revenue":"0",
+                "current_month_recurring_income":"0",
+                "customers_who_use_stripe":"0",
+                "new_customers_count_this_month":records.length
             }
               res.status(200).json({ message: 'Dashoard Report Data',result:data_json });
           } catch (error) {

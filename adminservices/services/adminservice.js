@@ -602,7 +602,6 @@ class AdminService {
   }
 
   async sendLoginOtp(email, otp) {
-    console.log("Sending OTP to email: ", email);
     await sendMail(email,"Login OTP",`Your login OTP is: ${otp}`);
   }
 

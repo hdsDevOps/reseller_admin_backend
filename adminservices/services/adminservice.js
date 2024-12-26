@@ -61,7 +61,7 @@ class AdminService {
       const userRecord = await this.getUserById(admin_id);
       const otp = this.generateOtp();
       await this.storeOtp(admin_id, otp);
-      await this.sendLoginOtp(userRecord.email, otp);
+      await this.sendLoginOtp(userRecord.data.email, otp);
 
       return {
         status: 200,
@@ -602,6 +602,7 @@ class AdminService {
   }
 
   async sendLoginOtp(email, otp) {
+    console.log("Sending OTP to email: ", email);
     await sendMail(email,"Login OTP",`Your login OTP is: ${otp}`);
   }
 

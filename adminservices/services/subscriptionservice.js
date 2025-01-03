@@ -139,9 +139,9 @@ class SubscriptionService {
       }
 
       const batch = db.batch();
-      planData.forEach((doc) => {
-        const docRef = firestore.collection(subscription_plans).doc(doc.record_id);
-        batch.update(docRef, doc.order);
+      planData.forEach((doc) => {     
+        const docRef = db.collection("subscription_plans").doc(doc.record_id);
+        batch.update(docRef, { order: doc.order });
       });
       await batch.commit();
       return { status: 200, message: "Documents updated successfully" };

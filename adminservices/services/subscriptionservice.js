@@ -6,7 +6,7 @@ class SubscriptionService {
       const methodsRef = db.collection('payment_methods');
       const snapshot = await methodsRef.get();
       const methods = [];
-      
+
       snapshot.forEach(doc => {
         methods.push({ id: doc.id, ...doc.data() });
       });
@@ -23,7 +23,7 @@ class SubscriptionService {
   async updatePaymentMethodStatus(record_id, status) {
     try {
       const methodRef = db.collection('payment_methods').doc(record_id);
-      
+
       const method = await methodRef.get();
       if (!method.exists) {
         throw new Error('Payment method not found');
@@ -46,9 +46,9 @@ class SubscriptionService {
   async getPlansList() {
     try {
       const plansRef = db.collection('subscription_plans');
-      const snapshot = await plansRef.get();
+      const snapshot = await plansRef.orderBy("order","asc").get();
       const plans = [];
-      
+
       snapshot.forEach(doc => {
         plans.push({ id: doc.id, ...doc.data() });
       });
@@ -65,12 +65,15 @@ class SubscriptionService {
   async addNewPlan(planData) {
     try {
       const plansRef = db.collection('subscription_plans');
+      const snapshot = await plansRef.get();
+      const countData = snapshot.size;
       const newPlan = {
         ...planData,
+        order: countData + 1,
         created_at: new Date(),
         status: true
       };
-      
+
       const docRef = await plansRef.add(newPlan);
 
       return {
@@ -86,7 +89,7 @@ class SubscriptionService {
   async deletePlan(record_id) {
     try {
       const planRef = db.collection('subscription_plans').doc(record_id);
-      
+
       const plan = await planRef.get();
       if (!plan.exists) {
         throw new Error('Plan not found');
@@ -107,7 +110,7 @@ class SubscriptionService {
     try {
       const { record_id, ...updateData } = planData;
       const planRef = db.collection('subscription_plans').doc(record_id);
-      
+
       const plan = await planRef.get();
       if (!plan.exists) {
         throw new Error('Plan not found');

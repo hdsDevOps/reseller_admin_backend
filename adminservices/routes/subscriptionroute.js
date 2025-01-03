@@ -66,16 +66,25 @@ router.post(
 /**
  * @swagger
  * /subscription/api/v1/getplansdetailslist:
- *   get:
+ *   post:
  *     summary: Get plans and prices details list
  *     tags: [Plans]
  *     security:
  *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               last_order:
+ *                 type: number
  *     responses:
  *       200:
  *         description: List of plans and prices
  */
-router.get(
+router.post(
   "/getplansdetailslist",
   authMiddleware,
   SubscriptionController.getPlansList
@@ -195,5 +204,34 @@ router.post(
   authMiddleware,
   SubscriptionController.editPlan
 );
+
+/**
+ * @swagger
+ * /subscription/api/v1/update_order:
+ *   post:
+ *     summary: update plans order
+ *     tags: [Plans]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               records:
+ *                 type: array
+ *                   type: object
+ *     responses:
+ *       200:
+ *         description: Plan order updated successfully
+ */
+router.post(
+  "/update_order",
+  authMiddleware,
+  SubscriptionController.updateOrder
+);
+
 
 module.exports = router;

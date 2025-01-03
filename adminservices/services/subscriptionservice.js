@@ -43,10 +43,13 @@ class SubscriptionService {
     }
   }
 
-  async getPlansList() {
+  async getPlansList(data) {
     try {
-      const plansRef = db.collection('subscription_plans');
-      const snapshot = await plansRef.orderBy("order","asc").get();
+      let plansRef = db.collection('subscription_plans');
+      if (data.hasOwnProperty('last_order') && data.last_order != "" && data.last_order != undefined) {
+        plansRef = plansRef.where("order", ">", data.last_order);
+      }
+      const snapshot = await plansRef.orderBy("order", "asc").get();
       const plans = [];
 
       snapshot.forEach(doc => {
@@ -127,6 +130,24 @@ class SubscriptionService {
       };
     } catch (error) {
       throw new Error('Failed to update plan: ' + error.message);
+    }
+  }
+  async updateOrder(planData) {
+    try {
+      if (!planData || !planData.length) {
+        throw new Error('Invalid request data');
+      }
+
+      const batch = db.batch();
+      planData.forEach((doc) => {
+        const docRef = firestore.collection(subscription_plans).doc(doc.record_id);
+        batch.update(docRef, doc.order);
+      });
+      await batch.commit();
+      return { status: 200, message: "Documents updated successfully" };
+
+    } catch (error) {
+      throw new Error('Failed to update plan order: ' + error.message);
     }
   }
 }

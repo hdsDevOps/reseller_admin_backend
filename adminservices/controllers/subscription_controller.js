@@ -23,7 +23,7 @@ class SubscriptionController {
 
   async getPlansList(req, res) {
     try {
-      const result = await subscriptionService.getPlansList();
+      const result = await subscriptionService.getPlansList(req.body);
       res.status(200).json(result);
     } catch (error) {
       res.status(400).json({ status: 'error', message: error.message });
@@ -52,6 +52,14 @@ class SubscriptionController {
   async editPlan(req, res) {
     try {
       const result = await subscriptionService.editPlan(req.body);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ status: 'error', message: error.message });
+    }
+  }
+  async updateOrder(req, res) {
+    try {
+      const result = await subscriptionService.updateOrder(req.body);
       res.status(200).json(result);
     } catch (error) {
       res.status(400).json({ status: 'error', message: error.message });

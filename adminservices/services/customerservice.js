@@ -373,23 +373,22 @@ class CustomerService {
       const customers = [];
       for (const customer of uniqueCustomers) {
 
-        let subscriptionData = null;
-        let last_payment = "";
-        const subscriptionRef = db.collection('customer_subscriptions').where('customer_id', '==', customer.id).orderBy('last_payment', 'desc').limit(1);
-        const subscriptionSnap = await subscriptionRef.get();
-        if (!subscriptionSnap.empty) {
-          subscriptionData = subscriptionSnap.docs[0].data();
-        }
+        // let subscriptionData = null;
+        // let last_payment = "";
+        // const subscriptionRef = db.collection('customer_subscriptions').where('customer_id', '==', customer.id).orderBy('last_payment', 'desc').limit(1);
+        // const subscriptionSnap = await subscriptionRef.get();
+        // if (!subscriptionSnap.empty) {
+        //   subscriptionData = subscriptionSnap.docs[0].data();
+        // }
 
-        if (subscriptionData) {
-          last_payment = subscriptionData.last_payment;
-        }
-        let profile_id = customer.profile_id ? customer.profile_id : "";
+        // if (subscriptionData) {
+        //   last_payment = subscriptionData.last_payment;
+        // }
+        // let profile_id = customer.profile_id ? customer.profile_id : "";
         customers.push({
           record_id: customer.id,
           customer_id: profile_id,
-          ...customer,
-          last_payment: last_payment,
+          ...customer,          
         });
       }
       return {

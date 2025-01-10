@@ -1,4 +1,4 @@
-const { admin,db } = require("../firebaseConfig");
+const { admin, db } = require("../firebaseConfig");
 const helper = require("../helper");
 
 class CustomerService {
@@ -143,7 +143,7 @@ class CustomerService {
       customersSnapshot.forEach((doc) => {
         customers.push({
           id: doc.id,
-          customer_id:"HDS-"+doc.customer_count,
+          customer_id: "HDS-" + doc.customer_count,
           //...doc.data(),
         });
       });
@@ -176,51 +176,51 @@ class CustomerService {
     email,
     authentication,
   }) {
-   
+
     try {
       const customersRef = db.collection("customers");
 
-      const checkcustomerexist = await db.collection('customers') 
-      .where('email', '==', email) 
-      .get();
-      if (checkcustomerexist.empty) {  
-      // Fetch all documents in the 'customers' collection
-      const snapshot = await customersRef.get();
-      
-      const recordCount = snapshot.size;
-      const password = "12345678";  
-      let currentCount = recordCount + 1;
-      const customerRef = await db.collection("customers").add({
-        first_name,
-        last_name,
-        address,
-        state_name,
-        city,
-        country,
-        zipcode,
-        phone_no,
-        email,
-        authentication,
-        status: "active",
-        account_status: "active",
-        created_at: new Date(),
-        customer_count: currentCount,
-      });
-      await admin.auth().createUser({
+      const checkcustomerexist = await db.collection('customers')
+        .where('email', '==', email)
+        .get();
+      if (checkcustomerexist.empty) {
+        // Fetch all documents in the 'customers' collection
+        const snapshot = await customersRef.get();
+
+        const recordCount = snapshot.size;
+        const password = "12345678";
+        let currentCount = recordCount + 1;
+        const customerRef = await db.collection("customers").add({
+          first_name,
+          last_name,
+          address,
+          state_name,
+          city,
+          country,
+          zipcode,
+          phone_no,
+          email,
+          authentication,
+          status: "active",
+          account_status: "active",
+          created_at: new Date(),
+          customer_count: currentCount,
+        });
+        await admin.auth().createUser({
           email: email,
           password: password,
         });
-      return {
-        status: 200,
-        message: "Customer added successfully",
-        customerId: customerRef.id,
-      };
-    } else {
-      return {
-        status: 400,
-        message: "Customer already exist",
-      };
-    }
+        return {
+          status: 200,
+          message: "Customer added successfully",
+          customerId: customerRef.id,
+        };
+      } else {
+        return {
+          status: 400,
+          message: "Customer already exist",
+        };
+      }
     } catch (error) {
       throw new Error("Failed to add customer: " + error.message);
     }
@@ -229,34 +229,34 @@ class CustomerService {
   async edit_Customer(record_id, updateData) {
     try {
       let exist_status = 0;
-      const checkcustomerexist = await db.collection('customers') 
+      const checkcustomerexist = await db.collection('customers')
         .where('email', '==', updateData.email)
         .get();
 
-        checkcustomerexist.forEach(doc => {
-          if(doc.id != record_id){
-            exist_status = 1;
-          }
-        });
-if(exist_status == 0){
-      await db
-        .collection("customers")
-        .doc(record_id)
-        .update({
-          ...updateData,
-          updated_at: new Date(),
-        });
+      checkcustomerexist.forEach(doc => {
+        if (doc.id != record_id) {
+          exist_status = 1;
+        }
+      });
+      if (exist_status == 0) {
+        await db
+          .collection("customers")
+          .doc(record_id)
+          .update({
+            ...updateData,
+            updated_at: new Date(),
+          });
 
-      return {
-        status: 200,
-        message: "Customer updated successfully",
-      };
-}else{
-  return {
-    status: 400,
-    message: "Customer already exist",
-  };
-}
+        return {
+          status: 200,
+          message: "Customer updated successfully",
+        };
+      } else {
+        return {
+          status: 400,
+          message: "Customer already exist",
+        };
+      }
     } catch (error) {
       throw new Error("Failed to update customer: " + error.message);
     }
@@ -270,36 +270,35 @@ if(exist_status == 0){
       // Queries for partial matches on firstname, lastname, and email
       let query = db.collection('customers');
 
-      
+
       if (data.domain && data.domain.trim() !== "") {
         query = query.where('domain', '==', data.domain);
-    }
+      }
       // Add filters dynamically based on available data
       if (data.country && data.country.trim() !== "") {
-          query = query.where('country', '==', data.country);
+        query = query.where('country', '==', data.country);
       }
-      
+
       if (data.state_name && data.state_name.trim() !== "") {
-          query = query.where('state_name', '==', data.state_name);
+        query = query.where('state_name', '==', data.state_name);
       }
-  
-      if (data.authentication !== "" && data.authentication !== undefined) 
-        { 
-          if(data.authentication == true){
-     
-            query = query.where("authentication", "==", true); 
-          }else{
-   
-            query = query.where("authentication", "==", false);
-          }
+
+      if (data.authentication !== "" && data.authentication !== undefined) {
+        if (data.authentication == true) {
+
+          query = query.where("authentication", "==", true);
+        } else {
+
+          query = query.where("authentication", "==", false);
         }
+      }
 
       // Add sorting and search functionality
       query = query
-          .orderBy('first_name')
-          .startAt(searchKey)
-          .endAt(searchKey + '\uf8ff');
-      
+        .orderBy('first_name')
+        .startAt(searchKey)
+        .endAt(searchKey + '\uf8ff');
+
       // Fetch the records
       const firstnameQuery = await query.get();
 
@@ -307,78 +306,92 @@ if(exist_status == 0){
 
       if (data.domain && data.domain.trim() !== "") {
         query = query.where('domain', '==', data.domain);
-    }
+      }
       // Add filters dynamically based on available data
       if (data.country && data.country.trim() !== "") {
-          query = query.where('country', '==', data.country);
+        query = query.where('country', '==', data.country);
       }
-      
+
       if (data.state_name && data.state_name.trim() !== "") {
-          query = query.where('state_name', '==', data.state_name);
+        query = query.where('state_name', '==', data.state_name);
       }
-      
+
       if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
 
-// Add sorting and search
-query = query
-    .orderBy('last_name')
-    .startAt(searchKey)
-    .endAt(searchKey + '\uf8ff');
+      // Add sorting and search
+      query = query
+        .orderBy('last_name')
+        .startAt(searchKey)
+        .endAt(searchKey + '\uf8ff');
 
-// Execute the query
-const lastnameQuery = await query.get();
-  
+      // Execute the query
+      const lastnameQuery = await query.get();
 
-  
-query = customersRef;
 
-if (data.domain && data.domain.trim() !== "") {
-  query = query.where('domain', '==', data.domain);
-}
-// Add filters dynamically based on available data
-if (data.country && data.country.trim() !== "") {
-    query = query.where('country', '==', data.country);
-}
 
-if (data.state_name && data.state_name.trim() !== "") {
-    query = query.where('state_name', '==', data.state_name);
-}
+      query = customersRef;
 
-if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
+      if (data.domain && data.domain.trim() !== "") {
+        query = query.where('domain', '==', data.domain);
+      }
+      // Add filters dynamically based on available data
+      if (data.country && data.country.trim() !== "") {
+        query = query.where('country', '==', data.country);
+      }
 
-// Add sorting and search functionality
-query = query
-    .orderBy('email')
-    .startAt(searchKey)
-    .endAt(searchKey + '\uf8ff');
+      if (data.state_name && data.state_name.trim() !== "") {
+        query = query.where('state_name', '==', data.state_name);
+      }
 
-// Execute the query
-const emailQuery = await query.get();
-  
+      if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
+
+      // Add sorting and search functionality
+      query = query
+        .orderBy('email')
+        .startAt(searchKey)
+        .endAt(searchKey + '\uf8ff');
+
+      // Execute the query
+      const emailQuery = await query.get();
+
 
       // Execute all queries in parallel
       const [firstnameSnap, lastnameSnap, emailSnap] = await Promise.all([firstnameQuery, lastnameQuery, emailQuery]);
-  
+
       // Combine results into a Map to avoid duplicates
       const results = new Map();
-  
+
       firstnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
       lastnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
       emailSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
-  
+
       // Convert Map to an array of unique customers
       const uniqueCustomers = Array.from(results.values());
-      
+
       //const snapshot = await db.collection("customers").get();
 
       const customers = [];
-      uniqueCustomers.forEach((doc) => {
+      for (const customer of uniqueCustomers) {
+
+        let subscriptionData = null;
+        let last_payment="";
+        const subscriptionRef = db.collection('customer_subscriptions').where('customer_id', '==', customer.id).orderBy('last_payment', 'desc').limit(1);
+        const subscriptionSnap = await subscriptionRef.get();
+        if (!subscriptionSnap.empty) {
+          subscriptionData = subscriptionSnap.docs[0].data();
+        }
+
+        if(subscriptionData){
+          last_payment=subscriptionData.last_payment;
+        }
+
         customers.push({
-          record_id: doc.id,
-          customer_id:"HDS-"+doc.customer_count,
-          ...doc,
+          record_id: customer.id,
+          customer_id: "HDS-" + customer.customer_count,
+          ...customer,
+          last_payment:last_payment,
         });
-      });
+      }
       return {
         status: 200,
         data: customers,
@@ -404,7 +417,7 @@ const emailQuery = await query.get();
     try {
       await db.collection("customers").doc(record_id).update({
         status: false,
-        account_status:"suspended",
+        account_status: "suspended",
         suspended_at: new Date(),
       });
 
@@ -421,7 +434,7 @@ const emailQuery = await query.get();
     try {
       await db.collection("customers").doc(record_id).update({
         subscription_status: "cancelled",
-        status:false,
+        status: false,
         cancelled_at: new Date(),
       });
 
@@ -440,7 +453,7 @@ const emailQuery = await query.get();
     try {
       await db.collection("customers").doc(record_id).update({
         status: true,
-        subscription_status:"active",
+        subscription_status: "active",
         cancelled_at: new Date(),
       });
 
@@ -460,29 +473,29 @@ const emailQuery = await query.get();
 
       const customerCollection = db.collection("customers");
 
-        const filters = {
-            country: data.country, // Set to null/undefined if not needed
-            state_name: data.state_name, // Set to null/undefined if not needed
-            customer_count: data.license_usage,
-            plan: data.plan,
-            start_date: data.start_date,
-            end_date: data.end_date,
-        };
+      const filters = {
+        country: data.country, // Set to null/undefined if not needed
+        state_name: data.state_name, // Set to null/undefined if not needed
+        customer_count: data.license_usage,
+        plan: data.plan,
+        start_date: data.start_date,
+        end_date: data.end_date,
+      };
 
-        // Start the base query
-        let query = customerCollection;
-        query = query.where("account_status", "==", "active");
+      // Start the base query
+      let query = customerCollection;
+      query = query.where("account_status", "==", "active");
 
-        // Add dynamic filters
-        if (filters.country) {
-            query = query.where("country", "==", filters.country);
-        }
-        if (filters.state_name) {
-            query = query.where("state_name", "==", filters.state_name);
-        }
+      // Add dynamic filters
+      if (filters.country) {
+        query = query.where("country", "==", filters.country);
+      }
+      if (filters.state_name) {
+        query = query.where("state_name", "==", filters.state_name);
+      }
 
-        if (filters.customer_count) {
-          query = query.where("customer_count", "==", filters.customer_count);
+      if (filters.customer_count) {
+        query = query.where("customer_count", "==", filters.customer_count);
       }
       if (filters.plan) {
         query = query.where("plan", "==", filters.plan);
@@ -493,16 +506,16 @@ const emailQuery = await query.get();
       if (filters.end_date) {
         query = query.where("end_date", "==", filters.end_date);
       }
-        
-        // Execute the query
-        const querySnapshot = await query.get();
 
-        const customers = [];
-        querySnapshot.forEach(doc => {
-            customers.push({ id: doc.id, ...doc.data() });
-        });
+      // Execute the query
+      const querySnapshot = await query.get();
 
-  return {status:200,customer_count:customers.length,message:"Total customer count against filter"};
+      const customers = [];
+      querySnapshot.forEach(doc => {
+        customers.push({ id: doc.id, ...doc.data() });
+      });
+
+      return { status: 200, customer_count: customers.length, message: "Total customer count against filter" };
     } catch (error) {
       return {
         status: 400,
@@ -516,23 +529,23 @@ const emailQuery = await query.get();
     try {
 
       const customerCollection = db.collection("customers");
-        // Start the base query
-        let query = customerCollection;
-        query = query.where("account_status", "==", "active");
+      // Start the base query
+      let query = customerCollection;
+      query = query.where("account_status", "==", "active");
 
-        // Execute the query
-        const querySnapshot = await query.get();
+      // Execute the query
+      const querySnapshot = await query.get();
 
-        const countrylist = [];
-        querySnapshot.forEach(doc => {
-          const data = doc.data(); // Get the document data
-          if (data.country) { // Check if the country field exists
-            countrylist.push(data.country);
-          }
-        });
+      const countrylist = [];
+      querySnapshot.forEach(doc => {
+        const data = doc.data(); // Get the document data
+        if (data.country) { // Check if the country field exists
+          countrylist.push(data.country);
+        }
+      });
 
-        const uniquecountrylist = [...new Set(countrylist)];
-  return {status:200,countrylist:uniquecountrylist,message:"Country List for customer"};
+      const uniquecountrylist = [...new Set(countrylist)];
+      return { status: 200, countrylist: uniquecountrylist, message: "Country List for customer" };
     } catch (error) {
       return {
         status: 400,
@@ -546,24 +559,24 @@ const emailQuery = await query.get();
     try {
 
       const customerCollection = db.collection("customers");
-        // Start the base query
-        let query = customerCollection;
-        query = query.where("account_status", "==", "active");
+      // Start the base query
+      let query = customerCollection;
+      query = query.where("account_status", "==", "active");
 
-        // Execute the query
-        const querySnapshot = await query.get();
+      // Execute the query
+      const querySnapshot = await query.get();
 
-        const regionlist = [];
-        querySnapshot.forEach(doc => {
-          const data = doc.data(); // Get the document data
-          if (data.state_name) { // Check if the country field exists
-            regionlist.push(data.state_name);
-          }
-        });
+      const regionlist = [];
+      querySnapshot.forEach(doc => {
+        const data = doc.data(); // Get the document data
+        if (data.state_name) { // Check if the country field exists
+          regionlist.push(data.state_name);
+        }
+      });
 
-        const uniqueregionlist = [...new Set(regionlist)];
+      const uniqueregionlist = [...new Set(regionlist)];
 
-  return {status:200,regionlist:uniqueregionlist,message:"Region List for customer"};
+      return { status: 200, regionlist: uniqueregionlist, message: "Region List for customer" };
     } catch (error) {
       return {
         status: 400,
@@ -575,15 +588,15 @@ const emailQuery = await query.get();
 
   async getCustomerbyemail(email) {
     try {
-      const checkcustomerexist = await db.collection('customers') 
-        .where('email', '==', email) 
+      const checkcustomerexist = await db.collection('customers')
+        .where('email', '==', email)
         .get();
       if (checkcustomerexist.empty) {
         return {
           status: 400,
           message: "Customer not found",
         };
-      }else{
+      } else {
         return {
           status: 200,
           message: "Customer found",

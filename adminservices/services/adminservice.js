@@ -11,17 +11,17 @@ class AdminService {
       const firebaseConfig = {
         apiKey: 'AIzaSyBDhOqLuQygzeZL-V1xqJkW37kpfiyHrgA',
       };
-  
+
       const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseConfig.apiKey}`, {
         email,
         password,
         returnSecureToken: true,
       });
-  
+
       const { idToken } = response.data;
 
       const otp = this.generateOtp();
-      
+
       await this.storeOtp(userRecord.uid, otp);
       await this.sendLoginOtp(email, otp);
 
@@ -29,20 +29,20 @@ class AdminService {
         status: 200,
         message: "OTP sent successfully",
         userId: userRecord.uid,
-        otp:otp,
+        otp: otp,
       };
     } catch (error) {
       throw new Error("Login failed.Please check: " + error.message);
     }
   }
 
-  async verifyOtp({ admin_id, otp }) {    
+  async verifyOtp({ admin_id, otp }) {
     try {
       const result = await this.validateOtp(admin_id, otp);
       if (result.valid) {
         let id = admin_id;
         const token = generateToken({ id });
-        
+
         return {
           status: 200,
           token,
@@ -126,7 +126,7 @@ class AdminService {
     }
   }
 
-  async editFaq({record_id, question, answer, order}) {
+  async editFaq({ record_id, question, answer, order }) {
     try {
       await db.collection("faqs").doc(record_id).update({
         question,
@@ -140,7 +140,7 @@ class AdminService {
         message: "FAQ updated successfully",
       };
     } catch (error) {
-      throw new Error("Error updating FAQ "+error);
+      throw new Error("Error updating FAQ " + error);
     }
   }
 
@@ -197,7 +197,7 @@ class AdminService {
         },
       };
     } catch (error) {
-      throw new Error("Error retrieving email log details "+error);
+      throw new Error("Error retrieving email log details " + error);
     }
   }
 
@@ -284,7 +284,7 @@ class AdminService {
       }
       return doc.data();
     } catch (error) {
-      throw new Error("Failed to fetch SEO data "+error);
+      throw new Error("Failed to fetch SEO data " + error);
     }
   }
 
@@ -402,7 +402,20 @@ class AdminService {
 
   async getPromotions() {
     try {
-      const snapshot = await db.collection("promotions").get();
+      const today = new Date();
+      let snapref = db.collection("promotions");
+      const snapData = await snapref.where('end_date', '>', today).get();
+      if (!snapData.empty) {
+        let batch = db.batch();
+        snapData.forEach(doc => {
+          const docRef = snapref.doc(doc.id);
+          batch.update(docRef, { status: false });
+        });
+      }
+
+
+      snapref = snapref.where("status", "==", true);
+      const snapshot = await snapref.get();
       return snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -438,7 +451,7 @@ class AdminService {
       });
       return { success: true, message: "Promotion updated successfully" };
     } catch (error) {
-      throw new Error("Failed to update promotion "+error);
+      throw new Error("Failed to update promotion " + error);
     }
   }
 
@@ -565,55 +578,54 @@ class AdminService {
   }
 
   async storeOtp(userId, otp) {
-    try{
-    const encryptedOtp = CryptoJS.AES.encrypt(
-      otp.toString(),
-      process.env.CRYPTOTOKEN
-    ).toString();
-    
     try {
-      // Attempt to update the document
-      await db
-      .collection("users")
-      .doc(userId)
-      .update({
-        otp: encryptedOtp,
-        otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
-      });
-      
-    } catch (error) {
-      if (error.code === 'not-found') {
-        // If document doesn't exist, create it with the new data
-        console.log("User document not found, creating new document.");
-        await db.collection("users").doc(userRecord.uid).set({
-          otp: encryptedOtp,
-          otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-        });
-        console.log("New user document created with OTP.");
+      const encryptedOtp = CryptoJS.AES.encrypt(
+        otp.toString(),
+        process.env.CRYPTOTOKEN
+      ).toString();
+
+      try {
+        // Attempt to update the document
+        await db
+          .collection("users")
+          .doc(userId)
+          .update({
+            otp: encryptedOtp,
+            otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
+          });
+
+      } catch (error) {
+        if (error.code === 'not-found') {
+          // If document doesn't exist, create it with the new data
+          console.log("User document not found, creating new document.");
+          await db.collection("users").doc(userRecord.uid).set({
+            otp: encryptedOtp,
+            otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          });
+          console.log("New user document created with OTP.");
+        }
       }
     }
-  }
-    catch(error)
-    {
+    catch (error) {
       throw new Error("Failed to update banner status: " + error.message);
     }
   }
 
   async sendLoginOtp(email, otp) {
-    await sendMail(email,"Login OTP",`Your login OTP is: ${otp}`);
+    await sendMail(email, "Login OTP", `Your login OTP is: ${otp}`);
   }
 
   async validateOtp(userId, otp) {
     try {
       // Fetch the user data (specifically the OTP and expiry) from the database
       const userDoc = await db.collection("users").doc(userId).get();
-      
+
       if (!userDoc.exists) {
         throw new Error("User not found");
       }
-      const { otp: encryptedOtp, otpExpiry,role } = userDoc.data();
+      const { otp: encryptedOtp, otpExpiry, role } = userDoc.data();
 
       // Decrypt the stored OTP
       const bytes = CryptoJS.AES.decrypt(encryptedOtp, process.env.CRYPTOTOKEN);
@@ -631,7 +643,7 @@ class AdminService {
       }
 
       // If both the OTP matches and hasn't expired
-      return { valid: true, message: "OTP is valid", user_role:role };
+      return { valid: true, message: "OTP is valid", user_role: role };
     } catch (error) {
       throw new Error("Failed to validate OTP: " + error.message);
     }
@@ -673,14 +685,14 @@ class AdminService {
     try {
       const docRef = db.collection('cms').doc('terms_conditions');
       const docSnapshot = await docRef.get();
-  
+
       if (!docSnapshot.exists) {
         console.log('No document found!');
         return null;
       }
-  
+
       const data = docSnapshot.data();
-    
+
       return data;
     } catch (error) {
       console.error('Error fetching document:', error);
@@ -691,14 +703,14 @@ class AdminService {
     try {
       const docRef = db.collection('cms').doc('customer_agreement');
       const docSnapshot = await docRef.get();
-  
+
       if (!docSnapshot.exists) {
         console.log('No document found!');
         return null;
       }
-  
+
       const data = docSnapshot.data();
-    
+
       return data;
     } catch (error) {
       console.error('Error fetching document:', error);
@@ -710,14 +722,14 @@ class AdminService {
     try {
       const docRef = db.collection('cms').doc('privacy_policy');
       const docSnapshot = await docRef.get();
-  
+
       if (!docSnapshot.exists) {
         console.log('No document found!');
         return null;
       }
-  
+
       const data = docSnapshot.data();
-    
+
       return data;
     } catch (error) {
       console.error('Error fetching document:', error);
@@ -726,37 +738,37 @@ class AdminService {
   }
 
   updateProfileService = async (data) => {
-    const { userid,password, ...rest } = data;
+    const { userid, password, ...rest } = data;
 
     if (!userid) {
-        throw new Error('Email is required for updating profile.');
+      throw new Error('Email is required for updating profile.');
     }
 
     const profileRef = db.collection(PROFILE_COLLECTION).doc(userid);
     await profileRef.set(rest, { merge: true }); // Merges with existing data
     const updatedProfile = await profileRef.get();
 
-  if(password !=""){  
-    await admin.auth().updateUser(userid, {
-      password: password
-    })
-  }
+    if (password != "") {
+      await admin.auth().updateUser(userid, {
+        password: password
+      })
+    }
     return updatedProfile.data();
-};
+  };
 
-getProfileDetailsService = async (userid) => {
+  getProfileDetailsService = async (userid) => {
     if (!userid) {
-        throw new Error('USer ID is required to fetch profile.');
+      throw new Error('USer ID is required to fetch profile.');
     }
 
     const profileRef = db.collection(PROFILE_COLLECTION).doc(userid);
     const doc = await profileRef.get();
 
     if (!doc.exists) {
-        return null;
+      return null;
     }
     return doc.data();
-};
+  };
 
 }
 

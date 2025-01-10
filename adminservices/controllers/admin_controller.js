@@ -1,7 +1,7 @@
 const AdminService = require("../services/adminservice");
 const currencyservice = require('../services/currencyservice');
 const notificationservices = require('../services/notificationservice');
-const { admin, db,bucket } = require("../firebaseConfig");
+const { admin, db, bucket } = require("../firebaseConfig");
 const path = require('path');
 
 class AdminController {
@@ -69,14 +69,14 @@ class AdminController {
     }
   }
 
-  async deleteFaq(req,res) {
+  async deleteFaq(req, res) {
     try {
       await db.collection("faqs").doc(req.body.record_id).delete();
 
-        res.status(200).send({status: 200,message: "FAQ deleted successfully"});
-    
+      res.status(200).send({ status: 200, message: "FAQ deleted successfully" });
+
     } catch (error) {
-      throw new Error("Error deleting FAQ"+error);
+      throw new Error("Error deleting FAQ" + error);
     }
   }
 
@@ -278,12 +278,17 @@ class AdminController {
 
   async addPromotion(req, res) {
     try {
-      const { code, start_date, end_date, html_template } = req.body;
+      let { code, start_date, end_date, html_template, discount } = req.body;
+      start_date = new Date(start_date);
+      end_date = new Date(end_date);
+      const status = end_date >= start_date && end_date >= new Date() ? true : false;
       const result = await AdminService.addPromotion({
         code,
         start_date,
         end_date,
         html_template,
+        discount,
+        status
       });
       res.json(result);
     } catch (error) {
@@ -293,13 +298,17 @@ class AdminController {
 
   async updatePromotion(req, res) {
     try {
-      const { record_id, code, start_date, end_date, html_template,status } = req.body;
+      let { record_id, code, start_date, end_date, html_template, status } = req.body;
+      start_date = new Date(start_date);
+      end_date = new Date(end_date);
+      status = end_date >= start_date && end_date >= new Date() ? true : false;
       const result = await AdminService.updatePromotion(record_id, {
         code,
         start_date,
         end_date,
         html_template,
-        status
+        status,
+        discount
       });
       res.json(result);
     } catch (error) {
@@ -367,38 +376,38 @@ class AdminController {
   async uploadimage(req, res) {
     try {
       if (!req.file) {
-        return res.status(400).send({status: "error",message:'No file uploaded.'});
+        return res.status(400).send({ status: "error", message: 'No file uploaded.' });
       }
       const fileExtension = path.extname(req.file.originalname);
       const fileName = `${Date.now()}-HDS${fileExtension}`;
       const file = bucket.file(fileName);
-  
+
       // Create a write stream to Firebase Storage
       const blobStream = file.createWriteStream({
         metadata: {
           contentType: req.file.mimetype, // Use the uploaded file's MIME type
         },
       });
-  
+
       blobStream.on('error', (err) => {
         console.error(err);
-        res.status(400).send({status: "error",message:'Error uploading file.'});
+        res.status(400).send({ status: "error", message: 'Error uploading file.' });
       });
-  
+
       blobStream.on('finish', async () => {
         // Make the file publicly accessible
         await file.makePublic();
-  
+
         // Get the public URL
         const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
         res.status(200).send({ message: 'File uploaded successfully!', url: publicUrl });
       });
-  
+
       // End the stream by writing the file buffer
       blobStream.end(req.file.buffer);
     } catch (error) {
       console.error(error);
-      res.status(400).send({status: "error",message:'Error handling file upload.'});
+      res.status(400).send({ status: "error", message: 'Error handling file upload.' });
     }
   }
 
@@ -437,81 +446,81 @@ class AdminController {
     }
   }
 
-    async updateProfile(req, res){
-      try {
-          const result = await AdminService.updateProfileService(req.body);
-          res.status(200).json({ status:200,message: 'Profile updated successfully' });
-      } catch (error) {
-          res.status(500).json({ message: error.message });
-      }
+  async updateProfile(req, res) {
+    try {
+      const result = await AdminService.updateProfileService(req.body);
+      res.status(200).json({ status: 200, message: 'Profile updated successfully' });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   };
 
-  async getProfileDetails(req, res){
-      try {
-          const { userid } = req.body;
-          const result = await AdminService.getProfileDetailsService(userid);
-          if (!result) {
-              return res.status(404).json({ message: 'Profile not found' });
-          }
-          res.status(200).json({ message: 'Profile retrieved successfully', data: result });
-      } catch (error) {
-          res.status(500).json({ message: error.message });
+  async getProfileDetails(req, res) {
+    try {
+      const { userid } = req.body;
+      const result = await AdminService.getProfileDetailsService(userid);
+      if (!result) {
+        return res.status(404).json({ message: 'Profile not found' });
       }
+      res.status(200).json({ message: 'Profile retrieved successfully', data: result });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   };
 
 
-  async getCurrencyByCustomerId(req, res){
+  async getCurrencyByCustomerId(req, res) {
     try {
-        const { userid } = req.body;
-     
-        const currencyData = await currencyservice.getCurrencyDataService(userid);
-        if (!currencyData) {
-            return res.status(404).json({ message: 'Currency data not found for the given customer ID' });
-        }
-        res.status(200).json({ message: 'Currency data retrieved successfully', data: currencyData });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+      const { userid } = req.body;
 
-  async updateDefaultCurrency(req, res){
+      const currencyData = await currencyservice.getCurrencyDataService(userid);
+      if (!currencyData) {
+        return res.status(404).json({ message: 'Currency data not found for the given customer ID' });
+      }
+      res.status(200).json({ message: 'Currency data retrieved successfully', data: currencyData });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+  async updateDefaultCurrency(req, res) {
     try {
-        const { userid, defaultCurrency } = req.body;
-        if (!userid || !defaultCurrency) {
-            return res.status(400).json({ message: 'Customer ID and default currency are required' });
-        }
-        await currencyservice.updateDefaultCurrencyService(userid, defaultCurrency);
-        res.status(200).json({ message: 'Default currency updated successfully' });
+      const { userid, defaultCurrency } = req.body;
+      if (!userid || !defaultCurrency) {
+        return res.status(400).json({ message: 'Customer ID and default currency are required' });
+      }
+      await currencyservice.updateDefaultCurrencyService(userid, defaultCurrency);
+      res.status(200).json({ message: 'Default currency updated successfully' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
-};
+  };
 
-async getstatus(req, res){
-  try {
+  async getstatus(req, res) {
+    try {
       const { userid } = req.body;
       if (!userid) {
-          return res.status(400).json({ message: 'Customer ID required' });
+        return res.status(400).json({ message: 'Customer ID required' });
       }
       const response_data = await notificationservices.getNotificationSettingsService(userid);
-      res.status(200).json({data:response_data, message: 'Get user notification updated successfully' });
-  } catch (error) {
+      res.status(200).json({ data: response_data, message: 'Get user notification updated successfully' });
+    } catch (error) {
       res.status(500).json({ message: error.message });
-  }
-};
+    }
+  };
 
-async update_status(req, res){
-  try {
-      const { userid,status } = req.body;
+  async update_status(req, res) {
+    try {
+      const { userid, status } = req.body;
       if (!userid) {
-          return res.status(400).json({ message: 'Customer ID required' });
+        return res.status(400).json({ message: 'Customer ID required' });
       }
-      await notificationservices.updateNotificationStatusService(userid,status);
+      await notificationservices.updateNotificationStatusService(userid, status);
       res.status(200).json({ message: 'Notification status updated successfully' });
-  } catch (error) {
+    } catch (error) {
       res.status(500).json({ message: error.message });
-  }
-};
+    }
+  };
 
 
 }

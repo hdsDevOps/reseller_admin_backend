@@ -384,7 +384,7 @@ class CustomerService {
         // if (subscriptionData) {
         //   last_payment = subscriptionData.last_payment;
         // }
-        // let profile_id = customer.profile_id ? customer.profile_id : "";
+        let profile_id = customer.profile_id ? customer.profile_id : "";
         customers.push({
           record_id: customer.id,
           customer_id: profile_id,

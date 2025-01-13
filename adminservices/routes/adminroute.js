@@ -570,8 +570,8 @@ router.post("/cmsupdateaboutus", authMiddleware, adminController.updateAboutUs);
  *       200:
  *         description: Promotions data retrieved successfully
  */
-router.post(
-  "/cmsgetpromotiondata",
+router.get(
+  "/cmsgetpromotiondata",authMiddleware,
   adminController.getPromotions
 );
 

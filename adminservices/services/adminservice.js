@@ -415,17 +415,6 @@ class AdminService {
     }
 
     snapref =snapref.where("status", "==", true);
-    if (data.hasOwnProperty("promotion_id") && data.promotion_id != "" && data.promotion_id != null) {
-      const specificDocRef = db.collection("promotions").doc(data.promotion_id);
-      const doc = await specificDocRef.get();
-      if (!doc.exists) {
-        throw new Error("Promotion not found");
-      }
-      return {
-        id: doc.id,
-        ...doc.data(),
-      };
-    }
     const snapshot = await snapref.get();
     return snapshot.docs.map((doc) => ({
       id: doc.id,

@@ -269,7 +269,7 @@ class AdminController {
 
   async getPromotions(req, res) {
     try {
-      const result = await AdminService.getPromotions(req.body);
+      const result = await AdminService.getPromotions();
       res.json(result);
     } catch (error) {
       res.status(500).json({ error: error.message });

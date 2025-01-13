@@ -400,26 +400,39 @@ class AdminService {
     }
   }
 
-  async getPromotions() {
+  async getPromotions(data) {
     try {
-      const today = new Date();
-      let snapref = db.collection("promotions");
-      const snapData = await snapref.where('end_date', '>', today).get();
-      if (!snapData.empty) {
-        let batch = db.batch();
-        snapData.forEach(doc => {
-          const docRef = snapref.doc(doc.id);
-          batch.update(docRef, { status: false });
-        });
+    const today = new Date();
+    let snapref = db.collection("promotions");
+    const snapData = await snapref.where('end_date', '>', today).get();
+    if (!snapData.empty) {
+      let batch = db.batch();
+      snapData.forEach(doc => {
+        const docRef = snapref.doc(doc.id);
+        batch.update(docRef, { status: false });
+      });
+      await batch.commit();
+    }
+
+    snapref =snapref.where("status", "==", true);
+    if (data.hasOwnProperty("promotion_id") && data.promotion_id != "" && data.promotion_id != null) {
+      const specificDocRef = db.collection("promotions").doc(data.promotion_id);
+      const doc = await specificDocRef.get();
+      if (!doc.exists) {
+        throw new Error("Promotion not found");
       }
-
-
-      snapref = snapref.where("status", "==", true);
-      const snapshot = await snapref.get();
-      return snapshot.docs.map((doc) => ({
+      return {
         id: doc.id,
         ...doc.data(),
-      }));
+      };
+    }
+    const snapshot = await snapref.get();
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+
     } catch (error) {
       throw new Error("Failed to fetch promotions");
     }

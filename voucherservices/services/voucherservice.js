@@ -82,6 +82,12 @@ async function addnewvoucher(data) {
       return { status: 400, message: "Missing required fields" };
     }
 
+    const vouchersnap = await db.collection("vouchers").where("voucher_code", "==", data.voucher_code).get();
+    if (!vouchersnap.empty) {
+      return { status: 400, message: "Voucher code already in use", }
+    }
+
+
 
     // Create new staff document
     const newStaff = {
@@ -126,7 +132,17 @@ async function editvoucher(data) {
     ) {
       return { status: 400, message: "Missing required fields" };
     }
+    const vouchersnap = await db.collection("vouchers").where("voucher_code", "==", data.voucher_code).get();
+    let voucherExists = false;
+    vouchersnap.forEach(doc => {
+      if (doc.id !== data.record_id) {
+        voucherExists = true;
+      }
+    });
 
+    if (voucherExists) {
+      return { status: 400, message: "Voucher code already in use" }
+    }
     const voucherRef = db.collection(table_name).doc(data.record_id);
     const doc = await voucherRef.get();
 
@@ -234,7 +250,7 @@ async function sendvochermail(data) {
       const customerdoc = await customeRef.get();
       let country = customerdoc.data().country;
       let region = customerdoc.data().region;
-      let license_usage = customerdoc.data().license_usage;      
+      let license_usage = customerdoc.data().license_usage;
       const customersRef = db.collection('customers');
       // Build the query with filters
       let query = customersRef;
@@ -248,7 +264,7 @@ async function sendvochermail(data) {
         id: doc.id,
         ...doc.data(),
       }));
-    
+
       // Collect results
       const results = [];
       const promises = querySnapshot.docs.map(async doc => {
@@ -266,7 +282,7 @@ async function sendvochermail(data) {
       });
       // Wait for all promises to complete 
       await Promise.all(promises);
-     
+
       const emails = results.join(',');
       const template = doc.data().template_details;
       if (emails) {

@@ -552,18 +552,26 @@ router.post("/cmsupdateaboutus", authMiddleware, adminController.updateAboutUs);
 /**
  * @swagger
  * /admin/api/v1/cmsgetpromotiondata:
- *   get:
+ *   post:
  *     summary: Get CMS promotions section data
  *     tags: [CMS]
  *     security:
  *       - BearerAuth: []
+ *      requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               promotion_id:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Promotions data retrieved successfully
  */
-router.get(
+router.post(
   "/cmsgetpromotiondata",
-  authMiddleware,
   adminController.getPromotions
 );
 
@@ -853,7 +861,7 @@ const uploadImageMiddleware = (req, res, next) => {
   upload.single('image')(req, res, (err) => {
     if (err instanceof Error) {
       // If Multer or fileFilter throws an error, send a JSON response
-      return res.status(400).send({status: "error",message:err.message});
+      return res.status(400).send({ status: "error", message: err.message });
     }
     next();
   });
@@ -861,7 +869,7 @@ const uploadImageMiddleware = (req, res, next) => {
 
 
 
-router.post("/uploadimage", authMiddleware,uploadImageMiddleware, adminController.uploadimage);
+router.post("/uploadimage", authMiddleware, uploadImageMiddleware, adminController.uploadimage);
 
 
 router.post(
@@ -889,19 +897,19 @@ router.get(
   adminController.getprivacypolicy
 );
 
-router.post('/updateprofile',authMiddleware, adminController.updateProfile); // Update Profile
+router.post('/updateprofile', authMiddleware, adminController.updateProfile); // Update Profile
 router.post('/getdetails', authMiddleware, adminController.getProfileDetails); // Get Profile Details by Email
 
 // Get currency data by customer ID
 router.post('/getcurrency_default', authMiddleware, adminController.getCurrencyByCustomerId);
 
 // Update default currency
-router.post('/update_defaultgetcurrency',authMiddleware, adminController.updateDefaultCurrency);
+router.post('/update_defaultgetcurrency', authMiddleware, adminController.updateDefaultCurrency);
 
 // Get notification settings for a user
 router.post('/getnotification_status', authMiddleware, adminController.getstatus);
 
 // Update a specific notification type status
-router.post('/update_notification_status',authMiddleware, adminController.update_status);
+router.post('/update_notification_status', authMiddleware, adminController.update_status);
 
- module.exports = router;
+module.exports = router;

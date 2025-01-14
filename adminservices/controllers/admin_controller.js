@@ -301,7 +301,7 @@ class AdminController {
       let { record_id, code, start_date, end_date, html_template, status,discount } = req.body;
       start_date = new Date(start_date);
       end_date = new Date(end_date);
-      status = end_date >= start_date && end_date >= new Date() ? true : false;
+      // status = end_date >= start_date && end_date >= new Date() ? true : false;
       const result = await AdminService.updatePromotion(record_id, {
         code,
         start_date,

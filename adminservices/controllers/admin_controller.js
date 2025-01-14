@@ -298,7 +298,7 @@ class AdminController {
 
   async updatePromotion(req, res) {
     try {
-      let { record_id, code, start_date, end_date, html_template, status } = req.body;
+      let { record_id, code, start_date, end_date, html_template, status,discount } = req.body;
       start_date = new Date(start_date);
       end_date = new Date(end_date);
       status = end_date >= start_date && end_date >= new Date() ? true : false;

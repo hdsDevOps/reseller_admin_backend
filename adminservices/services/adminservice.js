@@ -414,7 +414,7 @@ class AdminService {
       await batch.commit();
     }
 
-    snapref =snapref.where("status", "==", true);
+    // snapref =snapref.where("status", "==", true);
     const snapshot = await snapref.get();
     return snapshot.docs.map((doc) => ({
       id: doc.id,

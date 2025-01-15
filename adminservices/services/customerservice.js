@@ -34,6 +34,26 @@ class CustomerService {
       };
     }
   }
+  async getCustomerDomain(customerId) {
+    try {
+      let domain = [];
+      let domains_data = [];   
+         domain = await db.collection("domains").where("customer_id", "==", customerId).where("is_deleted", "==", false).get();
+          
+        domains_data = domain.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+      
+      return { status: 200, data: domains_data };
+    } catch (error) {
+      return {
+        status: 400,
+        message: "Error getting customer",
+        error: error.message,
+      };
+    }
+  }
 
   async sendNotification(customerId, message) {
     try {

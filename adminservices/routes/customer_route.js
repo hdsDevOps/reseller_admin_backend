@@ -59,6 +59,28 @@ adminServicesRouter.get("/:id", async (req, res) => {
   const customerId = req.params.id;
   res.status(200).send(await  customerservice.getCustomer(customerId));
 });
+/**
+ * @swagger
+ * /adminservices/customers/{id}:
+ *   get:
+ *     summary: Get a customer by ID
+ *     tags: [Customers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Customer details retrieved successfully
+ *       400:
+ *         description: Error getting customer
+ */
+router.get("/:id", async (req, res) => {
+  const customerId = req.params.id;
+  res.status(200).send(await  customerservice.getCustomer(customerId));
+});
 
 // Send notification
 /**

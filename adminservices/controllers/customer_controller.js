@@ -98,7 +98,7 @@ class customercontroller {
     }
 
     async getcountrylist(req, res){
-      try {
+      try {        
         const result = await  customerservice.getcountrylist();
         res.status(200).json(result);
       } catch (error) {

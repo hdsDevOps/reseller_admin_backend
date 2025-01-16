@@ -544,7 +544,7 @@ class CustomerService {
     }
   }
 
-  async getcountrylist(data) {
+  async getcountrylist() {
     try {
 
       const customerCollection = db.collection("customers");
@@ -562,7 +562,7 @@ class CustomerService {
           countrylist.push(data.country);
         }
       });
-
+console.log("object========countrylist=========",countrylist);
       const uniquecountrylist = [...new Set(countrylist)];
       return { status: 200, countrylist: uniquecountrylist, message: "Country List for customer" };
     } catch (error) {

@@ -37,14 +37,14 @@ class CustomerService {
   async getCustomerDomain(customerId) {
     try {
       let domain = [];
-      let domains_data = [];   
-         domain = await db.collection("domains").where("customer_id", "==", customerId).where("is_deleted", "==", false).get();
-          
-        domains_data = domain.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-      
+      let domains_data = [];
+      domain = await db.collection("domains").where("customer_id", "==", customerId).where("is_deleted", "==", false).get();
+
+      domains_data = domain.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
       return { status: 200, data: domains_data };
     } catch (error) {
       return {
@@ -282,144 +282,208 @@ class CustomerService {
     }
   }
 
+  // async getCustomerList(data) {
+  //   try {
+  //     const searchKey = data.search_data;
+  //     const customersRef = db.collection('customers');
+
+  //     // Queries for partial matches on firstname, lastname, and email
+  //     let query = db.collection('customers');
+
+
+  //     if (data.domain && data.domain.trim() !== "") {
+  //       query = query.where('domain', '==', data.domain);
+  //     }
+  //     // Add filters dynamically based on available data
+  //     if (data.country && data.country.trim() !== "") {
+  //       query = query.where('country', '==', data.country);
+  //     }
+
+  //     if (data.state_name && data.state_name.trim() !== "") {
+  //       query = query.where('state_name', '==', data.state_name);
+  //     }
+
+  //     if (data.authentication !== "" && data.authentication !== undefined) {
+  //       if (data.authentication == true) {
+
+  //         query = query.where("authentication", "==", true);
+  //       } else {
+
+  //         query = query.where("authentication", "==", false);
+  //       }
+  //     }
+
+  //     // Add sorting and search functionality
+  //     query = query
+  //       .orderBy('first_name')
+  //       .startAt(searchKey)
+  //       .endAt(searchKey + '\uf8ff');
+
+  //     // Fetch the records
+  //     const firstnameQuery = await query.get();
+
+  //     query = customersRef;
+
+  //     if (data.domain && data.domain.trim() !== "") {
+  //       query = query.where('domain', '==', data.domain);
+  //     }
+  //     // Add filters dynamically based on available data
+  //     if (data.country && data.country.trim() !== "") {
+  //       query = query.where('country', '==', data.country);
+  //     }
+
+  //     if (data.state_name && data.state_name.trim() !== "") {
+  //       query = query.where('state_name', '==', data.state_name);
+  //     }
+
+  //     if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
+
+  //     // Add sorting and search
+  //     query = query
+  //       .orderBy('last_name')
+  //       .startAt(searchKey)
+  //       .endAt(searchKey + '\uf8ff');
+
+  //     // Execute the query
+  //     const lastnameQuery = await query.get();
+
+
+
+  //     query = customersRef;
+
+  //     if (data.domain && data.domain.trim() !== "") {
+  //       query = query.where('domain', '==', data.domain);
+  //     }
+  //     // Add filters dynamically based on available data
+  //     if (data.country && data.country.trim() !== "") {
+  //       query = query.where('country', '==', data.country);
+  //     }
+
+  //     if (data.state_name && data.state_name.trim() !== "") {
+  //       query = query.where('state_name', '==', data.state_name);
+  //     }
+
+  //     if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
+
+  //     // Add sorting and search functionality
+  //     query = query
+  //       .orderBy('email')
+  //       .startAt(searchKey)
+  //       .endAt(searchKey + '\uf8ff');
+
+  //     // Execute the query
+  //     const emailQuery = await query.get();
+
+
+  //     // Execute all queries in parallel
+  //     const [firstnameSnap, lastnameSnap, emailSnap] = await Promise.all([firstnameQuery, lastnameQuery, emailQuery]);
+
+  //     // Combine results into a Map to avoid duplicates
+  //     const results = new Map();
+
+  //     firstnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
+  //     lastnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
+  //     emailSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
+
+  //     // Convert Map to an array of unique customers
+  //     const uniqueCustomers = Array.from(results.values());
+
+  //     //const snapshot = await db.collection("customers").get();
+
+  //     const customers = [];
+  //     for (const customer of uniqueCustomers) {
+
+  //       // let subscriptionData = null;
+  //       // let last_payment = "";
+  //       // const subscriptionRef = db.collection('customer_subscriptions').where('customer_id', '==', customer.id).orderBy('last_payment', 'desc').limit(1);
+  //       // const subscriptionSnap = await subscriptionRef.get();
+  //       // if (!subscriptionSnap.empty) {
+  //       //   subscriptionData = subscriptionSnap.docs[0].data();
+  //       // }
+
+  //       // if (subscriptionData) {
+  //       //   last_payment = subscriptionData.last_payment;
+  //       // }
+  //       let profile_id = customer.profile_id ? customer.profile_id : "";
+  //       customers.push({
+  //         record_id: customer.id,
+  //         customer_id: profile_id,
+  //         ...customer,          
+  //       });
+  //     }
+  //     return {
+  //       status: 200,
+  //       data: customers,
+  //     };
+  //   } catch (error) {
+  //     throw new Error("Failed to fetch customers: " + error.message);
+  //   }
+  // }
+
   async getCustomerList(data) {
     try {
-      const searchKey = data.search_data;
-      const customersRef = db.collection('customers');
-
-      // Queries for partial matches on firstname, lastname, and email
-      let query = db.collection('customers');
-
-
-      if (data.domain && data.domain.trim() !== "") {
-        query = query.where('domain', '==', data.domain);
-      }
-      // Add filters dynamically based on available data
-      if (data.country && data.country.trim() !== "") {
-        query = query.where('country', '==', data.country);
-      }
-
-      if (data.state_name && data.state_name.trim() !== "") {
-        query = query.where('state_name', '==', data.state_name);
-      }
-
-      if (data.authentication !== "" && data.authentication !== undefined) {
-        if (data.authentication == true) {
-
-          query = query.where("authentication", "==", true);
-        } else {
-
-          query = query.where("authentication", "==", false);
+        
+      let query = db
+        .collection("customers");
+        if(data.country!="" && data.country != null){
+          query=query.where("country","==",data.country);
         }
+        
+      if (data.state_name != "" && data.state_name != null) {
+        query = query.where("state", "==", data.state_name);
       }
-
-      // Add sorting and search functionality
-      query = query
-        .orderBy('first_name')
-        .startAt(searchKey)
-        .endAt(searchKey + '\uf8ff');
-
-      // Fetch the records
-      const firstnameQuery = await query.get();
-
-      query = customersRef;
-
+      if (data.authentication != "" && data.authentication != null) {
+        query = query.where("authentication", "==", data.authentication);
+      }
+      if (data.license_usage != "" && data.license_usage != null) {
+        query = query.where("license_usage", "==", data.license_usage);
+      }
+     
       if (data.domain && data.domain.trim() !== "") {
-        query = query.where('domain', '==', data.domain);
-      }
-      // Add filters dynamically based on available data
-      if (data.country && data.country.trim() !== "") {
-        query = query.where('country', '==', data.country);
-      }
-
-      if (data.state_name && data.state_name.trim() !== "") {
-        query = query.where('state_name', '==', data.state_name);
-      }
-
-      if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
-
-      // Add sorting and search
-      query = query
-        .orderBy('last_name')
-        .startAt(searchKey)
-        .endAt(searchKey + '\uf8ff');
-
-      // Execute the query
-      const lastnameQuery = await query.get();
-
-
-
-      query = customersRef;
-
-      if (data.domain && data.domain.trim() !== "") {
-        query = query.where('domain', '==', data.domain);
-      }
-      // Add filters dynamically based on available data
-      if (data.country && data.country.trim() !== "") {
-        query = query.where('country', '==', data.country);
-      }
-
-      if (data.state_name && data.state_name.trim() !== "") {
-        query = query.where('state_name', '==', data.state_name);
-      }
-
-      if (data.authentication !== undefined) { query = query.where("authentication", "==", data.authentication); }
-
-      // Add sorting and search functionality
-      query = query
-        .orderBy('email')
-        .startAt(searchKey)
-        .endAt(searchKey + '\uf8ff');
-
-      // Execute the query
-      const emailQuery = await query.get();
-
-
-      // Execute all queries in parallel
-      const [firstnameSnap, lastnameSnap, emailSnap] = await Promise.all([firstnameQuery, lastnameQuery, emailQuery]);
-
-      // Combine results into a Map to avoid duplicates
-      const results = new Map();
-
-      firstnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
-      lastnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
-      emailSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
-
-      // Convert Map to an array of unique customers
-      const uniqueCustomers = Array.from(results.values());
-
-      //const snapshot = await db.collection("customers").get();
-
-      const customers = [];
-      for (const customer of uniqueCustomers) {
-
-        // let subscriptionData = null;
-        // let last_payment = "";
-        // const subscriptionRef = db.collection('customer_subscriptions').where('customer_id', '==', customer.id).orderBy('last_payment', 'desc').limit(1);
-        // const subscriptionSnap = await subscriptionRef.get();
-        // if (!subscriptionSnap.empty) {
-        //   subscriptionData = subscriptionSnap.docs[0].data();
-        // }
-
-        // if (subscriptionData) {
-        //   last_payment = subscriptionData.last_payment;
-        // }
-        let profile_id = customer.profile_id ? customer.profile_id : "";
-        customers.push({
-          record_id: customer.id,
-          customer_id: profile_id,
-          ...customer,          
+        const domainName = data.domain.toLowerCase();
+       
+        const domainRef = db.collection('domains');
+        const domainSnapshot = await domainRef.where('domain_name', '==', domainName).get();
+        if (domainSnapshot.empty) {
+          return{status:200,message:'No matching domains found.'};         
+        }
+        let customerId;
+        domainSnapshot.forEach(doc => {
+          customerId = doc.data().customer_id;
+          const customerDocRef = db.collection('customers').doc(customerId); 
+          query = query.where('__name__', '==', customerDocRef.id);
         });
+
+        //query = query.doc(customerId);
       }
+      const custSnapshot = await query.get();
+     
+      let search_text = data.search_data;
+      let custList = [];
+      custSnapshot.forEach((doc) => {
+        const data = doc.data();
+        
+        if (search_text != "" && search_text != null) {
+          const searchText = search_text.toLowerCase();
+          if (data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
+  
+            custList.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+          }
+        } else {
+          custList.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+        }
+      });
+     
       return {
         status: 200,
-        data: customers,
+        message: "customer list retrieved successfully",
+        data: custList,
       };
+
     } catch (error) {
       throw new Error("Failed to fetch customers: " + error.message);
     }
   }
-
   async delete_customer(record_id) {
     try {
       await db.collection("customers").doc(record_id).delete();
@@ -562,7 +626,7 @@ class CustomerService {
           countrylist.push(data.country);
         }
       });
-console.log("object========countrylist=========",countrylist);
+      console.log("object========countrylist=========", countrylist);
       const uniquecountrylist = [...new Set(countrylist)];
       return { status: 200, countrylist: uniquecountrylist, message: "Country List for customer" };
     } catch (error) {

@@ -499,7 +499,7 @@ router.post("/activecustomer",  authmiddleware,  customercontroller.activeCustom
 
 router.post("/getcountry_list", authmiddleware,  customercontroller.getcountrylist);
 
-router.get("/getregion_list", authmiddleware,  customercontroller.getregionlist);
+router.post("/getregion_list", authmiddleware,  customercontroller.getregionlist);
 
 module.exports = router;
 

@@ -422,13 +422,13 @@ class CustomerService {
 
   async getCustomerList(data) {
     try {
-        
+
       let query = db
         .collection("customers");
-        if(data.country!="" && data.country != null){
-          query=query.where("country","==",data.country);
-        }
-        
+      if (data.country != "" && data.country != null) {
+        query = query.where("country", "==", data.country);
+      }
+
       if (data.state_name != "" && data.state_name != null) {
         query = query.where("state", "==", data.state_name);
       }
@@ -438,42 +438,42 @@ class CustomerService {
       if (data.license_usage != "" && data.license_usage != null) {
         query = query.where("license_usage", "==", data.license_usage);
       }
-     
+
       if (data.domain && data.domain.trim() !== "") {
         const domainName = data.domain.toLowerCase();
-       
+
         const domainRef = db.collection('domains');
         const domainSnapshot = await domainRef.where('domain_name', '==', domainName).get();
         if (domainSnapshot.empty) {
-          return{status:200,message:'No matching domains found.'};         
+          return { status: 200, message: 'No matching domains found.' };
         }
         let customerId;
         domainSnapshot.forEach(doc => {
           customerId = doc.data().customer_id;
-          const customerDocRef = db.collection('customers').doc(customerId); 
+          const customerDocRef = db.collection('customers').doc(customerId);
           query = query.where('__name__', '==', customerDocRef.id);
         });
 
         //query = query.doc(customerId);
       }
       const custSnapshot = await query.get();
-     
+
       let search_text = data.search_data;
       let custList = [];
       custSnapshot.forEach((doc) => {
         const data = doc.data();
-        
+
         if (search_text != "" && search_text != null) {
           const searchText = search_text.toLowerCase();
           if (data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
-  
+
             custList.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
           }
         } else {
           custList.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
         }
       });
-     
+
       return {
         status: 200,
         message: "customer list retrieved successfully",
@@ -694,7 +694,60 @@ class CustomerService {
       };
     }
   }
+  async getDomainList(data) {
+    try {
 
+    const querySnapshot = await db.collection("domains").where("domain_status", "==", true).where("is_deleted", "==", false).get();
+    // Start the base query
+
+
+    // Execute the query
+
+    const domainlist = [];
+    let search_text = data.search_text;
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data(); // Get the document data     
+      if (search_text != "" && search_text != null) {
+        const searchText = search_text.toLowerCase();
+        if (data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
+
+          domainlist.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+        }
+      } else {
+        domainlist.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+      }
+
+    });
+
+
+
+    return { status: 200, domainlist: domainlist, message: "domain List for customer" };
+    } catch (error) {
+      return {
+        status: 400,
+        message: "Error sending notification",
+        error: error.message,
+      };
+    }
+  }
+  async updateDomain() {
+    const batch = db.batch();
+    const customersRef = db.collection('domains');
+    // try {
+      const snapshot = await customersRef.get();
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const searchableIndex = data.domain_name ? [data.domain_name.toLowerCase()] : [];
+        const docRef = customersRef.doc(doc.id);
+        batch.update(docRef, { searchableIndex });
+      });
+      await batch.commit();
+      console.log('Documents updated successfully.');
+    // } catch (error) {
+    //   console.error('Error updating documents:', error);
+    // }
+  }
 }
 
 module.exports = new CustomerService();

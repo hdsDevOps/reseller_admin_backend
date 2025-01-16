@@ -501,5 +501,8 @@ router.post("/getcountry_list", authmiddleware,  customercontroller.getcountryli
 
 router.post("/getregion_list", authmiddleware,  customercontroller.getregionlist);
 
+router.post("/get_domain_list", authmiddleware,  customercontroller.get_domain_list);
+// router.post("/updateDomain", authmiddleware,  customercontroller.updateDomain);
+
 module.exports = router;
 

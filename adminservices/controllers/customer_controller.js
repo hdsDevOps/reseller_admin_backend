@@ -114,6 +114,23 @@ class customercontroller {
         res.status(400).json({ status: "error", message: error.message });
       }
     }
+    async get_domain_list(req, res){
+      try {
+        const result = await  customerservice.getDomainList(req.body);
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json({ status: "error", message: error.message });
+      }
+    }
+    async updateDomain(req, res){
+      // try {
+        const result = await  customerservice.updateDomain(req.body);
+        res.status(200).json(result);
+      // } catch (error) {
+      //   res.status(400).json({ status: "error", message: error.message });
+      // }
+    }
+    
     
   }
 

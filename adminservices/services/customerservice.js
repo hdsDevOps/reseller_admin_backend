@@ -438,7 +438,7 @@ class CustomerService {
       if (data.license_usage != "" && data.license_usage != null) {
         query = query.where("license_usage", "==", data.license_usage);
       }
-
+      
       if (data.domain && data.domain.trim() !== "") {
         const domainName = data.domain.toLowerCase();
 
@@ -456,23 +456,55 @@ class CustomerService {
 
         //query = query.doc(customerId);
       }
+      
+      let orderType = "";
+      if(data.hasOwnProperty("sortdata") && data.sortdata != "") {
+        const sortdata = data.sortdata;
+        orderType = sortdata.order;
+        if (sortdata != "" && sortdata.sort_text == "next_payment") {
+          query = query.orderBy("workspace.next_payment", orderType);
+        }
+        if (sortdata != "" && sortdata.sort_text == "created_at") {
+          query = query.orderBy("created_at", orderType);
+        }
+        if (sortdata != "" && sortdata.sort_text == "license_usage") {
+          query = query.orderBy("license_usage", orderType);
+        }
+
+      }
+      
+
+
+
       const custSnapshot = await query.get();
 
       let search_text = data.search_data;
       let custList = [];
       custSnapshot.forEach((doc) => {
         const data = doc.data();
-
+        const fullName = `${data.first_name} ${data.last_name}`;
         if (search_text != "" && search_text != null) {
           const searchText = search_text.toLowerCase();
+
           if (data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
 
-            custList.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+            custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
           }
         } else {
-          custList.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+          custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
         }
+        if(data.hasOwnProperty("sortdata") && data.sortdata != "") {
+        if (sortdata != "" && sortdata.sort_text == "name") {
+          custList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+        }
+        if (sortdata != "" && sortdata.sort_text == "domain") {
+          custList.sort((a, b) => a.domain.localeCompare(b.domain));
+        }
+      }
       });
+
+
+
 
       return {
         status: 200,
@@ -697,32 +729,32 @@ class CustomerService {
   async getDomainList(data) {
     try {
 
-    const querySnapshot = await db.collection("domains").where("domain_status", "==", true).where("is_deleted", "==", false).get();
-    // Start the base query
+      const querySnapshot = await db.collection("domains").where("domain_status", "==", true).where("is_deleted", "==", false).get();
+      // Start the base query
 
 
-    // Execute the query
+      // Execute the query
 
-    const domainlist = [];
-    let search_text = data.search_text;
+      const domainlist = [];
+      let search_text = data.search_text;
 
-    querySnapshot.forEach(doc => {
-      const data = doc.data(); // Get the document data     
-      if (search_text != "" && search_text != null) {
-        const searchText = search_text.toLowerCase();
-        if (data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
+      querySnapshot.forEach(doc => {
+        const data = doc.data(); // Get the document data     
+        if (search_text != "" && search_text != null) {
+          const searchText = search_text.toLowerCase();
+          if (data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
 
+            domainlist.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+          }
+        } else {
           domainlist.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
         }
-      } else {
-        domainlist.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
-      }
 
-    });
+      });
 
 
 
-    return { status: 200, domainlist: domainlist, message: "domain List for customer" };
+      return { status: 200, domainlist: domainlist, message: "domain List for customer" };
     } catch (error) {
       return {
         status: 400,
@@ -733,17 +765,32 @@ class CustomerService {
   }
   async updateDomain() {
     const batch = db.batch();
-    const customersRef = db.collection('domains');
+
+
+    const customersRef = db.collection('customers');
     // try {
-      const snapshot = await customersRef.get();
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const searchableIndex = data.domain_name ? [data.domain_name.toLowerCase()] : [];
-        const docRef = customersRef.doc(doc.id);
-        batch.update(docRef, { searchableIndex });
-      });
-      await batch.commit();
-      console.log('Documents updated successfully.');
+    const snapshot = await customersRef.get();
+
+    snapshot.forEach(async doc => {
+      const data = doc.data();
+      // const custRef = db.collection('customers').doc(data.customer_id);
+      // const custData = await custRef.get();
+      // const custDataValue = custData.data();     
+      // if(custDataValue.domain=="" || custDataValue.domain==null || custDataValue.domain==undefined){
+      //   const domainRef = db.collection('customers').doc(data.customer_id);
+      //   domainRef.update({ domain: data.domain_name });
+
+      // }
+      const fields = [data.first_name?.toLowerCase(), data.last_name?.toLowerCase(), `${data.first_name?.toLowerCase()} ${data.last_name?.toLowerCase()}`, data.email?.toLowerCase(), data.business_phone_number, data.domain];
+      const availableData = fields.filter(field => field !== undefined);
+      const searchableIndex = availableData;//for customer
+      // const searchableIndex = data.domain_name ? [data.domain_name.toLowerCase()] : [];//for domain
+
+      const docRef = customersRef.doc(doc.id);
+      batch.update(docRef, { searchableIndex });
+    });
+    await batch.commit();
+    console.log('Documents updated successfully.');
     // } catch (error) {
     //   console.error('Error updating documents:', error);
     // }

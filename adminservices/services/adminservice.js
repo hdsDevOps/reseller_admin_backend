@@ -587,6 +587,7 @@ class AdminService {
       ).toString();
 
       try {
+        
         // Attempt to update the document
         await db
           .collection("users")
@@ -595,9 +596,9 @@ class AdminService {
             otp: encryptedOtp,
             otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
           });
-
-      } catch (error) {
-        if (error.code === 'not-found') {
+            
+      } catch (error) {        
+        if (error.code === '5') {
           // If document doesn't exist, create it with the new data
           console.log("User document not found, creating new document.");
           await db.collection("users").doc(userRecord.uid).set({

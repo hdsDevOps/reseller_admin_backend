@@ -458,8 +458,8 @@ class CustomerService {
         query = query.where("country", "==", data.country);
       }
 
-      if (data.state_name != "" && data.state_name != null) {
-        query = query.where("state", "==", data.state_name);
+      if (data.state != "" && data.state != null) {
+        query = query.where("state", "==", data.state);
       }
       if (data.authentication != "" && data.authentication != null) {
         query = query.where("authentication", "==", data.authentication);

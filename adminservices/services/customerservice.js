@@ -188,7 +188,7 @@ class CustomerService {
     first_name,
     last_name,
     address,
-    state_name,
+    state,
     city,
     country,
     zipcode,
@@ -214,7 +214,7 @@ class CustomerService {
           first_name,
           last_name,
           address,
-          state_name,
+          state,
           city,
           country,
           zipcode,
@@ -250,13 +250,15 @@ class CustomerService {
   async edit_Customer(record_id, updateData) {
     try {
       let exist_status = 0;
+      let data={};
       const checkcustomerexist = await db.collection('customers')
         .where('email', '==', updateData.email)
         .get();
 
       checkcustomerexist.forEach(doc => {
-        if (doc.id != record_id) {
+        if (doc.id == record_id) {
           exist_status = 1;
+          
         }
       });
 
@@ -283,12 +285,13 @@ class CustomerService {
 
 
 
-      if (exist_status == 0) {
+      if (exist_status == 1) {
         await db
           .collection("customers")
           .doc(record_id)
           .update({
             ...updateData,
+          searchableIndex: [updateData.first_name.toLowerCase(), updateData.last_name.toLowerCase(), `${updateData.first_name.toLowerCase()} ${updateData.last_name.toLowerCase()}`, updateData.email.toLowerCase(),"", updateData.phone_no,],
             searchableIndex:searchableIndex,
             updated_at: new Date(),
           });
@@ -300,7 +303,7 @@ class CustomerService {
       } else {
         return {
           status: 400,
-          message: "Customer already exist",
+          message: "Customer not exist",
         };
       }
     } catch (error) {
@@ -616,7 +619,7 @@ class CustomerService {
 
       const filters = {
         country: data.country, // Set to null/undefined if not needed
-        state_name: data.state_name, // Set to null/undefined if not needed
+        state_name: data.state, // Set to null/undefined if not needed
         customer_count: data.license_usage,
         plan: data.plan,
         start_date: data.start_date,
@@ -826,6 +829,41 @@ class CustomerService {
     // } catch (error) {
     //   console.error('Error updating documents:', error);
     // }
+  }
+  async getEmaillist(request){
+    try {
+
+
+      let query = db.collection("domains");
+      query = query.where("domain_type", "==", "primary");
+      if (request.hasOwnProperty("customer_id") && request.customer_id != "") {
+        query = query.where("customer_id", "==", request.customer_id);
+      }
+      const querySnapshot = await query.get();
+      // Start the base query
+
+
+      // Execute the query
+
+      const emaillist = [];     
+
+      querySnapshot.forEach(doc => {
+        const data = doc.data(); // Get the document data 
+          emaillist.push({ ...data.emails});
+        
+
+      });
+
+
+
+      return { status: 200, emaillist: emaillist, message: "email List for customer" };
+    } catch (error) {
+      return {
+        status: 400,
+        message: "Error sending email list",
+        error: error.message,
+      };
+    }
   }
 }
 

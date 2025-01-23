@@ -503,6 +503,7 @@ router.post("/getregion_list", authmiddleware,  customercontroller.getregionlist
 
 router.post("/get_domain_list", authmiddleware,  customercontroller.get_domain_list);
 router.post("/updateDomain",  customercontroller.updateDomain);
+router.post("/get_email_list",  customercontroller.get_email_list);
 
 module.exports = router;
 

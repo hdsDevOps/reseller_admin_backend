@@ -122,6 +122,7 @@ class customercontroller {
         res.status(400).json({ status: "error", message: error.message });
       }
     }
+
     async updateDomain(req, res){
       // try {
         const result = await  customerservice.updateDomain(req.body);
@@ -130,7 +131,14 @@ class customercontroller {
       //   res.status(400).json({ status: "error", message: error.message });
       // }
     }
-    
+    async get_email_list(req, res){
+      try {
+        const result = await  customerservice.getEmaillist(req.body);
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json({ status: "error", message: error.message });
+      }
+    }
     
   }
 

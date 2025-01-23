@@ -90,7 +90,7 @@ const [firstnameSnap, transSnap] = await Promise.all([firstnameQuery, transQuery
           ...doc,
         });
       });
-
+      
       return {
         status: 200,
         data: billing_history,

@@ -464,8 +464,8 @@ class CustomerService {
         if (sortdata != "" && sortdata.sort_text == "next_payment") {
           query = query.orderBy("workspace.next_payment", orderType);
         }
-        if (sortdata != "" && sortdata.sort_text == "created_at") {
-          query = query.orderBy("created_at", orderType);
+        if (sortdata != "" && sortdata.sort_text == "createdAt") {
+          query = query.orderBy("createdAt", orderType);
         }
         if (sortdata != "" && sortdata.sort_text == "license_usage") {
           query = query.orderBy("license_usage", orderType);
@@ -475,7 +475,7 @@ class CustomerService {
       
 
 
-
+      query = query.orderBy("createdAt", "desc");
       const custSnapshot = await query.get();
 
       let search_text = data.search_data;
@@ -486,7 +486,7 @@ class CustomerService {
         if (search_text != "" && search_text != null) {
           const searchText = search_text.toLowerCase();
 
-          if (data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
+          if (data.searchableIndex && data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
 
             custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
           }

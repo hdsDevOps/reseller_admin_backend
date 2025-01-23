@@ -225,6 +225,7 @@ class CustomerService {
           account_status: "active",
           created_at: new Date(),
           customer_count: currentCount,
+          searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(),"", phone_no,],
         });
         await admin.auth().createUser({
           email: email,
@@ -258,12 +259,37 @@ class CustomerService {
           exist_status = 1;
         }
       });
+
+      let searchableIndex = [];
+      if (updateData.hasOwnProperty('first_name')) {
+        searchableIndex.push(updateData.first_name.toLowerCase());
+      }
+      if (updateData.hasOwnProperty('last_name')) {
+        searchableIndex.push(updateData.last_name.toLowerCase());
+      }
+      if (updateData.hasOwnProperty('last_name')) {
+        searchableIndex.push(`${updateData.first_name.toLowerCase()} ${updateData.last_name.toLowerCase()}`);
+      }
+      if (updateData.hasOwnProperty('email')) {
+        searchableIndex.push(updateData.email.toLowerCase());
+      }
+      if (updateData.hasOwnProperty('business_phone_number')) {
+        searchableIndex.push(updateData.business_phone_number.toLowerCase());
+      }
+      if (updateData.hasOwnProperty('phone_no')) {
+        searchableIndex.push(updateData.phone_no.toLowerCase());
+      }
+
+
+
+
       if (exist_status == 0) {
         await db
           .collection("customers")
           .doc(record_id)
           .update({
             ...updateData,
+            searchableIndex:searchableIndex,
             updated_at: new Date(),
           });
 

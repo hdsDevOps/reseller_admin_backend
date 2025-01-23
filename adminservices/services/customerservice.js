@@ -291,8 +291,7 @@ class CustomerService {
           .doc(record_id)
           .update({
             ...updateData,
-          searchableIndex: [updateData.first_name.toLowerCase(), updateData.last_name.toLowerCase(), `${updateData.first_name.toLowerCase()} ${updateData.last_name.toLowerCase()}`, updateData.email.toLowerCase(),"", updateData.phone_no,],
-            searchableIndex:searchableIndex,
+          searchableIndex: [updateData.first_name.toLowerCase(), updateData.last_name.toLowerCase(), `${updateData.first_name.toLowerCase()} ${updateData.last_name.toLowerCase()}`, updateData.email.toLowerCase(),"", updateData.phone_no,],            
             updated_at: new Date(),
           });
 
@@ -306,6 +305,26 @@ class CustomerService {
           message: "Customer not exist",
         };
       }
+    } catch (error) {
+      throw new Error("Failed to update customer: " + error.message);
+    }
+  }
+  async edit_Customer_password(record_id, updateData) {
+    try {    
+      
+        await db
+          .collection("customers")
+          .doc(record_id)
+          .update({
+            ...updateData,          
+            updated_at: new Date(),
+          });
+
+        return {
+          status: 200,
+          message: "Customer updated successfully",
+        };
+      
     } catch (error) {
       throw new Error("Failed to update customer: " + error.message);
     }

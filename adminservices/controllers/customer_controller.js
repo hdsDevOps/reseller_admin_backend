@@ -90,7 +90,7 @@ class customercontroller {
         const { record_id,password } = req.body;
         const { salt, hash } = hashPassword(password);
         const {...updateData} = {salt, hash};
-        const result = await  customerservice.edit_Customer(record_id, updateData);
+        const result = await  customerservice.edit_Customer_password(record_id, updateData);
         res.status(200).json(result);
       } catch (error) {
         res.status(400).json({ status: "error", message: error.message });

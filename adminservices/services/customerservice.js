@@ -438,7 +438,7 @@ class CustomerService {
       if (data.license_usage != "" && data.license_usage != null) {
         query = query.where("license_usage", "==", data.license_usage);
       }
-      
+
       if (data.domain && data.domain.trim() !== "") {
         const domainName = data.domain.toLowerCase();
 
@@ -456,9 +456,9 @@ class CustomerService {
 
         //query = query.doc(customerId);
       }
-      
+
       let orderType = "";
-      if(data.hasOwnProperty("sortdata") && data.sortdata != "") {
+      if (data.hasOwnProperty("sortdata") && data.sortdata != "") {
         const sortdata = data.sortdata;
         orderType = sortdata.order;
         if (sortdata != "" && sortdata.sort_text == "next_payment") {
@@ -472,7 +472,7 @@ class CustomerService {
         }
 
       }
-      
+
 
 
       query = query.orderBy("createdAt", "desc");
@@ -493,14 +493,14 @@ class CustomerService {
         } else {
           custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
         }
-        if(data.hasOwnProperty("sortdata") && data.sortdata != "") {
-        if (sortdata != "" && sortdata.sort_text == "name") {
-          custList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+        if (data.hasOwnProperty("sortdata") && data.sortdata != "") {
+          if (sortdata != "" && sortdata.sort_text == "name") {
+            custList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+          }
+          if (sortdata != "" && sortdata.sort_text == "domain") {
+            custList.sort((a, b) => a.domain.localeCompare(b.domain));
+          }
         }
-        if (sortdata != "" && sortdata.sort_text == "domain") {
-          custList.sort((a, b) => a.domain.localeCompare(b.domain));
-        }
-      }
       });
 
 
@@ -729,7 +729,13 @@ class CustomerService {
   async getDomainList(data) {
     try {
 
-      const querySnapshot = await db.collection("domains").where("domain_status", "==", true).where("is_deleted", "==", false).get();
+
+      let query = db.collection("domains");
+      query = query.where("domain_status", "==", true).where("is_deleted", "==", false);
+      if (data.hasOwnProperty("customer_id") && data.customer_id != "") {
+        query = query.where("customer_id", "==", data.customer_id);
+      }
+      const querySnapshot = await query.get();
       // Start the base query
 
 
@@ -742,7 +748,7 @@ class CustomerService {
         const data = doc.data(); // Get the document data     
         if (search_text != "" && search_text != null) {
           const searchText = search_text.toLowerCase();
-          if (data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
+          if (data.searchableIndex && data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
 
             domainlist.push({ id: doc.id, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
           }

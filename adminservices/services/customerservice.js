@@ -225,7 +225,7 @@ class CustomerService {
           account_status: "active",
           created_at: new Date(),
           customer_count: currentCount,
-          searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(),"", phone_no,],
+          searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), "", phone_no,],
         });
         await admin.auth().createUser({
           email: email,
@@ -250,7 +250,7 @@ class CustomerService {
   async edit_Customer(record_id, updateData) {
     try {
       let exist_status = 0;
-      let data={};
+      let data = {};
       const checkcustomerexist = await db.collection('customers')
         .where('email', '==', updateData.email)
         .get();
@@ -258,7 +258,7 @@ class CustomerService {
       checkcustomerexist.forEach(doc => {
         if (doc.id == record_id) {
           exist_status = 1;
-          
+
         }
       });
 
@@ -291,7 +291,7 @@ class CustomerService {
           .doc(record_id)
           .update({
             ...updateData,
-          searchableIndex: [updateData.first_name.toLowerCase(), updateData.last_name.toLowerCase(), `${updateData.first_name.toLowerCase()} ${updateData.last_name.toLowerCase()}`, updateData.email.toLowerCase(),"", updateData.phone_no,],            
+            searchableIndex: [updateData.first_name.toLowerCase(), updateData.last_name.toLowerCase(), `${updateData.first_name.toLowerCase()} ${updateData.last_name.toLowerCase()}`, updateData.email.toLowerCase(), "", updateData.phone_no,],
             updated_at: new Date(),
           });
 
@@ -310,21 +310,21 @@ class CustomerService {
     }
   }
   async edit_Customer_password(record_id, updateData) {
-    try {    
-      
-        await db
-          .collection("customers")
-          .doc(record_id)
-          .update({
-            ...updateData,          
-            updated_at: new Date(),
-          });
+    try {
 
-        return {
-          status: 200,
-          message: "Customer updated successfully",
-        };
-      
+      await db
+        .collection("customers")
+        .doc(record_id)
+        .update({
+          ...updateData,
+          updated_at: new Date(),
+        });
+
+      return {
+        status: 200,
+        message: "Customer updated successfully",
+      };
+
     } catch (error) {
       throw new Error("Failed to update customer: " + error.message);
     }
@@ -480,13 +480,25 @@ class CustomerService {
       if (data.state != "" && data.state != null) {
         query = query.where("state", "==", data.state);
       }
-      if (data.authentication != "" && data.authentication != null) {
-        query = query.where("authentication", "==", data.authentication);
+
+      if (data.authentication !== "" && data.authentication !== null && data.authentication !== undefined) {
+        if (data.authentication === true) {
+          query = query.where("authentication", "==", true);
+        } else {
+          query = query.where("authentication", "==", false);
+        }
       }
+
       if (data.license_usage != "" && data.license_usage != null) {
         query = query.where("license_usage", "==", data.license_usage);
       }
 
+      if (data.subscription_date.start_date != "" && data.subscription_date.end_date != "") {
+        query = query.where("workspace.subscription_date", ">=", new Date(data.subscription_date.start_date)).where("workspace.subscription_date", "<=", new Date(data.subscription_date.end_date));
+      }
+      if (data.renewal_date.start_date != "" && data.renewal_date.end_date != "") {
+        query = query.where("workspace.next_payment", ">=", new Date(data.renewal_date.start_date)).where("workspace.next_payment", "<=", new Date(data.renewal_date.end_date));
+      }
       if (data.domain && data.domain.trim() !== "") {
         const domainName = data.domain.toLowerCase();
 
@@ -849,7 +861,7 @@ class CustomerService {
     //   console.error('Error updating documents:', error);
     // }
   }
-  async getEmaillist(request){
+  async getEmaillist(request) {
     try {
 
 
@@ -864,12 +876,12 @@ class CustomerService {
 
       // Execute the query
 
-      const emaillist = [];     
+      const emaillist = [];
 
       querySnapshot.forEach(doc => {
         const data = doc.data(); // Get the document data 
-          emaillist.push({ ...data.emails});
-        
+        emaillist.push({ ...data.emails });
+
 
       });
 

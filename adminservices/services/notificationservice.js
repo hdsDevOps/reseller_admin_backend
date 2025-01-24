@@ -262,7 +262,7 @@ class NotificationService {
         console.error("Error fetching documents:", error);
         throw error; // Throw the error for the calling function to handle
       }
-    };
+    }; 
 
     readnotification = async (data) => {
       try {

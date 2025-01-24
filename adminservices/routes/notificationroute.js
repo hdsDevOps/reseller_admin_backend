@@ -126,5 +126,6 @@ router.get(
 router.post("/getnotifications",NotificationController.getnotificationdetails);
 
 router.post("/readnotification",NotificationController.readnotification);
+router.post("/deletetemplate",authMiddleware,NotificationController.deleteTemplate);
 
 module.exports = router;

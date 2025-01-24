@@ -137,7 +137,7 @@ router.post("/addfaq", authMiddleware, adminController.addFaq);
  *       400:
  *         description: Error retrieving FAQ list
  */
-router.get("/faqlist", authMiddleware, adminController.getFaqList);
+router.get("/faqlist", authMiddleware, adminController.getFaqList); 
 
 /**
  * @swagger

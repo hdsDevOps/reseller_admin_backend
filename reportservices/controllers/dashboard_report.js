@@ -5,10 +5,12 @@ const helper = require("../helper.js")
 class dashboard_report {
     async getreportdata(req, res) {
         try {
-            const currency = req.body.currency;
-
+            let currency = 'USD';
+            if (req.body.hasOwnProperty('currency')) {
+                currency = req.body.currency;
+            }
             const rate = await helper.getCurrencyRate(currency);
-           
+
             // Get the current date 
             const now = new Date(); // Calculate the first day of the month
             const startOfprevoiusMonth = Timestamp.fromDate(new Date(now.getFullYear(), now.getMonth() - 1, 1));
@@ -60,7 +62,7 @@ class dashboard_report {
                     if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency) {
                         let newCurrency = data.transaction_data.currency.toUpperCase();
                         convertedamount = rate["conversion_rates"][newCurrency]
-                        currentmonthrevenue = currentmonthrevenue + (data.transaction_data.amount*convertedamount);
+                        currentmonthrevenue = currentmonthrevenue + (data.transaction_data.amount * convertedamount);
                     }
                 });
             }
@@ -71,7 +73,7 @@ class dashboard_report {
                     striperecords.push({ id: doc.id, ...doc.data() });
                 });
             }
-           
+
             const data_json = {
                 "last_month_revenue": (lastmonthrevenue / 100).toFixed(2),
                 "current_month_recurring_income": (currentmonthrevenue / 100).toFixed(2),

@@ -354,7 +354,7 @@ function getFirstLetters(str) {
 
   return firstLetters;
 }
-async function getCurrencyRate(currency) {
+async function getCurrencyRate(currency='USD') {
   try {
     const response = await axios.get(`https://v6.exchangerate-api.com/v6/6db5e8a03d22fc74bba40fef/latest/${currency}`);
     return response.data;

@@ -12,8 +12,10 @@ const adduser = async (req, res) => {
   }
 
   try {
+    const searchableIndex= [data.first_name.toLowerCase(), data.last_name.toLowerCase(), `${data.first_name.toLowerCase()} ${data.last_name.toLowerCase()}`, data.email.toLowerCase(), data.phone];
+    
     // Call the service to add a user
-    const user = await userService.createuser({ first_name, last_name, email, phone, role });
+    const user = await userService.createuser({ first_name, last_name, email, phone, role, searchableIndex:searchableIndex });
     res.status(200).json({
       message: 'New user added successfully',
       status:200
@@ -30,6 +32,8 @@ const edituser = async (req, res) => {
   const updatedData = req.body;
 
   try {
+    const searchableIndex= [updatedData.first_name.toLowerCase(), updatedData.last_name.toLowerCase(), `${updatedData.first_name.toLowerCase()} ${updatedData.last_name.toLowerCase()}`, updatedData.email.toLowerCase(), updatedData.phone];
+    updatedData.searchableIndex = searchableIndex;
     const user = await userService.updateuser(id, updatedData);
     if(user != 'User not found'){
     res.status(200).json({

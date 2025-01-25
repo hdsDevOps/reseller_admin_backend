@@ -3,6 +3,7 @@ const multer = require("multer");
 const nodemailer = require("nodemailer");
 var request = require('request');
 const urlencode = require("urlencode");
+const axios = require('axios');
 
 
 
@@ -19,49 +20,49 @@ function emptyOrRows(rows) {
 // Define allowed file types
 const filetypes = /jpeg|jpg|png|gif/;
 let storage = (uploadPath) => multer.diskStorage({
-    destination: function (req, file, cb) {
-  
-        // Uploads is the Upload_folder_name
-        cb(null, uploadPath)
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.fieldname + "-" + Date.now()+path.extname(file.originalname))
-    }
+  destination: function (req, file, cb) {
+
+    // Uploads is the Upload_folder_name
+    cb(null, uploadPath)
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname))
+  }
 });
-    
-let file_upload = (uploadPath, fieldName) => multer({ 
-    storage: storage(uploadPath),
-    fileFilter: function (req, file, cb){
-        var mimetype = filetypes.test(file.mimetype);
-  
-        var extname = filetypes.test(path.extname(
-                    file.originalname).toLowerCase());
-        
-        if (mimetype && extname) {
-            return cb(null, true);
-        }
-      
-        cb("File upload only supports the "
-                + "following filetypes - " + filetypes);
-      }
+
+let file_upload = (uploadPath, fieldName) => multer({
+  storage: storage(uploadPath),
+  fileFilter: function (req, file, cb) {
+    var mimetype = filetypes.test(file.mimetype);
+
+    var extname = filetypes.test(path.extname(
+      file.originalname).toLowerCase());
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+
+    cb("File upload only supports the "
+      + "following filetypes - " + filetypes);
+  }
 }).single(fieldName);
 
 
-async function sendmail(req, res, next){
+async function sendmail(req, res, next) {
   var transporter = nodemailer.createTransport({
-      host: process.env.SMTP,
-      port: 587,
-      auth: {
-        user: process.env.MAILUSER,
-        pass: process.env.MAILPASS
-      }
-    });
-    
-    var mailOptions = {
-      from: process.env.MAILUSER,
-      to: req.email,
-      subject: req.subject,
-      html: `<!doctype html>
+    host: process.env.SMTP,
+    port: 587,
+    auth: {
+      user: process.env.MAILUSER,
+      pass: process.env.MAILPASS
+    }
+  });
+
+  var mailOptions = {
+    from: process.env.MAILUSER,
+    to: req.email,
+    subject: req.subject,
+    html: `<!doctype html>
       <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
         xmlns:o="urn:schemas-microsoft-com:office:office">
       
@@ -185,7 +186,7 @@ async function sendmail(req, res, next){
                       <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;"
                         width="100%">
                        
-      `+req.body+`
+      `+ req.body + `
       </table>
               </div><!--[if mso | IE]></td></tr></table><![endif]-->
             </td>
@@ -335,28 +336,37 @@ async function sendmail(req, res, next){
 </body>
 
 </html>`, // html body
-    };
-    
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+}
+function getFirstLetters(str) {
+  const firstLetters = str
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('');
+
+  return firstLetters;
+}
+async function getCurrencyRate(currency) {
+  try {
+    const response = await axios.get(`https://v6.exchangerate-api.com/v6/6db5e8a03d22fc74bba40fef/latest/${currency}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching currency rate:', error);
   }
-   function getFirstLetters(str) {
-    const firstLetters = str
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('');
-  
-    return firstLetters;
-  }
+}
 module.exports = {
   getOffset,
   emptyOrRows,
   file_upload,
   sendmail,
-  getFirstLetters
+  getFirstLetters,
+  getCurrencyRate
 }

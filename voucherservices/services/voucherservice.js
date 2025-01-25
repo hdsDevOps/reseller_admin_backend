@@ -248,45 +248,49 @@ async function sendvochermail(data) {
     } else if (data.customer_type == 2) {
       const customeRef = db.collection("customer_groups").doc(data.customer_id);
       const customerdoc = await customeRef.get();
-      let country = customerdoc.data().country;
-      let region = customerdoc.data().region;
-      let license_usage = customerdoc.data().license_usage;
-      const customersRef = db.collection('customers');
-      // Build the query with filters
-      let query = customersRef;
-      if (country) query = query.where('country', '==', country);
-      if (region) query = query.where('state_name', '==', region);
-      if (license_usage) query = query.where('customer_count', '==', Number(license_usage));
+      if (customerdoc.exists) {
+        let country = customerdoc.data().country;
+        let region = customerdoc.data().region;
+        let license_usage = customerdoc.data().license_usage;
+        const customersRef = db.collection('customers');
+        // Build the query with filters
+        let query = customersRef;
+        if (country) query = query.where('country', '==', country);
+        if (region) query = query.where('state_name', '==', region);
+        if (license_usage) query = query.where('customer_count', '==', Number(license_usage));
 
-      // Execute the query
-      const querySnapshot = await query.get();
-      const voucherList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+        // Execute the query
+        const querySnapshot = await query.get();
+        const voucherList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      // Collect results
-      const results = [];
-      const promises = querySnapshot.docs.map(async doc => {
-        const newdata = {
-          voucher_id: data.record_id,
-          customer_id: doc.id,
-          status: "active",
-          active_date: new Date(customerdoc.data().start_date),
-          expire_date: new Date(customerdoc.data().end_date),
-          used_date: null,
-          created_at: admin.firestore.FieldValue.serverTimestamp(),
-        };
-        await db.collection("customer_vouchers").add(newdata);
-        results.push(doc.data().email);
-      });
-      // Wait for all promises to complete 
-      await Promise.all(promises);
+        // Collect results
+        const results = [];
+        const promises = querySnapshot.docs.map(async doc => {
+          const newdata = {
+            voucher_id: data.record_id,
+            customer_id: doc.id,
+            status: "active",
+            active_date: new Date(customerdoc.data().start_date),
+            expire_date: new Date(customerdoc.data().end_date),
+            used_date: null,
+            created_at: admin.firestore.FieldValue.serverTimestamp(),
+          };
+          await db.collection("customer_vouchers").add(newdata);
+          results.push(doc.data().email);
+        });
+        // Wait for all promises to complete 
+        await Promise.all(promises);
 
-      const emails = results.join(',');
-      const template = doc.data().template_details;
-      if (emails) {
-        sendmail(emails, 'Email Voucher from Hordanso', template);
+        const emails = results.join(',');
+        const template = doc.data().template_details;
+        if (emails) {
+          sendmail(emails, 'Email Voucher from Hordanso', template);
+        }
+      } else {
+        return { status: 400, message: "Customer group not found" };
       }
     }
 

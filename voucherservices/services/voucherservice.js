@@ -233,7 +233,7 @@ async function sendvochermail(data) {
       const template = doc.data().template_details;
       sendmail(email, 'Email Voucher from Hordanso', template);
 
-      const newdata = {
+      const newdata = { 
         voucher_id: data.record_id,
         customer_id: data.customer_id,
         status: "active",

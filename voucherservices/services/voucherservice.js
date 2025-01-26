@@ -221,24 +221,28 @@ async function sendvochermail(data) {
     }
     const voucherRef = db.collection(table_name).doc(data.record_id);
     const doc = await voucherRef.get();
-
+    
     if (!doc.exists) {
       return { status: 404, message: "Voucher record not found" };
     }
 
-    if (data.customer_type == 1) {
-      const customeRef = db.collection("customers").doc(data.customer_id);
-      const customerdoc = await customeRef.get();
-      const email = customerdoc.data().email;
+    if (data.customer_type == 1) {      
+      if(!isNaN(Date.parse(doc.data().start_date)) && !isNaN(Date.parse(doc.data().end_date))){
+        return { status: 400, message: "Voucher has no valid date." };
+      }
       const template = doc.data().template_details;
+      const customeRef = db.collection("customers").doc(data.customer_id);
+      const customerdoc = await customeRef.get();      
+      const email = customerdoc.data().email;
+     
       sendmail(email, 'Email Voucher from Hordanso', template);
 
       const newdata = { 
         voucher_id: data.record_id,
         customer_id: data.customer_id,
         status: "active",
-        active_date: new Date(doc.data().start_date),
-        expire_date: new Date(doc.data().end_date),
+        active_date: doc.data().start_date,
+        expire_date: doc.data().end_date,
         used_date: null,
         created_at: admin.firestore.FieldValue.serverTimestamp(),
 

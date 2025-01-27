@@ -308,7 +308,7 @@ async function sendvochermail(data) {
     console.error("Error in email voucher:", error);
     return {
       status: 500,
-      message: "Error emil voucher",
+      message: "Error email voucher",
       error: error.message,
     };
   }

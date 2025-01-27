@@ -277,8 +277,8 @@ async function sendvochermail(data) {
             voucher_id: data.record_id,
             customer_id: doc.id,
             status: "active",
-            active_date: new Date(customerdoc.data().start_date),
-            expire_date: new Date(customerdoc.data().end_date),
+            active_date: doc.data().start_date,
+            expire_date: doc.data().end_date,
             used_date: null,
             created_at: admin.firestore.FieldValue.serverTimestamp(),
           };
@@ -289,6 +289,7 @@ async function sendvochermail(data) {
         await Promise.all(promises);
 
         const emails = results.join(',');
+        
         const template = doc.data().template_details;
         if (emails) {
           sendmail(emails, 'Email Voucher from Hordanso', template);

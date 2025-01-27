@@ -833,7 +833,7 @@ class CustomerService {
     const batch = db.batch();
 
 
-    const customersRef = db.collection('users');
+    const customersRef = db.collection('billing_history');
     // try {
     const snapshot = await customersRef.get();
 
@@ -847,7 +847,12 @@ class CustomerService {
       //   domainRef.update({ domain: data.domain_name });
 
       // }
-      const fields = [data.first_name?.toLowerCase(), data.last_name?.toLowerCase(), `${data.first_name?.toLowerCase()} ${data.last_name?.toLowerCase()}`, data.email?.toLowerCase(), data.phone,data.phone_no];
+console.log("111111111111111")
+let customer_name=data.customer_name?data.customer_name.toLowerCase():"";
+let payment_method=data.payment_method?data.payment_method.toLowerCase():"";
+let domain=data.domain?data.domain.toLowerCase():"";
+
+      const fields = [data.user_id, customer_name, data.subscription_id, data.transaction_id, data.invoice, domain, payment_method];
       const availableData = fields.filter(field => field !== undefined);
       const searchableIndex = availableData;//for customer
       // const searchableIndex = data.domain_name ? [data.domain_name.toLowerCase()] : [];//for domain

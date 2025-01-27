@@ -3,105 +3,68 @@ const { sendmail } = require("../helper");
 const helper = require('../helper');
 
 async function getrecordlist(data) {
-    try {
-      const filter = {
-        domain: data.domain,
-        start_date: data.start_date,
-        end_date: data.end_date,
-        searchKey_start: data.search_data.toLowerCase(),
-      };
-  let searchKeyStart = "";
-  let searchKeyEnd = "";
-  let endDate = "";
-  let startDate = "";
-  let domain = "";
-  
+  // try {
+    let billing_history = [];
+  let query = db.collection("billing_history");
+  if (data.domain) {
+    query = query.where("domain", "==", data.domain);
+  }
+  if (data.start_date && data.start_date != "" && data.end_date && data.end_date != "") {
+    const startDate = new Date(data.start_date);
+    const endDate = new Date(data.end_date);
+    query = query.where("created_at", ">=", startDate).where("created_at", "<=", endDate);
+  }
+  query = query.orderBy("created_at", "desc");
+  if (data.search_data && data.search_data != "") {
+    let search_text = data.search_data.toLowerCase();
+    // Query 1: searchableIndex with lowercased search text
+    let query1 = query.where("searchableIndex", "array-contains", search_text);
 
-      let query = db.collection('billing_history');
-      const transref = db.collection('billing_history');
+    // Query 2: searchableIndex with original search data
+    let query2 = query.where("searchableIndex", "array-contains", data.search_data);
 
-// Add filters dynamically based on available data
-if (data.domain && data.domain.trim() !== "") {
-    query = query.where('domain', '==', data.domain);
-}
+    // Execute both queries
+    const [snapshot1, snapshot2] = await Promise.all([query1.get(), query2.get()]);
 
-if (filter.start_date && filter.start_date.trim() !== "") {
-  startDate = new Date(filter.start_date);
-  query = query.where("created_at", ">=", admin.firestore.Timestamp.fromDate(startDate)); 
-}
-
-if (filter.end_date && filter.end_date.trim() !== "") {
-  endDate = new Date(filter.end_date);
-  query = query.where("created_at", "<=", admin.firestore.Timestamp.fromDate(endDate)); 
-}
-if (filter.searchKey_start && filter.searchKey_start.trim() !== "") {
-    query = query
-          .orderBy('customer_name')
-          .startAt(filter.searchKey_start.toLowerCase())
-          .endAt(filter.searchKey_start.toLowerCase() + '\uf8ff');
-}
-// Fetch the records
-const firstnameQuery = await query.get();
-
-query = transref;
-
-
-// Add filters dynamically based on available data
-if (data.domain && data.domain.trim() !== "") {
-  query = query.where('domain', '==', data.domain);
-}
-
-if (filter.start_date && filter.start_date.trim() !== "") {
-startDate = new Date(filter.start_date);
-query.where("created_at", ">=", startDate); 
-}
-
-if (filter.end_date && filter.end_date.trim() !== "") {
-endDate = new Date(filter.end_date);
-query.where("created_at", "<=", endDate); 
-}
-if (filter.searchKey_start && filter.searchKey_start.trim() !== "") {
-  query = query
-        .orderBy('transaction_id')
-        .startAt(filter.searchKey_start.toLowerCase())
-        .endAt(filter.searchKey_start.toLowerCase() + '\uf8ff');
-}
-// Fetch the records
-const transQuery = await query.get();
-
-const [firstnameSnap, transSnap] = await Promise.all([firstnameQuery, transQuery]);
-  
-      // Combine results into a Map to avoid duplicates
-      const results = new Map();
-  
-      firstnameSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
-      transSnap.forEach(doc => results.set(doc.id, { id: doc.id, ...doc.data() }));
-      
-     
-      // Convert Map to an array of unique customers
-      const uniqueTrans = Array.from(results.values());
-   
-      //const snapshot = await db.collection("customers").get();
-
-      const billing_history = [];
-      uniqueTrans.forEach((doc) => {
+    // Process results from both snapshots
+    snapshot1.forEach((doc) => {
+      billing_history.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+    snapshot2.forEach((doc) => {
+      // Check for duplicate documents
+      if (!billing_history.find((item) => item.id === doc.id)) {
         billing_history.push({
-          record_id: doc.id,
-          ...doc,
+          id: doc.id,
+          ...doc.data(),
+        });
+      }
+    });
+  } else {
+    const billing_history_snapshot = await query.get();
+    const billing_history = [];
+    if (!billing_history_snapshot.empty) {
+      billing_history_snapshot.forEach((doc) => {
+        billing_history.push({
+          id: doc.id,
+          ...doc.data(),
         });
       });
-      
-      return {
-        status: 200,
-        data: billing_history,
-      };
-    } catch (error) {
-      throw new Error("Failed to fetch billing history: " + error.message);
     }
   }
-
-  
-
-  module.exports = {
-    getrecordlist,
+  return {
+    status: 200,
+    data: billing_history,
   };
+  // } catch (error) {
+  //   throw new Error("Failed to fetch billing history: " + error.message);
+  // }
+}
+
+
+
+module.exports = {
+  getrecordlist,
+};

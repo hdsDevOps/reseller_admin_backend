@@ -4,7 +4,7 @@ const helper = require('../helper');
 
 async function getrecordlist(data) {
   // try {
-    let billing_history = [];
+  let billing_history = [];
   let query = db.collection("billing_history");
   if (data.domain) {
     query = query.where("domain", "==", data.domain);
@@ -16,6 +16,7 @@ async function getrecordlist(data) {
   }
   query = query.orderBy("created_at", "desc");
   if (data.search_data && data.search_data != "") {
+    data.search_data = data.search_data.trim();
     let search_text = data.search_data.toLowerCase();
     // Query 1: searchableIndex with lowercased search text
     let query1 = query.where("searchableIndex", "array-contains", search_text);
@@ -44,7 +45,6 @@ async function getrecordlist(data) {
     });
   } else {
     const billing_history_snapshot = await query.get();
-    const billing_history = [];
     if (!billing_history_snapshot.empty) {
       billing_history_snapshot.forEach((doc) => {
         billing_history.push({

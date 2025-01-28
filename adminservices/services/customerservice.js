@@ -490,7 +490,7 @@ class CustomerService {
       }
 
       if (data.license_usage != "" && data.license_usage != null) {
-        query = query.where("license_usage", "==", data.license_usage);
+        query = query.where("license_usage", "==", Number(data.license_usage));
       }
 
       if (data.subscription_date && data.subscription_date.start_date != "" && data.subscription_date.end_date != "") {

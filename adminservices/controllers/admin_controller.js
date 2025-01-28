@@ -13,6 +13,14 @@ class AdminController {
       res.status(400).json({ status: "error", message: error.message });
     }
   }
+  async impersonateLogin(req, res) {
+    try {
+      const result = await AdminService.impersonateLogin(req.body);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ status: "error", message: error.message });
+    }
+  }
 
   async verifyOtp(req, res) {
     try {

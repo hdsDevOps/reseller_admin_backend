@@ -29,6 +29,7 @@ const path = require('path');
  *         description: Invalid credentials
  */
 router.post("/login", adminController.login);
+router.post("/impersonate_login",authMiddleware, adminController.impersonateLogin);
 
 /**
  * @swagger

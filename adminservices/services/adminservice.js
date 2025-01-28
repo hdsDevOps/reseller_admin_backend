@@ -35,6 +35,27 @@ class AdminService {
       throw new Error("Login failed.Please check: " + error.message);
     }
   }
+  async impersonateLogin({ email }) {
+    try {
+
+      const apiKey = 'AIzaSyBDhOqLuQygzeZL-V1xqJkW37kpfiyHrgA';
+
+
+      const response = await axios.post(`${process.env.CUSTOMER_API}/customerservices/customer/api/v1/impersonate_login`, {
+        email,
+        apiKey
+      });
+
+      return {
+        status: 200,
+        message: "Login successfully done",
+        token: response.data.token,
+        customer_id:response.data.customer_id
+      };
+    } catch (error) {
+      throw new Error("Login failed.Please check: " + error.message);
+    }
+  }
 
   async verifyOtp({ admin_id, otp }) {
     try {
@@ -402,24 +423,24 @@ class AdminService {
 
   async getPromotions(data) {
     try {
-    const today = new Date();
-    let snapref = db.collection("promotions");
-    const snapData = await snapref.where('end_date', '<', today).get();
-    if (!snapData.empty) {
-      let batch = db.batch();
-      snapData.forEach(doc => {
-        const docRef = snapref.doc(doc.id);
-        batch.update(docRef, { status: false });
-      });
-      await batch.commit();
-    }
+      const today = new Date();
+      let snapref = db.collection("promotions");
+      const snapData = await snapref.where('end_date', '<', today).get();
+      if (!snapData.empty) {
+        let batch = db.batch();
+        snapData.forEach(doc => {
+          const docRef = snapref.doc(doc.id);
+          batch.update(docRef, { status: false });
+        });
+        await batch.commit();
+      }
 
-    // snapref =snapref.where("status", "==", true);
-    const snapshot = await snapref.get();
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+      // snapref =snapref.where("status", "==", true);
+      const snapshot = await snapref.get();
+      return snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
 
     } catch (error) {
@@ -587,7 +608,7 @@ class AdminService {
       ).toString();
 
       try {
-        
+
         // Attempt to update the document
         await db
           .collection("users")
@@ -596,8 +617,8 @@ class AdminService {
             otp: encryptedOtp,
             otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
           });
-            
-      } catch (error) {        
+
+      } catch (error) {
         if (error.code === '5') {
           // If document doesn't exist, create it with the new data
           console.log("User document not found, creating new document.");

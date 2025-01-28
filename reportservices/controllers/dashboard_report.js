@@ -88,74 +88,28 @@ class dashboard_report {
 
     async yearly_spending_statistics(req, res) {
         try {
+
+            const year = 2025; // Specify the year you want to retrieve data for
+            const startOfYear = Timestamp.fromDate(new Date(year, 0, 1)); // January 1st of the specified year
+            const endOfYear = Timestamp.fromDate(new Date(year + 1, 0, 1)); // January 1st of the next year
+            const monthNames = [{"Jan":"0", "Feb":"1", "Mar":"2", "Apr":"3", "May":"4", "Jun":"5", "Jul":"6", "Aug":"7", "Sep":"8", "Oct":"9", "Nov":"10", "Dec":"11"}];
+            
+            let billing_history = [];
+            let query = db.collection("billing_history");
+            query = query.where('created_at', '>=', startOfYear).where('created_at', '<', endOfYear).orderBy('created_at', 'asc');
+            const snapshot = await query.get();
+            
+            if (!snapshot.empty) {
+                for (const doc of snapshot.docs) {
+                    const data = doc.data();
+                    billing_history.push({ id: doc.id, ...doc.data() });
+                }
+            }
+
+
             const data_json = [
                 {
                     "year": 2024,
-                    "current_month_revenue": 400,
-                    "data": [{
-                        "month": "Jan",
-                        "revenue_from_old_customers": 50,
-                        "revenue_from_new_customers": 50
-                    },
-                    {
-                        "month": "Feb",
-                        "revenue_from_old_customers": 30,
-                        "revenue_from_new_customers": 30
-                    },
-                    {
-                        "month": "Mar",
-                        "revenue_from_old_customers": 80,
-                        "revenue_from_new_customers": 80
-                    },
-                    {
-                        "month": "Apr",
-                        "revenue_from_old_customers": 40,
-                        "revenue_from_new_customers": 40
-                    },
-                    {
-                        "month": "May",
-                        "revenue_from_old_customers": 20,
-                        "revenue_from_new_customers": 20
-                    },
-                    {
-                        "month": "Jun",
-                        "revenue_from_old_customers": 45,
-                        "revenue_from_new_customers": 45
-                    },
-                    {
-                        "month": "Jul",
-                        "revenue_from_old_customers": 30,
-                        "revenue_from_new_customers": 30
-                    },
-                    {
-                        "month": "Aug",
-                        "revenue_from_old_customers": 10,
-                        "revenue_from_new_customers": 10
-                    },
-                    {
-                        "month": "Sep",
-                        "revenue_from_old_customers": 40,
-                        "revenue_from_new_customers": 40
-                    },
-                    {
-                        "month": "Oct",
-                        "revenue_from_old_customers": 50,
-                        "revenue_from_new_customers": 50
-                    },
-                    {
-                        "month": "Nov",
-                        "revenue_from_old_customers": 60,
-                        "revenue_from_new_customers": 60
-                    },
-                    {
-                        "month": "Dec",
-                        "revenue_from_old_customers": 50,
-                        "revenue_from_new_customers": 50
-                    }
-                    ]
-                },
-                {
-                    "year": 2023,
                     "current_month_revenue": 400,
                     "data": [{
                         "month": "Jan",

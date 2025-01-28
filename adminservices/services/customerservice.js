@@ -469,7 +469,7 @@ class CustomerService {
   // }
 
   async getCustomerList(data) {
-    try {
+    // try {
 
       let query = db
         .collection("customers");
@@ -493,10 +493,10 @@ class CustomerService {
         query = query.where("license_usage", "==", data.license_usage);
       }
 
-      if (data.subscription_date.start_date != "" && data.subscription_date.end_date != "") {
+      if (data.subscription_date && data.subscription_date.start_date != "" && data.subscription_date.end_date != "") {
         query = query.where("workspace.subscription_date", ">=", new Date(data.subscription_date.start_date)).where("workspace.subscription_date", "<=", new Date(data.subscription_date.end_date));
       }
-      if (data.renewal_date.start_date != "" && data.renewal_date.end_date != "") {
+      if (data.renewal_date && data.renewal_date.start_date != "" && data.renewal_date.end_date != "") {
         query = query.where("workspace.next_payment", ">=", new Date(data.renewal_date.start_date)).where("workspace.next_payment", "<=", new Date(data.renewal_date.end_date));
       }
       if (data.domain && data.domain.trim() !== "") {
@@ -518,7 +518,7 @@ class CustomerService {
       }
 
       let orderType = "";
-      if (data.hasOwnProperty("sortdata") && data.sortdata != "") {
+      if (data.hasOwnProperty("sortdata") && data.sortdata.sort_text != "") {
         const sortdata = data.sortdata;
         orderType = sortdata.order;
         if (sortdata != "" && sortdata.sort_text == "next_payment") {
@@ -531,11 +531,13 @@ class CustomerService {
           query = query.orderBy("license_usage", orderType);
         }
 
+      }else{
+        query = query.orderBy("createdAt", "desc");
       }
 
 
 
-      query = query.orderBy("createdAt", "desc");
+      
       const custSnapshot = await query.get();
 
       let search_text = data.search_data;
@@ -572,9 +574,9 @@ class CustomerService {
         data: custList,
       };
 
-    } catch (error) {
-      throw new Error("Failed to fetch customers: " + error.message);
-    }
+    // } catch (error) {
+    //   throw new Error("Failed to fetch customers: " + error.message);
+    // }
   }
   async delete_customer(record_id) {
     try {

@@ -21,10 +21,10 @@ async function getVoucherList(data) {
     }
 
     if (filter.voucher_code) {
-      const start = data.voucher_code;
-      const end = data.voucher_code + '\uf8ff';
-      query = query.where("voucher_code", ">=", start);
-      query = query.where("voucher_code", "<=", end);
+      const start = data.voucher_code.toLowerCase();
+      const end = data.voucher_code.toLowerCase() + '\uf8ff';
+      query = query.where("voucher_code_lower", ">=", start);
+      query = query.where("voucher_code_lower", "<=", end);
     }
 
     if (filter.start_date) {
@@ -95,6 +95,7 @@ async function addnewvoucher(data) {
     // Create new staff document
     const newStaff = {
       voucher_code: data.voucher_code,
+      voucher_code_lower: data.voucher_code.toLowerCase(),
       start_date: new Date(data.start_date),
       end_date: new Date(data.end_date),
       discount_rate: data.discount_rate,
@@ -155,6 +156,7 @@ async function editvoucher(data) {
 
     await voucherRef.update({
       voucher_code: data.voucher_code,
+      voucher_code_lower: data.voucher_code.toLowerCase(),
       start_date: new Date(data.start_date),
       end_date: new Date(data.end_date),
       discount_rate: data.discount_rate,

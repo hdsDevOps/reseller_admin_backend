@@ -15,7 +15,7 @@ class VoucherService {
     try {
       const groupRef = await db.collection("customer_groups").add({
         group_name,
-        group_name_lower:group_name.toLowerCase(),
+        group_name_lower: group_name.toLowerCase(),
         country,
         region,
         plan,
@@ -25,7 +25,7 @@ class VoucherService {
         no_customer,
         created_at: new Date(),
       });
-      
+
       return {
         status: 200,
         message: "Customer group created successfully",
@@ -38,6 +38,7 @@ class VoucherService {
 
   async editCustomerGroup(record_id, updateData) {
     try {
+      updateData.group_name_lower = updateData.group_name.toLowerCase();
       await db
         .collection("customer_groups")
         .doc(record_id)
@@ -63,10 +64,10 @@ class VoucherService {
         create_date: data.create_date, // The creation date to search for
       };
       const start = data.group_name.toLowerCase();
-        const end = data.group_name.toLowerCase() + '\uf8ff';
+      const end = data.group_name.toLowerCase() + '\uf8ff';
       // Filter by group_name if provided
       if (filter.group_name) {
-        
+
         //query = query.where("group_name_lower", "==", filter.group_name);
         query = query.where("group_name_lower", ">=", start)
         query = query.where("group_name_lower", "<=", end)
@@ -86,7 +87,7 @@ class VoucherService {
       const groups = snapshot.docs.map((doc) => ({
         record_id: doc.id,
         ...doc.data(),
-        create_date: doc.data().created_at? doc.data().created_at.toDate(): null,
+        create_date: doc.data().created_at ? doc.data().created_at.toDate() : null,
       }));
 
       return {

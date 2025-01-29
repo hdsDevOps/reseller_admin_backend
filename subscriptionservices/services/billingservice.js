@@ -1,4 +1,5 @@
 const { admin, db } = require("../firebaseConfig");
+const { Timestamp } = require('firebase-admin').firestore;
 const { sendmail } = require("../helper");
 const helper = require('../helper');
 
@@ -10,8 +11,15 @@ async function getrecordlist(data) {
     query = query.where("domain", "==", data.domain);
   }
   if (data.start_date && data.start_date != "" && data.end_date && data.end_date != "") {
-    const startDate = new Date(data.start_date);
-    const endDate = new Date(data.end_date);
+    let startdate = new Date(data.start_date);
+    let enddate = new Date(data.end_date);
+    // Set the start date to the beginning of the day
+    startdate.setHours(0, 0, 0, 0);
+
+    // Set the end date to the end of the day
+    enddate.setHours(23, 59, 59, 999);
+    const startDate = Timestamp.fromDate(startdate);
+    const endDate = Timestamp.fromDate(enddate);
     query = query.where("created_at", ">=", startDate).where("created_at", "<=", endDate);
   }
   query = query.orderBy("created_at", "desc");

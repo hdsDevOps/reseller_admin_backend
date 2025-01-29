@@ -89,23 +89,7 @@ class dashboard_report {
     async yearly_spending_statistics(req, res) {
         try {
 
-            const year = 2025; // Specify the year you want to retrieve data for
-            const startOfYear = Timestamp.fromDate(new Date(year, 0, 1)); // January 1st of the specified year
-            const endOfYear = Timestamp.fromDate(new Date(year + 1, 0, 1)); // January 1st of the next year
-            const monthNames = [{"Jan":"0", "Feb":"1", "Mar":"2", "Apr":"3", "May":"4", "Jun":"5", "Jul":"6", "Aug":"7", "Sep":"8", "Oct":"9", "Nov":"10", "Dec":"11"}];
-            
-            let billing_history = [];
-            let query = db.collection("billing_history");
-            query = query.where('created_at', '>=', startOfYear).where('created_at', '<', endOfYear).orderBy('created_at', 'asc');
-            const snapshot = await query.get();
-            
-            if (!snapshot.empty) {
-                for (const doc of snapshot.docs) {
-                    const data = doc.data();
-                    billing_history.push({ id: doc.id, ...doc.data() });
-                }
-            }
-
+           
 
             const data_json = [
                 {

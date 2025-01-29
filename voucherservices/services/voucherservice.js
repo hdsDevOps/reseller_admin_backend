@@ -21,7 +21,10 @@ async function getVoucherList(data) {
     }
 
     if (filter.voucher_code) {
-      query = query.where("voucher_code", "==", filter.voucher_code);
+      const start = data.voucher_code;
+      const end = data.voucher_code + '\uf8ff';
+      query = query.where("voucher_code", ">=", start);
+      query = query.where("voucher_code", "<=", end);
     }
 
     if (filter.start_date) {

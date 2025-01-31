@@ -498,10 +498,21 @@ class CustomerService {
     }
 
     if (data.subscription_date && data.subscription_date.start_date != "" && data.subscription_date.end_date != "") {
-      query = query.where("workspace.subscription_date", ">=", new Date(data.subscription_date.start_date)).where("workspace.subscription_date", "<=", new Date(data.subscription_date.end_date));
+      let startDate = new Date(data.subscription_date.start_date);
+      let endDate = new Date(data.subscription_date.end_date);
+      let start_date = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
+      let end_date = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
+
+      query = query.where("workspace.subscription_date", ">=", Timestamp.fromDate(start_date)).where("workspace.subscription_date", "<=", Timestamp.fromDate(end_date));
     }
     if (data.renewal_date && data.renewal_date.start_date != "" && data.renewal_date.end_date != "") {
-      query = query.where("workspace.next_payment", ">=", new Date(data.renewal_date.start_date)).where("workspace.next_payment", "<=", new Date(data.renewal_date.end_date));
+
+      let startDate = new Date(data.renewal_date.start_date);
+      let endDate = new Date(data.renewal_date.end_date);
+      let start_date = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
+      let end_date = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
+
+      query = query.where("workspace.next_payment", ">=", Timestamp.fromDate(start_date)).where("workspace.next_payment", "<=", Timestamp.fromDate(end_date));
     }
     if (data.domain && data.domain.trim() !== "") {
       const domainName = data.domain.toLowerCase();
@@ -697,7 +708,7 @@ class CustomerService {
       const querySnapshot = await query.get();
 
       const customers = [];
-      querySnapshot.forEach(doc => {       
+      querySnapshot.forEach(doc => {
         customers.push({ id: doc.id, ...doc.data() });
       });
 

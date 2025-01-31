@@ -28,13 +28,15 @@ async function getVoucherList(data) {
     }
 
     if (filter.start_date) {
-      const startDate = new Date(filter.start_date);
-      query = query.where("start_date", ">=", startDate);
+      let startDate = new Date(filter.start_date);
+      let start_date = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
+      query = query.where("start_date", ">=", Timestamp.fromDate(start_date));
     }
 
     if (filter.end_date) {
-      const endDate = new Date(filter.end_date);
-      query = query.where("end_date", "<=", endDate);
+      let endDate = new Date(filter.end_date);
+      let end_date = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
+      query = query.where("end_date", "<=", Timestamp.fromDate(end_date));
     }
 
     // Execute the query
@@ -226,23 +228,23 @@ async function sendvochermail(data) {
     }
     const voucherRef = db.collection(table_name).doc(data.record_id);
     const doc = await voucherRef.get();
-    
+
     if (!doc.exists) {
       return { status: 404, message: "Voucher record not found" };
     }
 
-    if (data.customer_type == 1) {      
-      if(!isNaN(Date.parse(doc.data().start_date)) && !isNaN(Date.parse(doc.data().end_date))){
+    if (data.customer_type == 1) {
+      if (!isNaN(Date.parse(doc.data().start_date)) && !isNaN(Date.parse(doc.data().end_date))) {
         return { status: 400, message: "Voucher has no valid date." };
       }
       const template = doc.data().template_details;
       const customeRef = db.collection("customers").doc(data.customer_id);
-      const customerdoc = await customeRef.get();      
+      const customerdoc = await customeRef.get();
       const email = customerdoc.data().email;
-     
+
       sendmail(email, 'Email Voucher from Hordanso', template);
 
-      const newdata = { 
+      const newdata = {
         voucher_id: data.record_id,
         customer_id: data.customer_id,
         status: "active",
@@ -294,7 +296,7 @@ async function sendvochermail(data) {
         await Promise.all(promises);
 
         const emails = results.join(',');
-        
+
         const template = doc.data().template_details;
         if (emails) {
           sendmail(emails, 'Email Voucher from Hordanso', template);

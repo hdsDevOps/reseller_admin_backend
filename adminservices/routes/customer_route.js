@@ -5,7 +5,7 @@ const path = require('path');
 const customerservice = require('../services/customerservice.js');
 const authmiddleware = require('../middleware/auth.js');
 const customercontroller = require('../controllers/customer_controller.js');
-    
+
 /**
  * @swagger
  * /adminservices/customers/add:
@@ -32,7 +32,7 @@ const customercontroller = require('../controllers/customer_controller.js');
  */
 adminServicesRouter.post("/add", async (req, res) => {
   const customerData = req.body;
-  res.status(200).send(await  customerservice.addCustomer(customerData));
+  res.status(200).send(await customerservice.addCustomer(customerData));
 });
 
 
@@ -57,7 +57,7 @@ adminServicesRouter.post("/add", async (req, res) => {
  */
 adminServicesRouter.get("/:id", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await  customerservice.getCustomer(customerId));
+  res.status(200).send(await customerservice.getCustomer(customerId));
 });
 /**
  * @swagger
@@ -79,7 +79,7 @@ adminServicesRouter.get("/:id", async (req, res) => {
  */
 router.get("/:id", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await  customerservice.getCustomerDomain(customerId));
+  res.status(200).send(await customerservice.getCustomerDomain(customerId));
 });
 
 // Send notification
@@ -108,7 +108,7 @@ router.get("/:id", async (req, res) => {
  */
 adminServicesRouter.post("/notify", async (req, res) => {
   const { customerId, message } = req.body;
-  res.status(200).send(await  customerservice.sendNotification(customerId, message));
+  res.status(200).send(await customerservice.sendNotification(customerId, message));
 });
 
 // Edit customer
@@ -140,7 +140,7 @@ adminServicesRouter.post("/notify", async (req, res) => {
 adminServicesRouter.put("/:id", async (req, res) => {
   const customerId = req.params.id;
   const updateData = req.body;
-  res.status(200).send(await  customerservice.editCustomer(customerId, updateData));
+  res.status(200).send(await customerservice.editCustomer(customerId, updateData));
 });
 
 
@@ -165,7 +165,7 @@ adminServicesRouter.put("/:id", async (req, res) => {
  */
 adminServicesRouter.delete("/:id", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await  customerservice.deleteCustomer(customerId));
+  res.status(200).send(await customerservice.deleteCustomer(customerId));
 });
 
 // Cancel subscription
@@ -189,7 +189,7 @@ adminServicesRouter.delete("/:id", async (req, res) => {
  */
 adminServicesRouter.post("/:id/cancel-subscription", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await  customerservice.cancelSubscription(customerId));
+  res.status(200).send(await customerservice.cancelSubscription(customerId));
 });
 
 // Suspend account
@@ -213,7 +213,7 @@ adminServicesRouter.post("/:id/cancel-subscription", async (req, res) => {
  */
 adminServicesRouter.post("/:id/suspend", async (req, res) => {
   const customerId = req.params.id;
-  res.status(200).send(await  customerservice.suspendAccount(customerId));
+  res.status(200).send(await customerservice.suspendAccount(customerId));
 });
 
 // Transfer account
@@ -247,7 +247,7 @@ adminServicesRouter.post("/:id/suspend", async (req, res) => {
 adminServicesRouter.post("/:id/transfer", async (req, res) => {
   const customerId = req.params.id;
   const { newOwnerId } = req.body;
-  res.status(200).send(await  customerservice.transferAccount(customerId, newOwnerId));
+  res.status(200).send(await customerservice.transferAccount(customerId, newOwnerId));
 });
 
 /**
@@ -296,9 +296,9 @@ adminServicesRouter.post("/:id/transfer", async (req, res) => {
  *         description: Error retrieving customers
  */
 adminServicesRouter.get('/', async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    res.status(200).send(await customerservice.getAllCustomers(page, limit));
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  res.status(200).send(await customerservice.getAllCustomers(page, limit));
 });
 
 /**
@@ -315,7 +315,7 @@ adminServicesRouter.get('/', async (req, res) => {
  *       400:
  *         description: Error retrieving customers
  */
-router.post("/customerlist", authmiddleware,  customercontroller.getCustomerList);
+router.post("/customerlist", authmiddleware, customercontroller.getCustomerList);
 
 /**
  * @swagger
@@ -362,7 +362,7 @@ router.post("/customerlist", authmiddleware,  customercontroller.getCustomerList
  *       400:
  *         description: Error adding customer
  */
-router.post("/addcustomer", authmiddleware,  customercontroller.addCustomer);
+router.post("/addcustomer", authmiddleware, customercontroller.addCustomer);
 
 /**
  * @swagger
@@ -409,7 +409,7 @@ router.post("/addcustomer", authmiddleware,  customercontroller.addCustomer);
  *       400:
  *         description: Error updating customer
  */
-router.post("/editcustomer", authmiddleware,  customercontroller.editCustomer);
+router.post("/editcustomer", authmiddleware, customercontroller.editCustomer);
 
 /**
  * @swagger
@@ -436,7 +436,7 @@ router.post("/editcustomer", authmiddleware,  customercontroller.editCustomer);
  *       400:
  *         description: Error deleting customer
  */
-router.post("/deletecustomer",  authmiddleware,  customercontroller.deleteCustomer);
+router.post("/deletecustomer", authmiddleware, customercontroller.deleteCustomer);
 
 /**
  * @swagger
@@ -463,7 +463,7 @@ router.post("/deletecustomer",  authmiddleware,  customercontroller.deleteCustom
  *       400:
  *         description: Error suspending customer
  */
-router.post("/suspendcustomer",  authmiddleware,  customercontroller.suspendCustomer);
+router.post("/suspendcustomer", authmiddleware, customercontroller.suspendCustomer);
 
 /**
  * @swagger
@@ -490,20 +490,20 @@ router.post("/suspendcustomer",  authmiddleware,  customercontroller.suspendCust
  *       400:
  *         description: Error cancelling customer subscription
  */
-router.post("/cancelsubscriptioncustomer",  authmiddleware,  customercontroller.cancelSubscription);
+router.post("/cancelsubscriptioncustomer", authmiddleware, customercontroller.cancelSubscription);
 
 
 router.post("/resetcustomerpassword", authmiddleware, customercontroller.resetcustomerpassword);
 
-router.post("/activecustomer",  authmiddleware,  customercontroller.activeCustomer);
+router.post("/activecustomer", authmiddleware, customercontroller.activeCustomer);
 
-router.post("/getcountry_list", authmiddleware,  customercontroller.getcountrylist);
+router.post("/getcountry_list", authmiddleware, customercontroller.getcountrylist);
 
-router.post("/getregion_list", authmiddleware,  customercontroller.getregionlist);
+router.post("/getregion_list", authmiddleware, customercontroller.getregionlist);
 
-router.post("/get_domain_list", authmiddleware,  customercontroller.get_domain_list);
-router.post("/updateDomain",  customercontroller.updateDomain);
-router.post("/get_email_list",  customercontroller.get_email_list);
-
+router.post("/get_domain_list", authmiddleware, customercontroller.get_domain_list);
+router.post("/updateDomain", customercontroller.updateDomain);
+router.post("/get_email_list", customercontroller.get_email_list);
+router.post('/create_base64', customercontroller.createBase64);
 module.exports = router;
 

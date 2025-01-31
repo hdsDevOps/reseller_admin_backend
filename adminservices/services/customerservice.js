@@ -1,5 +1,8 @@
 const { admin, db } = require("../firebaseConfig");
 const helper = require("../helper");
+const axios = require('axios');
+const url = require('url');
+const path = require('path');
 
 class CustomerService {
   async addCustomer(customerData) {
@@ -901,6 +904,29 @@ let domain=data.domain?data.domain.toLowerCase():"";
         message: "Error sending email list",
         error: error.message,
       };
+    }
+  }
+  async createBase64(data) {
+    try {
+      if (!data.url) {
+        return { status: 400, message: "Missing url" };
+      }
+      const parsedUrl = url.parse(data.url);
+      const extension = path.extname(parsedUrl.pathname).slice(1);    
+      // Fetch the image from the URL
+      const response = await axios.get(data.url, { responseType: 'arraybuffer' });
+      // Convert the image buffer to a base64 string
+      const base64String = Buffer.from(response.data, 'binary').toString('base64');
+      // Optionally, log the base64 string
+  
+      // If you want to save it to a file (optional)
+      // fs.writeFileSync('output.txt', base64String);
+      const base64image = `data:image/${extension};base64,${base64String}`
+      return { status: 200, base64: base64image };
+  
+    } catch (error) {
+      console.error("Error in createBase64:", error);
+      return { status: 500, message: "Error create bas64", error: error.message };
     }
   }
 }

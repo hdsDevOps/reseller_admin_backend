@@ -182,7 +182,7 @@ class AdminService {
     try {
       const snapshot = await db
         .collection("email_logs")
-        .orderBy("timestamp", "desc")
+        .orderBy("created_at", "desc")
         .get();
 
       const logs = [];

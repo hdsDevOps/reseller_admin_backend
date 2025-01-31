@@ -39,6 +39,15 @@ async function getVoucherList(data) {
       query = query.where("end_date", "<=", Timestamp.fromDate(end_date));
     }
 
+    if (data.sortdata) {
+      if (data.sortdata.sort_text != "") {
+        data.sortdata.sort_text == "discount" ? "discount_rate" : data.sortdata.sort_text;
+        query = query.orderBy(data.sortdata.sort_text, data.sortdata.order);
+      }
+    }else{
+      query = query.orderBy("created_at", "desc");
+    }
+
     // Execute the query
     const voucherSnapshot = await query.get();
 

@@ -12,7 +12,7 @@ const adduser = async (req, res) => {
   }
 
   try {
-    const searchableIndex= [data.first_name.toLowerCase(), data.last_name.toLowerCase(), `${data.first_name.toLowerCase()} ${data.last_name.toLowerCase()}`, data.email.toLowerCase(), data.phone];
+    const searchableIndex= [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), phone];
     
     // Call the service to add a user
     const user = await userService.createuser({ first_name, last_name, email, phone, role, searchableIndex:searchableIndex });

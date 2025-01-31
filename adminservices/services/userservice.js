@@ -139,7 +139,7 @@ const createQuery = (field, searchText, role) => {
 //   };
 const getallusers = async (role, searchValue) => {
   const searchText = searchValue;
-  try {
+  // try {
     let query = db.collection(USERS_COLLECTION);
     if (role && role.trim() !== "") {
       query = query.where('role', '==', role);
@@ -166,9 +166,9 @@ const getallusers = async (role, searchValue) => {
       }
     });
     return users;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw new Error('Failed to fetch search results');
-  }
+  // } catch (error) {
+  //   console.error('Error fetching data:', error);
+  //   throw new Error('Failed to fetch search results');
+  // }
 }
 module.exports = { createuser, updateuser, deleteuser, getallusers };

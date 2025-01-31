@@ -913,5 +913,6 @@ router.post('/getnotification_status', authMiddleware, adminController.getstatus
 // Update a specific notification type status
 router.post('/update_notification_status', authMiddleware, adminController.update_status);
 router.post('/getsubscriptiondata', authMiddleware, adminController.getsubscriptiondata);
+router.post('/getCustomerSubscription', authMiddleware, adminController.getCustomerSubscription);
 
 module.exports = router;

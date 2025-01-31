@@ -830,6 +830,32 @@ class AdminService {
       };
     }
   }
+  getCustomerSubscription = async (data) => {
+    try {
+      if (!data.subscription_id) {
+        return { status: 400, message: "Missing required fields subscription Id" };
+      }
+      
+      const subscriptionRef = db.collection("customer_subscriptions").doc(data.subscription_id);
+
+      let snapshot = await subscriptionRef.get();
+      if (snapshot.empty) {
+        return { status: 200, message: "No subscription found for the customer" };
+      }
+      const subscriptions = [];
+      const subscription = snapshot.data();
+      subscription.id = snapshot.id;
+      subscriptions.push(subscription);
+      return { status: 200, message: "Customer subscription fetched successfully", subscriptions };
+    } catch (error) {
+      console.error("Error in getCustomerSubscription:", error);
+      return {
+        status: 500,
+        message: "Error fetching customer subscription",
+        error: error.message
+      };
+    }
+  }
 }
 
 module.exports = new AdminService();

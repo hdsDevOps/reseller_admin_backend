@@ -537,6 +537,14 @@ class AdminController {
       res.status(500).json({ message: error.message });
     }
   };
+  async getCustomerSubscription(req, res) {
+    try {
+      const result=await AdminService.getCustomerSubscription(req.body);
+      res.status(200).json( result );
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 
 
 }

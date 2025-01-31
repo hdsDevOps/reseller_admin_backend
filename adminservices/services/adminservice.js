@@ -835,7 +835,7 @@ class AdminService {
       if (!data.subscription_id) {
         return { status: 400, message: "Missing required fields subscription Id" };
       }
-      
+
       const subscriptionRef = db.collection("customer_subscriptions").doc(data.subscription_id);
 
       let snapshot = await subscriptionRef.get();
@@ -855,6 +855,26 @@ class AdminService {
         error: error.message
       };
     }
+  }
+  getaddress = async (data) => {
+    try {
+      if (!data.address) {
+        return { status: 400, message: "Missing required fields" };
+      }
+
+      const response = await fetch(`https://geocode.search.hereapi.com/v1/geocode?q=${data.address}&apiKey=${process.env.HERE_API_SECRET}`);
+      const result = await response.json();
+
+      return { status: 200, message: "Address fetch successfully", data: result };
+    } catch (error) {
+      console.error("Error in getAddress:", error);
+      return {
+        status: 500,
+        message: "Error fatch address",
+        error: error.message,
+      };
+    }
+
   }
 }
 

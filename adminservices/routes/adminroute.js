@@ -914,5 +914,6 @@ router.post('/getnotification_status', authMiddleware, adminController.getstatus
 router.post('/update_notification_status', authMiddleware, adminController.update_status);
 router.post('/getsubscriptiondata', authMiddleware, adminController.getsubscriptiondata);
 router.post('/getCustomerSubscription', authMiddleware, adminController.getCustomerSubscription);
+router.post('/get_address', authMiddleware, adminController.getaddress);
 
 module.exports = router;

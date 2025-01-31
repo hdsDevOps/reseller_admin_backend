@@ -33,8 +33,9 @@ class NotificationController {
 
   async updateTemplate(req, res) {
     try {
+      
       const { record_id, template_content,is_notification } = req.body;
-      const result = await NotificationService.updateTemplate(record_id, template_content);
+      const result = await NotificationService.updateTemplate(record_id, template_content,is_notification);
       res.status(200).json(result);
     } catch (error) {
       res.status(400).json({ status: 'error', message: error.message });

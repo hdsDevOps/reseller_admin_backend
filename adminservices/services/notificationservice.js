@@ -40,7 +40,7 @@ class NotificationService {
     }
   }
 
-  async updateTemplate(record_id, template_content) {
+  async updateTemplate(record_id, template_content,is_notification) {
     try {
       const templateRef = db.collection('notification_templates').doc(record_id);
 

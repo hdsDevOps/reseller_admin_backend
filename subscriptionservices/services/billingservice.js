@@ -22,7 +22,7 @@ async function getrecordlist(data) {
     const endDate = Timestamp.fromDate(enddate);
     query = query.where("created_at", ">=", startDate).where("created_at", "<=", endDate);
   }
-  query = query.orderBy("created_at", "desc");
+
   if (data.search_data && data.search_data != "") {
     data.search_data = data.search_data.trim();
     let search_text = data.search_data.toLowerCase();
@@ -51,7 +51,9 @@ async function getrecordlist(data) {
         });
       }
     });
+
   } else {
+    query = query.orderBy("created_at", "desc");
     const billing_history_snapshot = await query.get();
     if (!billing_history_snapshot.empty) {
       billing_history_snapshot.forEach((doc) => {
@@ -62,6 +64,72 @@ async function getrecordlist(data) {
       });
     }
   }
+  if (data.sortdata) {
+    if (data.sortdata.sort_text && data.sortdata.sort_text != "") {
+      if (data.sortdata.sort_text == "customer_name") {
+        if (data.sortdata.order == "asc") {
+          billing_history.sort((a, b) => {
+            if (a.customer_name < b.customer_name) {
+              return -1;
+            }
+            if (a.customer_name > b.customer_name) {
+              return 1;
+            }
+            return 0;
+          });
+        }
+        if (data.sortdata.order == "desc") {
+          billing_history.sort((a, b) => {
+            if (a.customer_name < b.customer_name) {
+              return 1;
+            }
+            if (a.customer_name > b.customer_name) {
+              return -1;
+            }
+            return 0;
+          });
+        }
+      }
+      if (data.sortdata.sort_text == "date") {
+        if (data.sortdata.order == "desc") {
+          let dateA = convertTimestamp(a.date);
+          let dateB = convertTimestamp(b.date);
+          if (dateA < dateB) return -1;
+          if (dateA > dateB) return 1;
+        }
+        if (data.sortdata.order == "desc") {
+          let dateA = convertTimestamp(a.date);
+          let dateB = convertTimestamp(b.date);
+          if (dateA < dateB) return 1;
+          if (dateA > dateB) return -1;
+        }
+      }
+      if (data.sortdata.sort_text == "amount") {
+        if (data.sortdata.order == "asc") {
+          billing_history.sort((a, b) => {
+            if (a.transaction_data.amount < b.transaction_data.amount) {
+              return -1;
+            }
+            if (a.transaction_data.amount > b.transaction_data.amount) {
+              return 1;
+            }
+            return 0;
+          });
+        }
+        if (data.sortdata.order == "desc") {
+          billing_history.sort((a, b) => {
+            if (a.transaction_data.amount < b.transaction_data.amount) {
+              return 1;
+            }
+            if (a.transaction_data.amount > b.transaction_data.amount) {
+              return -1;
+            }
+            return 0;
+          });
+        }
+      }
+    }
+  }
   return {
     status: 200,
     data: billing_history,
@@ -69,10 +137,16 @@ async function getrecordlist(data) {
   // } catch (error) {
   //   throw new Error("Failed to fetch billing history: " + error.message);
   // }
+
+
 }
 
 
 
 module.exports = {
   getrecordlist,
+};
+
+const convertTimestamp = (timestamp) => {
+  return new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
 };

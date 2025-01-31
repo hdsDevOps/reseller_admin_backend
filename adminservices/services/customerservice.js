@@ -3,6 +3,7 @@ const helper = require("../helper");
 const axios = require('axios');
 const url = require('url');
 const path = require('path');
+const { Timestamp } = require('firebase-admin').firestore;
 
 class CustomerService {
   async addCustomer(customerData) {
@@ -474,108 +475,108 @@ class CustomerService {
   async getCustomerList(data) {
     // try {
 
-      let query = db
-        .collection("customers");
-      if (data.country != "" && data.country != null) {
-        query = query.where("country", "==", data.country);
+    let query = db
+      .collection("customers");
+    if (data.country != "" && data.country != null) {
+      query = query.where("country", "==", data.country);
+    }
+
+    if (data.state_name != "" && data.state_name != null) {
+      query = query.where("state", "==", data.state_name);
+    }
+
+    if (data.authentication !== "" && data.authentication !== null && data.authentication !== undefined) {
+      if (data.authentication === true) {
+        query = query.where("authentication", "==", true);
+      } else {
+        query = query.where("authentication", "==", false);
       }
+    }
 
-      if (data.state_name != "" && data.state_name != null) {
-        query = query.where("state", "==", data.state_name);
+    if (data.license_usage != "" && data.license_usage != null) {
+      query = query.where("license_usage", "==", Number(data.license_usage));
+    }
+
+    if (data.subscription_date && data.subscription_date.start_date != "" && data.subscription_date.end_date != "") {
+      query = query.where("workspace.subscription_date", ">=", new Date(data.subscription_date.start_date)).where("workspace.subscription_date", "<=", new Date(data.subscription_date.end_date));
+    }
+    if (data.renewal_date && data.renewal_date.start_date != "" && data.renewal_date.end_date != "") {
+      query = query.where("workspace.next_payment", ">=", new Date(data.renewal_date.start_date)).where("workspace.next_payment", "<=", new Date(data.renewal_date.end_date));
+    }
+    if (data.domain && data.domain.trim() !== "") {
+      const domainName = data.domain.toLowerCase();
+
+      const domainRef = db.collection('domains');
+      const domainSnapshot = await domainRef.where('domain_name', '==', domainName).get();
+      if (domainSnapshot.empty) {
+        return { status: 200, message: 'No matching domains found.' };
       }
-
-      if (data.authentication !== "" && data.authentication !== null && data.authentication !== undefined) {
-        if (data.authentication === true) {
-          query = query.where("authentication", "==", true);
-        } else {
-          query = query.where("authentication", "==", false);
-        }
-      }
-
-      if (data.license_usage != "" && data.license_usage != null) {
-        query = query.where("license_usage", "==", Number(data.license_usage));
-      }
-
-      if (data.subscription_date && data.subscription_date.start_date != "" && data.subscription_date.end_date != "") {
-        query = query.where("workspace.subscription_date", ">=", new Date(data.subscription_date.start_date)).where("workspace.subscription_date", "<=", new Date(data.subscription_date.end_date));
-      }
-      if (data.renewal_date && data.renewal_date.start_date != "" && data.renewal_date.end_date != "") {
-        query = query.where("workspace.next_payment", ">=", new Date(data.renewal_date.start_date)).where("workspace.next_payment", "<=", new Date(data.renewal_date.end_date));
-      }
-      if (data.domain && data.domain.trim() !== "") {
-        const domainName = data.domain.toLowerCase();
-
-        const domainRef = db.collection('domains');
-        const domainSnapshot = await domainRef.where('domain_name', '==', domainName).get();
-        if (domainSnapshot.empty) {
-          return { status: 200, message: 'No matching domains found.' };
-        }
-        let customerId;
-        domainSnapshot.forEach(doc => {
-          customerId = doc.data().customer_id;
-          const customerDocRef = db.collection('customers').doc(customerId);
-          query = query.where('__name__', '==', customerDocRef.id);
-        });
-
-        //query = query.doc(customerId);
-      }
-
-      let orderType = "";
-      if (data.hasOwnProperty("sortdata") && data.sortdata.sort_text != "") {
-        const sortdata = data.sortdata;
-        orderType = sortdata.order;
-        if (sortdata != "" && sortdata.sort_text == "next_payment") {
-          query = query.orderBy("workspace.next_payment", orderType);
-        }
-        if (sortdata != "" && sortdata.sort_text == "createdAt") {
-          query = query.orderBy("createdAt", orderType);
-        }
-        if (sortdata != "" && sortdata.sort_text == "license_usage") {
-          query = query.orderBy("license_usage", orderType);
-        }
-
-      }else{
-        query = query.orderBy("createdAt", "desc");
-      }
-
-
-
-      
-      const custSnapshot = await query.get();
-
-      let search_text = data.search_data;
-      let custList = [];
-      custSnapshot.forEach((doc) => {
-        const data = doc.data();
-        const fullName = `${data.first_name} ${data.last_name}`;
-        if (search_text != "" && search_text != null) {
-          const searchText = search_text.toLowerCase();
-
-          if (data.searchableIndex && data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
-
-            custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
-          }
-        } else {
-          custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
-        }
-        if (data.hasOwnProperty("sortdata") && data.sortdata != "") {
-          if (sortdata != "" && sortdata.sort_text == "name") {
-            custList.sort((a, b) => a.fullName.localeCompare(b.fullName));
-          }
-          if (sortdata != "" && sortdata.sort_text == "domain") {
-            custList.sort((a, b) => a.domain.localeCompare(b.domain));
-          }
-        }
+      let customerId;
+      domainSnapshot.forEach(doc => {
+        customerId = doc.data().customer_id;
+        const customerDocRef = db.collection('customers').doc(customerId);
+        query = query.where('__name__', '==', customerDocRef.id);
       });
 
+      //query = query.doc(customerId);
+    }
+
+    let orderType = "";
+    if (data.hasOwnProperty("sortdata") && data.sortdata.sort_text != "") {
+      const sortdata = data.sortdata;
+      orderType = sortdata.order;
+      if (sortdata != "" && sortdata.sort_text == "next_payment") {
+        query = query.orderBy("workspace.next_payment", orderType);
+      }
+      if (sortdata != "" && sortdata.sort_text == "createdAt") {
+        query = query.orderBy("createdAt", orderType);
+      }
+      if (sortdata != "" && sortdata.sort_text == "license_usage") {
+        query = query.orderBy("license_usage", orderType);
+      }
+
+    } else {
+      query = query.orderBy("createdAt", "desc");
+    }
 
 
 
-      return {
-        status: 200,
-        message: "customer list retrieved successfully",
-        data: custList,
-      };
+
+    const custSnapshot = await query.get();
+
+    let search_text = data.search_data;
+    let custList = [];
+    custSnapshot.forEach((doc) => {
+      const data = doc.data();
+      const fullName = `${data.first_name} ${data.last_name}`;
+      if (search_text != "" && search_text != null) {
+        const searchText = search_text.toLowerCase();
+
+        if (data.searchableIndex && data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
+
+          custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+        }
+      } else {
+        custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+      }
+      if (data.hasOwnProperty("sortdata") && data.sortdata != "") {
+        if (sortdata != "" && sortdata.sort_text == "name") {
+          custList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+        }
+        if (sortdata != "" && sortdata.sort_text == "domain") {
+          custList.sort((a, b) => a.domain.localeCompare(b.domain));
+        }
+      }
+    });
+
+
+
+
+    return {
+      status: 200,
+      message: "customer list retrieved successfully",
+      data: custList,
+    };
 
     // } catch (error) {
     //   throw new Error("Failed to fetch customers: " + error.message);
@@ -671,27 +672,32 @@ class CustomerService {
         query = query.where("country", "==", filters.country);
       }
       if (filters.state_name) {
-        query = query.where("state_name", "==", filters.state_name);
+        query = query.where("state", "==", filters.state_name);
       }
 
-      if (filters.customer_count) {
-        query = query.where("customer_count", "==", filters.customer_count);
+      if (filters.license_usage) {
+        query = query.where("license_usage", "==", filters.license_usage);
       }
       if (filters.plan) {
-        query = query.where("plan", "==", filters.plan);
+        query = query.where("workspace.plan_name_id", "==", filters.plan);
       }
+
       if (filters.start_date) {
-        query = query.where("start_date", "==", filters.start_date);
+        let startDate = new Date(filters.start_date);
+        let start_date = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
+        query = query.where("workspace.subscription_date", ">=", Timestamp.fromDate(start_date));
       }
       if (filters.end_date) {
-        query = query.where("end_date", "==", filters.end_date);
+        let endDate = new Date(filters.end_date);
+        let end_date = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
+        query = query.where("workspace.subscription_date", "<=", Timestamp.fromDate(end_date));
       }
 
       // Execute the query
       const querySnapshot = await query.get();
 
       const customers = [];
-      querySnapshot.forEach(doc => {
+      querySnapshot.forEach(doc => {       
         customers.push({ id: doc.id, ...doc.data() });
       });
 
@@ -852,10 +858,10 @@ class CustomerService {
       //   domainRef.update({ domain: data.domain_name });
 
       // }
-console.log("111111111111111")
-let customer_name=data.customer_name?data.customer_name.toLowerCase():"";
-let payment_method=data.payment_method?data.payment_method.toLowerCase():"";
-let domain=data.domain?data.domain.toLowerCase():"";
+      console.log("111111111111111")
+      let customer_name = data.customer_name ? data.customer_name.toLowerCase() : "";
+      let payment_method = data.payment_method ? data.payment_method.toLowerCase() : "";
+      let domain = data.domain ? data.domain.toLowerCase() : "";
 
       const fields = [data.user_id, customer_name, data.subscription_id, data.transaction_id, data.invoice, domain, payment_method];
       const availableData = fields.filter(field => field !== undefined);
@@ -912,18 +918,18 @@ let domain=data.domain?data.domain.toLowerCase():"";
         return { status: 400, message: "Missing url" };
       }
       const parsedUrl = url.parse(data.url);
-      const extension = path.extname(parsedUrl.pathname).slice(1);    
+      const extension = path.extname(parsedUrl.pathname).slice(1);
       // Fetch the image from the URL
       const response = await axios.get(data.url, { responseType: 'arraybuffer' });
       // Convert the image buffer to a base64 string
       const base64String = Buffer.from(response.data, 'binary').toString('base64');
       // Optionally, log the base64 string
-  
+
       // If you want to save it to a file (optional)
       // fs.writeFileSync('output.txt', base64String);
       const base64image = `data:image/${extension};base64,${base64String}`
       return { status: 200, base64: base64image };
-  
+
     } catch (error) {
       console.error("Error in createBase64:", error);
       return { status: 500, message: "Error create bas64", error: error.message };

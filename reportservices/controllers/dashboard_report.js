@@ -44,25 +44,51 @@ class dashboard_report {
 
             let lastmonthrevenue = 0;
             let convertedamount = 0;
+            const revenue_last_month = [];
             if (!snapshot_revenue_last_month.empty) {
                 snapshot_revenue_last_month.forEach(doc => {
                     let data = doc.data();
-                    if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency) {
+                    // Convert Firestore Timestamp to JavaScript Date
+                    let date = data.date.toDate();
+                    // Convert JavaScript Date to a readable date string
+                    let dateString = date.toISOString().split('T')[0];
+
+                    if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency && data.transaction_data.currency != null && data.transaction_data.currency != undefined) {
                         let newCurrency = data.transaction_data.currency.toUpperCase();
+                        revenue_last_month.push({
+                            date: dateString,
+                            currency: data.transaction_data ? data.transaction_data.currency : null,
+                            amount: data.transaction_data ? data.transaction_data.amount : null,
+                            rate:rate["conversion_rates"][newCurrency],
+                            convertedamount:data.transaction_data.amount / rate["conversion_rates"][newCurrency]
+                        });                        
                         convertedamount = rate["conversion_rates"][newCurrency]
-                        lastmonthrevenue = lastmonthrevenue + (data.transaction_data.amount * convertedamount);
+                        lastmonthrevenue = lastmonthrevenue + (data.transaction_data.amount / convertedamount);
                     }
                 });
             }
-
+            const revenue_current_month = [];
             let currentmonthrevenue = 0;
             if (!snapshot_revenue_current_month.empty) {
                 snapshot_revenue_current_month.forEach(doc => {
                     let data = doc.data();
-                    if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency) {
+                    // Convert Firestore Timestamp to JavaScript Date
+                    let date = data.date.toDate();
+                    // Convert JavaScript Date to a readable date string
+                    let dateString = date.toISOString().split('T')[0];
+
+                    if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency && data.transaction_data.currency != null && data.transaction_data.currency != undefined) {
                         let newCurrency = data.transaction_data.currency.toUpperCase();
+                        revenue_current_month.push({
+                            date: dateString,
+                            currency: data.transaction_data ? data.transaction_data.currency : null,
+                            amount: data.transaction_data ? data.transaction_data.amount : null,
+                            rate:rate["conversion_rates"][newCurrency],
+                            convertedamount:data.transaction_data.amount / rate["conversion_rates"][newCurrency]
+                        });
+                        
                         convertedamount = rate["conversion_rates"][newCurrency]
-                        currentmonthrevenue = currentmonthrevenue + (data.transaction_data.amount * convertedamount);
+                        currentmonthrevenue = currentmonthrevenue + (data.transaction_data.amount / convertedamount);
                     }
                 });
             }
@@ -80,7 +106,7 @@ class dashboard_report {
                 "customers_who_use_stripe": striperecords.length,
                 "new_customers_count_this_month": records.length
             }
-            res.status(200).json({ message: 'Dashoard Report Data', result: data_json });
+            res.status(200).json({ message: 'Dashoard Report Data', result: data_json, revenue_current_month: revenue_current_month, revenue_last_month: revenue_last_month });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -91,13 +117,13 @@ class dashboard_report {
             const year = 2025; // Specify the year you want to retrieve data for
             const startOfYear = Timestamp.fromDate(new Date(year, 0, 1)); // January 1st of the specified year
             const endOfYear = Timestamp.fromDate(new Date(year + 1, 0, 1)); // January 1st of the next year
-            const monthNames = [{"Jan":"0", "Feb":"1", "Mar":"2", "Apr":"3", "May":"4", "Jun":"5", "Jul":"6", "Aug":"7", "Sep":"8", "Oct":"9", "Nov":"10", "Dec":"11"}];
-            
+            const monthNames = [{ "Jan": "0", "Feb": "1", "Mar": "2", "Apr": "3", "May": "4", "Jun": "5", "Jul": "6", "Aug": "7", "Sep": "8", "Oct": "9", "Nov": "10", "Dec": "11" }];
+
             let billing_history = [];
             let query = db.collection("billing_history");
             query = query.where('created_at', '>=', startOfYear).where('created_at', '<', endOfYear).orderBy('created_at', 'asc');
             const snapshot = await query.get();
-            
+
             if (!snapshot.empty) {
                 for (const doc of snapshot.docs) {
                     const data = doc.data();
@@ -105,7 +131,7 @@ class dashboard_report {
                 }
             }
 
-           
+
 
             const data_json = [
                 {

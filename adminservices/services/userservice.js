@@ -140,26 +140,32 @@ const createQuery = (field, searchText, role) => {
 const getallusers = async (role, searchValue) => {
   const searchText = searchValue;
   try {
-  let query = db.collection(USERS_COLLECTION);
-  if (role && role.trim() !== "") {
-    query = query.where('role', '==', role);
-  }
-  if (searchValue && searchValue.trim() !== "") {   
-    query = query.where('searchableIndex', 'array-contains', searchValue.toString().toLowerCase());
-  }
-  query = query.orderBy("created_at", "desc");
- 
-  const querySnapshot = await query.get();
-  const users = [];
-  querySnapshot.docs.forEach((doc) => {
-    if (!doc.data().customer_id) {
-      users.push({
-        id: doc.id,
-        ...doc.data()
-      });
+    let query = db.collection(USERS_COLLECTION);
+    if (role && role.trim() !== "") {
+      query = query.where('role', '==', role);
     }
-  });
-  return users;
+    if (searchValue && searchValue.trim() !== "") {
+      query = query.where('searchableIndex', 'array-contains', searchValue.toString().toLowerCase());
+    }
+    query = query.orderBy("created_at", "desc");
+    if (data.sortdata) {
+      if (data.sortdata.sort_text && data.sortdata.sort_text != "") {
+        query = query.orderBy("first_name", data.sortdata.order);
+      }
+    }
+
+
+    const querySnapshot = await query.get();
+    const users = [];
+    querySnapshot.docs.forEach((doc) => {
+      if (!doc.data().customer_id) {
+        users.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      }
+    });
+    return users;
   } catch (error) {
     console.error('Error fetching data:', error);
     throw new Error('Failed to fetch search results');

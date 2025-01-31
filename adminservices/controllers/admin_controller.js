@@ -306,7 +306,7 @@ class AdminController {
 
   async updatePromotion(req, res) {
     try {
-      let { record_id, code, start_date, end_date, html_template, status,discount } = req.body;
+      let { record_id, code, start_date, end_date, html_template, status, discount } = req.body;
       start_date = new Date(start_date);
       end_date = new Date(end_date);
       // status = end_date >= start_date && end_date >= new Date() ? true : false;
@@ -525,6 +525,14 @@ class AdminController {
       }
       await notificationservices.updateNotificationStatusService(userid, status);
       res.status(200).json({ message: 'Notification status updated successfully' });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  async getsubscriptiondata(req, res) {
+    try {
+      const result=await AdminService.getsubscriptiondata(req.body);
+      res.status(200).json( result );
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

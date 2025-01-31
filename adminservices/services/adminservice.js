@@ -50,7 +50,7 @@ class AdminService {
         status: 200,
         message: "Login successfully done",
         token: response.data.token,
-        customer_id:response.data.customer_id
+        customer_id: response.data.customer_id
       };
     } catch (error) {
       throw new Error("Login failed.Please check: " + error.message);
@@ -793,7 +793,43 @@ class AdminService {
     }
     return doc.data();
   };
+  getsubscriptiondata = async (data) => {
+    try {
+      let query = "";
+      if (data.subscription_id != "") {
+        query = db
+          .collection("subscription_plans").doc(data.subscription_id);
+      } else {
+        query = db
+          .collection("subscription_plans");
+        query = query.orderBy("created_at", "desc");
+      }
 
+
+      const subscription = await query.get();
+      let subscriptionData = "";
+      if (data.subscription_id != "") {
+        subscriptionData = [{ id: data.subscription_id, ...subscription.data() }];
+      } else {
+        subscriptionData = subscription.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+      }
+      return {
+        status: 200,
+        message: "subscription data retrieved successfully",
+        data: subscriptionData
+      };
+    } catch (error) {
+      console.error("Error in getsubscriptiondata:", error);
+      return {
+        status: 500,
+        message: "Error retrieving subscription data",
+        error: error.message,
+      };
+    }
+  }
 }
 
 module.exports = new AdminService();

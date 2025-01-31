@@ -675,8 +675,8 @@ class CustomerService {
         query = query.where("state", "==", filters.state_name);
       }
 
-      if (filters.license_usage) {
-        query = query.where("license_usage", "==", filters.license_usage);
+      if (filters.customer_count) {
+        query = query.where("license_usage", "==", filters.customer_count);
       }
       if (filters.plan) {
         query = query.where("workspace.plan_name_id", "==", filters.plan);

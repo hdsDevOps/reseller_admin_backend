@@ -92,28 +92,34 @@ async function getrecordlist(data) {
       }
       if (data.sortdata.sort_text == "date") {
         if (data.sortdata.order == "desc") {
-          let dateA = convertTimestamp(a.date);
-          let dateB = convertTimestamp(b.date);
-          if (dateA < dateB) return -1;
-          if (dateA > dateB) return 1;
+          billing_history.sort((a, b) => {
+            let dateA = convertTimestamp(a.date);
+            let dateB = convertTimestamp(b.date);
+            if (dateA < dateB) return -1;
+            if (dateA > dateB) return 1;
+            return 0;
+          });
         }
         if (data.sortdata.order == "desc") {
-          let dateA = convertTimestamp(a.date);
-          let dateB = convertTimestamp(b.date);
-          if (dateA < dateB) return 1;
-          if (dateA > dateB) return -1;
+          billing_history.sort((a, b) => {
+            let dateA = convertTimestamp(a.date);
+            let dateB = convertTimestamp(b.date);
+            if (dateA < dateB) return 1;
+            if (dateA > dateB) return -1;
+            return 0;
+          });
         }
       }
       if (data.sortdata.sort_text == "amount") {
         if (data.sortdata.order == "asc") {
           billing_history.sort((a, b) => {
-            if (!a.transaction_data || !b.transaction_data) {              
+            if (!a.transaction_data || !b.transaction_data) {
               if (!a.transaction_data) return 0; // Move a to the end
               if (!b.transaction_data) return 0; // Move b to the end
             }
 
             // Check if amount is null or undefined
-            if (!a.transaction_data.amount || !b.transaction_data.amount) {              
+            if (!a.transaction_data.amount || !b.transaction_data.amount) {
               if (!a.transaction_data.amount) return 1; // Move a to the end
               if (!b.transaction_data.amount) return -1; // Move b to the end
             }
@@ -128,7 +134,7 @@ async function getrecordlist(data) {
         }
         if (data.sortdata.order == "desc") {
           billing_history.sort((a, b) => {
-            if (!a.transaction_data || !b.transaction_data) {              
+            if (!a.transaction_data || !b.transaction_data) {
               if (!a.transaction_data) return 0; // Move a to the end
               if (!b.transaction_data) return 0; // Move b to the end
             }
@@ -169,5 +175,8 @@ module.exports = {
 };
 
 const convertTimestamp = (timestamp) => {
-  return new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
+  if (timestamp && timestamp._seconds !== undefined && timestamp._nanoseconds !== undefined) {
+    return new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
+}
+return null;
 };

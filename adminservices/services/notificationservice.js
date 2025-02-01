@@ -40,7 +40,7 @@ class NotificationService {
     }
   }
 
-  async updateTemplate(record_id, template_content,is_notification) {
+  async updateTemplate(record_id, template_content, is_notification) {
     try {
       const templateRef = db.collection('notification_templates').doc(record_id);
 
@@ -169,15 +169,22 @@ class NotificationService {
 
       const templateData = template.data();
 
-
+      
       // Send email to each recipient
-      const emailPromises = email_ids.map(email =>
-        sendEmail({
-          to: email,
-          subject: templateData.template_header || 'Test Email',
-          html: templateData.template_content,
-        })
-      );
+      const emailPromises = email_ids.map(async email =>{
+        const customerRef = await db.collection("customers").where("email", "==", email).get();
+        const customerData = customerRef.docs.map(doc => ({
+            ...doc.data()
+        }));
+
+
+      sendEmail({
+        to: email,
+        subject: templateData.template_header || 'Test Email',
+        html: templateData.template_content.replace("{first_name}", customerData[0].first_name)
+        .replace("{last_name}", customerData[0].last_name).replace("{email}", customerData[0].email),
+      })
+    });
 
       await Promise.all(emailPromises);
 
@@ -246,13 +253,13 @@ class NotificationService {
       const notifications = [];
       const querySnapshot = await db
         .collection("notifications")
-        .where("role", "==", role)  
+        .where("role", "==", role)
         .get();
       if (querySnapshot.empty) {
         notifications.push({ status: 200, message: "Error", data: "No matching documents" });
         return notifications; // Return an empty array if no documents match
       }
- 
+
 
       querySnapshot.forEach((doc) => {
         let data = doc.data();

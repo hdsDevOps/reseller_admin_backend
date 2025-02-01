@@ -107,6 +107,9 @@ async function getrecordlist(data) {
       if (data.sortdata.sort_text == "amount") {
         if (data.sortdata.order == "asc") {
           billing_history.sort((a, b) => {
+            if(!a.transaction_data.amount || !b.transaction_data.amount){
+              return 0;
+            }
             if (a.transaction_data.amount < b.transaction_data.amount) {
               return -1;
             }
@@ -118,6 +121,9 @@ async function getrecordlist(data) {
         }
         if (data.sortdata.order == "desc") {
           billing_history.sort((a, b) => {
+            if(!a.transaction_data.amount || !b.transaction_data.amount){
+              return 0;
+            }
             if (a.transaction_data.amount < b.transaction_data.amount) {
               return 1;
             }

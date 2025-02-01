@@ -87,8 +87,34 @@ class VoucherService {
       const groups = snapshot.docs.map((doc) => ({
         record_id: doc.id,
         ...doc.data(),
+        no_customer:Number(doc.data().no_customer),
         create_date: doc.data().created_at ? doc.data().created_at.toDate() : null,
       }));
+if(data.sortdata){
+  if(data.sortdata.sort_text && data.sortdata.sort_text!="")
+      if (data.sortdata.order == "asc") {
+        groups.sort((a, b) => {
+          if (a.no_customer < b.no_customer) {
+            return -1;
+          }
+          if (a.no_customer > b.no_customer) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+      if (data.sortdata.order == "desc") {
+        groups.sort((a, b) => {
+          if (a.no_customer < b.no_customer) {
+            return 1;
+          }
+          if (a.no_customer > b.no_customer) {
+            return -1;
+          }
+          return 0;
+        });
+      }
+    }
 
       return {
         status: 200,

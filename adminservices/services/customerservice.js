@@ -474,7 +474,7 @@ class CustomerService {
 
   async getCustomerList(data) {
     // try {
-
+      const sortdata = data.sortdata;
     let query = db
       .collection("customers");
     if (data.country != "" && data.country != null) {
@@ -533,8 +533,7 @@ class CustomerService {
     }
 
     let orderType = "";
-    if (data.hasOwnProperty("sortdata") && data.sortdata.sort_text != "") {
-      const sortdata = data.sortdata;
+    if (data.hasOwnProperty("sortdata") && data.sortdata.sort_text != "") {     
       orderType = sortdata.order;
       if (sortdata != "" && sortdata.sort_text == "next_payment") {
         query = query.orderBy("workspace.next_payment", orderType);
@@ -570,14 +569,56 @@ class CustomerService {
       } else {
         custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
       }
-      if (data.hasOwnProperty("sortdata") && data.sortdata != "") {
-        if (sortdata != "" && sortdata.sort_text == "name") {
-          custList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+          
+        if (sortdata.sort_text == "name") {          
+          if (sortdata.order == "asc") {
+            custList.sort((a, b) => {
+              if (a.fullName < b.fullName) {
+                return -1;
+              }
+              if (a.fullName > b.fullName) {
+                return 1;
+              }
+              return 0;
+            });
+          }
+          if (sortdata.order == "desc") {
+            custList.sort((a, b) => {
+              if (a.fullName < b.fullName) {
+                return 1;
+              }
+              if (a.fullName > b.fullName) {
+                return -1;
+              }
+              return 0;
+            });
+          }
         }
-        if (sortdata != "" && sortdata.sort_text == "domain") {
-          custList.sort((a, b) => a.domain.localeCompare(b.domain));
+        if (sortdata.sort_text == "domain") {
+          if (sortdata.order == "asc") {
+            custList.sort((a, b) => {
+              if (a.domain < b.domain) {
+                return -1;
+              }
+              if (a.domain > b.domain) {
+                return 1;
+              }
+              return 0;
+            });
+          }
+          if (sortdata.order == "desc") {
+            custList.sort((a, b) => {
+              if (a.domain < b.domain) {
+                return 1;
+              }
+              if (a.domain > b.domain) {
+                return -1;
+              }
+              return 0;
+            });
+          }
         }
-      }
+      
     });
 
 

@@ -107,16 +107,16 @@ async function getrecordlist(data) {
       if (data.sortdata.sort_text == "amount") {
         if (data.sortdata.order == "asc") {
           billing_history.sort((a, b) => {
-            if (!a.transaction_data || !b.transaction_data) {
-              if (!a.transaction_data) return 1; // Move a to the end
-              if (!b.transaction_data) return -1; // Move b to the end
-          }
-      
-          // Check if amount is null or undefined
-          if (!a.transaction_data.amount || !b.transaction_data.amount) {
+            if (!a.transaction_data || !b.transaction_data) {              
+              if (!a.transaction_data) return 0; // Move a to the end
+              if (!b.transaction_data) return 0; // Move b to the end
+            }
+
+            // Check if amount is null or undefined
+            if (!a.transaction_data.amount || !b.transaction_data.amount) {              
               if (!a.transaction_data.amount) return 1; // Move a to the end
               if (!b.transaction_data.amount) return -1; // Move b to the end
-          }
+            }
             if (a.transaction_data.amount < b.transaction_data.amount) {
               return -1;
             }
@@ -128,16 +128,17 @@ async function getrecordlist(data) {
         }
         if (data.sortdata.order == "desc") {
           billing_history.sort((a, b) => {
-            if (!a.transaction_data || !b.transaction_data) {
-              if (!a.transaction_data) return 1; // Move a to the end
-              if (!b.transaction_data) return -1; // Move b to the end
-          }
-      
-          // Check if amount is null or undefined
-          if (!a.transaction_data.amount || !b.transaction_data.amount) {
-              if (!a.transaction_data.amount) return 1; // Move a to the end
-              if (!b.transaction_data.amount) return -1; // Move b to the end
-          }
+            if (!a.transaction_data || !b.transaction_data) {              
+              if (!a.transaction_data) return 0; // Move a to the end
+              if (!b.transaction_data) return 0; // Move b to the end
+            }
+
+            // Check if amount is null or undefined
+            if (!a.transaction_data.amount) {
+              a.transaction_data.amount = 0;
+            } if (!b.transaction_data.amount) {
+              b.transaction_data.amount = 0;
+            }
             if (a.transaction_data.amount < b.transaction_data.amount) {
               return 1;
             }

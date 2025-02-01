@@ -90,20 +90,20 @@ async function getrecordlist(data) {
           });
         }
       }
-      if (data.sortdata.sort_text == "date") {
+      if (data.sortdata.sort_text == "created_at") {
         if (data.sortdata.order == "desc") {
           billing_history.sort((a, b) => {
-            let dateA = convertTimestamp(a.date);
-            let dateB = convertTimestamp(b.date);
+            let dateA = convertTimestamp(a.created_at);
+            let dateB = convertTimestamp(b.created_at);
             if (dateA < dateB) return -1;
             if (dateA > dateB) return 1;
             return 0;
           });
         }
-        if (data.sortdata.order == "desc") {
+        if (data.sortdata.order == "asc") {
           billing_history.sort((a, b) => {
-            let dateA = convertTimestamp(a.date);
-            let dateB = convertTimestamp(b.date);
+            let dateA = convertTimestamp(a.created_at);
+            let dateB = convertTimestamp(b.created_at);
             if (dateA < dateB) return 1;
             if (dateA > dateB) return -1;
             return 0;

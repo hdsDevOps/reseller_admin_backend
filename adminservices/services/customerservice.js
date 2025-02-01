@@ -539,7 +539,7 @@ class CustomerService {
       if (sortdata != "" && sortdata.sort_text == "next_payment") {
         query = query.orderBy("workspace.next_payment", orderType);
       }
-      if (sortdata != "" && sortdata.sort_text == "created_at") {
+      if (sortdata != "" && sortdata.sort_text == "createdAt") {
         query = query.orderBy("createdAt", orderType);
       }
       if (sortdata != "" && sortdata.sort_text == "license_usage") {

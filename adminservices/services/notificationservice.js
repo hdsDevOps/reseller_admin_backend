@@ -246,7 +246,7 @@ class NotificationService {
       const notifications = [];
       const querySnapshot = await db
         .collection("notifications")
-        .where("role", "==", role) 
+        .where("role", "==", role)  
         .get();
       if (querySnapshot.empty) {
         notifications.push({ status: 200, message: "Error", data: "No matching documents" });

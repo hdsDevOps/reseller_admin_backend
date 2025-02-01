@@ -137,7 +137,7 @@ const createQuery = (field, searchText, role) => {
 
 
 //   };
-const getallusers = async (role, searchValue) => {
+const getallusers = async (role, searchValue,sortdata) => {
   const searchText = searchValue;
   // try {
     let query = db.collection(USERS_COLLECTION);
@@ -148,9 +148,9 @@ const getallusers = async (role, searchValue) => {
       query = query.where('searchableIndex', 'array-contains', searchValue.toString().toLowerCase());
     }
     query = query.orderBy("created_at", "desc");
-    if (data.sortdata) {
-      if (data.sortdata.sort_text && data.sortdata.sort_text != "") {
-        query = query.orderBy("first_name", data.sortdata.order);
+    if (sortdata) {
+      if (sortdata.sort_text && sortdata.sort_text != "") {
+        query = query.orderBy("first_name", sortdata.order);
       }
     }
 

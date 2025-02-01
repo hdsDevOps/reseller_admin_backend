@@ -68,8 +68,8 @@ const deleteuser = async (req, res) => {
 // List Users
 const listusers = async (req, res) => {
   // try {
-    const {role,searchdata}  = req.body;
-    const users = await userService.getallusers(role,searchdata);
+    const {role,searchdata,sortdata}  = req.body;
+    const users = await userService.getallusers(role,searchdata,sortdata);
     res.status(200).json({status:200, users });
   // } catch (error) {
   //   console.error('Error listing users:', error);

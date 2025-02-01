@@ -41,8 +41,13 @@ async function getVoucherList(data) {
 
     if (data.sortdata) {
       if (data.sortdata.sort_text != "") {
-        data.sortdata.sort_text == "discount" ? "discount_rate" : data.sortdata.sort_text;
-        query = query.orderBy(data.sortdata.sort_text, data.sortdata.order);
+        sorttext=data.sortdata.sort_text == "discount" ? "discount_rate" : data.sortdata.sort_text;
+       let sortorder = data.sortdata.order;
+        if (data.sortdata.order !== "asc" && data.sortdata.order !== "desc") {
+          throw new Error("Invalid sort order. Must be either 'asc' or 'desc'.");
+      }
+        
+        query = query.orderBy(sorttext, sortorder);
       }
     }else{
       query = query.orderBy("created_at", "desc");

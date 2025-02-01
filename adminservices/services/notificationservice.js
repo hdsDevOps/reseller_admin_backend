@@ -252,14 +252,14 @@ class NotificationService {
         notifications.push({ status: 200, message: "Error", data: "No matching documents" });
         return notifications; // Return an empty array if no documents match
       }
-
+ 
 
       querySnapshot.forEach((doc) => {
         let data = doc.data();
         notifications.push({ status: 200, message: "Success", record_id: doc.id, data: data.notification_details, read_status: data.read_status });
       });
 
-      return notifications; // Return the notifications array
+      return notifications; // Return the notifications array 
     } catch (error) {
       console.error("Error fetching documents:", error);
       throw error; // Throw the error for the calling function to handle

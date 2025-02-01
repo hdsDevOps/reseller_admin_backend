@@ -67,14 +67,14 @@ const deleteuser = async (req, res) => {
 
 // List Users
 const listusers = async (req, res) => {
-  // try {
+  try {
     const {role,searchdata,sortdata}  = req.body;
     const users = await userService.getallusers(role,searchdata,sortdata);
     res.status(200).json({status:200, users });
-  // } catch (error) {
-  //   console.error('Error listing users:', error);
-  //   res.status(500).json({ error: 'Failed to list users.' });
-  // }
+  } catch (error) {
+    console.error('Error listing users:', error);
+    res.status(500).json({ error: 'Failed to list users.' });
+  }
 };
 
 module.exports = { adduser, edituser, deleteuser, listusers };

@@ -139,7 +139,7 @@ const createQuery = (field, searchText, role) => {
 //   };
 const getallusers = async (role, searchValue,sortdata) => {
   const searchText = searchValue;
-  // try {
+  try {
     let query = db.collection(USERS_COLLECTION);
     if (role && role.trim() !== "") {
       query = query.where('role', '==', role);
@@ -147,10 +147,12 @@ const getallusers = async (role, searchValue,sortdata) => {
     if (searchValue && searchValue.trim() !== "") {
       query = query.where('searchableIndex', 'array-contains', searchValue.toString().toLowerCase());
     }
-    query = query.orderBy("created_at", "desc");
+   
     if (sortdata) {
-      if (sortdata.sort_text && sortdata.sort_text != "") {
+      if (sortdata.sort_text && sortdata.sort_text != "") {        
         query = query.orderBy("first_name", sortdata.order);
+      }else{
+        query = query.orderBy("created_at", "desc");
       }
     }
 
@@ -166,9 +168,9 @@ const getallusers = async (role, searchValue,sortdata) => {
       }
     });
     return users;
-  // } catch (error) {
-  //   console.error('Error fetching data:', error);
-  //   throw new Error('Failed to fetch search results');
-  // }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw new Error('Failed to fetch search results');
+  }
 }
 module.exports = { createuser, updateuser, deleteuser, getallusers };

@@ -46,14 +46,22 @@ const deleterole = async (id) => {
 
 // List All Roles
 const getallroles = async (data) => {
+
+  let query = db.collection(ROLES_COLLECTION);
+
+  if (data.user_type && data.user_type.trim() !== "") {
+    query = query.where("role_name", "==", data.user_type);
+  }
   
-let query = db.collection(ROLES_COLLECTION);
+  if (data.sortdata) {
+    if (data.sortdata.sort_text && data.sortdata.sort_text != "") {      
+      query = query.orderBy("role_name", data.sortdata.order);
+    } else {
+      query = query.orderBy("created_at", "desc");
+    }
+  }
 
-if (data.user_type && data.user_type.trim() !== "") {
-  query = query.where("role_name", "==", data.user_type);
-}
-
-const snapshot = await query.get();
+  const snapshot = await query.get();
 
   const roles = snapshot.docs.map((doc) => doc.data());
   return roles;

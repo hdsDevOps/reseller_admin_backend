@@ -201,7 +201,7 @@ class dashboard_report {
             }
 
             // console.log(revenueData);
-            res.status(200).json({ message: 'Dashboard Report Data', result: revenueData });
+            res.status(200).json({ message: 'Dashboard Report Data', result: [revenueData] });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

@@ -1,7 +1,8 @@
 const { admin, db, bucket } = require("../firebaseConfig");
 const path = require('path');
 const { Timestamp } = require('firebase-admin').firestore;
-const helper = require("../helper.js")
+const helper = require("../helper.js");
+const { ChildProcess } = require("child_process");
 class dashboard_report {
     async getreportdata(req, res) {
         try {
@@ -59,9 +60,9 @@ class dashboard_report {
                             date: dateString,
                             currency: data.transaction_data ? data.transaction_data.currency : null,
                             amount: data.transaction_data ? data.transaction_data.amount : null,
-                            rate:rate["conversion_rates"][newCurrency],
-                            convertedamount:data.transaction_data.amount / rate["conversion_rates"][newCurrency]
-                        });                        
+                            rate: rate["conversion_rates"][newCurrency],
+                            convertedamount: data.transaction_data.amount / rate["conversion_rates"][newCurrency]
+                        });
                         convertedamount = rate["conversion_rates"][newCurrency]
                         lastmonthrevenue = lastmonthrevenue + (data.transaction_data.amount / convertedamount);
                     }
@@ -83,10 +84,10 @@ class dashboard_report {
                             date: dateString,
                             currency: data.transaction_data ? data.transaction_data.currency : null,
                             amount: data.transaction_data ? data.transaction_data.amount : null,
-                            rate:rate["conversion_rates"][newCurrency],
-                            convertedamount:data.transaction_data.amount / rate["conversion_rates"][newCurrency]
+                            rate: rate["conversion_rates"][newCurrency],
+                            convertedamount: data.transaction_data.amount / rate["conversion_rates"][newCurrency]
                         });
-                        
+
                         convertedamount = rate["conversion_rates"][newCurrency]
                         currentmonthrevenue = currentmonthrevenue + (data.transaction_data.amount / convertedamount);
                     }
@@ -114,10 +115,18 @@ class dashboard_report {
 
     async yearly_spending_statistics(req, res) {
         try {
-            const year = 2025; // Specify the year you want to retrieve data for
-            const startOfYear = Timestamp.fromDate(new Date(year, 0, 1)); // January 1st of the specified year
-            const endOfYear = Timestamp.fromDate(new Date(year + 1, 0, 1)); // January 1st of the next year
-            const monthNames = [{ "Jan": "0", "Feb": "1", "Mar": "2", "Apr": "3", "May": "4", "Jun": "5", "Jul": "6", "Aug": "7", "Sep": "8", "Oct": "9", "Nov": "10", "Dec": "11" }];
+            const year = Number(req.body.year) || new Date().getFullYear(); // Specify the year you want to retrieve data for               
+            const startOfYear = admin.firestore.Timestamp.fromDate(new Date(year, 0, 1)); // January 1st of the specified year
+            const endOfYear = admin.firestore.Timestamp.fromDate(new Date(year + 1, 0, 1)); // January 1st of the next year
+
+            let currency = 'USD';
+            if (req.body.hasOwnProperty('currency')) {
+                currency = req.body.currency;
+            }
+            const rate = await helper.getCurrencyRate(currency);
+
+
+
 
             let billing_history = [];
             let query = db.collection("billing_history");
@@ -131,77 +140,68 @@ class dashboard_report {
                 }
             }
 
-
-
-            const data_json = [
-                {
-                    "year": 2024,
-                    "current_month_revenue": 400,
-                    "data": [{
-                        "month": "Jan",
-                        "revenue_from_old_customers": 50,
-                        "revenue_from_new_customers": 50
-                    },
-                    {
-                        "month": "Feb",
-                        "revenue_from_old_customers": 30,
-                        "revenue_from_new_customers": 30
-                    },
-                    {
-                        "month": "Mar",
-                        "revenue_from_old_customers": 80,
-                        "revenue_from_new_customers": 80
-                    },
-                    {
-                        "month": "Apr",
-                        "revenue_from_old_customers": 40,
-                        "revenue_from_new_customers": 40
-                    },
-                    {
-                        "month": "May",
-                        "revenue_from_old_customers": 20,
-                        "revenue_from_new_customers": 20
-                    },
-                    {
-                        "month": "Jun",
-                        "revenue_from_old_customers": 45,
-                        "revenue_from_new_customers": 45
-                    },
-                    {
-                        "month": "Jul",
-                        "revenue_from_old_customers": 30,
-                        "revenue_from_new_customers": 30
-                    },
-                    {
-                        "month": "Aug",
-                        "revenue_from_old_customers": 10,
-                        "revenue_from_new_customers": 10
-                    },
-                    {
-                        "month": "Sep",
-                        "revenue_from_old_customers": 40,
-                        "revenue_from_new_customers": 40
-                    },
-                    {
-                        "month": "Oct",
-                        "revenue_from_old_customers": 50,
-                        "revenue_from_new_customers": 50
-                    },
-                    {
-                        "month": "Nov",
-                        "revenue_from_old_customers": 60,
-                        "revenue_from_new_customers": 60
-                    },
-                    {
-                        "month": "Dec",
-                        "revenue_from_old_customers": 50,
-                        "revenue_from_new_customers": 50
-                    }
-                    ]
+            let customers = [];
+            let customerRef = await db.collection("customers").get();
+            if (!customerRef.empty) {
+                for (const doc of customerRef.docs) {
+                    customers.push({ id: doc.id, ...doc.data() });
                 }
+            }
+            const customerMap = new Map();
+            for (const customer of customers) {
+                customerMap.set(customer.id, customer);
+            }
+            // Process the data
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const revenueData = {
+                year: year,
+                current_month_revenue: 0,
+                data: monthNames.map(month => ({
+                    month: month,
+                    revenue_from_old_customers: 0,
+                    revenue_from_new_customers: 0
+                }))
+            };
 
-            ];
-            res.status(200).json({ message: 'Dashoard Report Data', result: data_json });
+            for (const entry of billing_history) {
+                const date = entry.created_at ? new Date(entry.created_at._seconds * 1000) || "" : ""; // Convert Firestore timestamp to Date
+                const month = date.toLocaleString('default', { month: 'short' }); // Get month name abbreviation
+
+                const monthData = revenueData.data.find(m => m.month === month);
+                let isNewCustomer = false;
+                if (customerMap.has(entry.user_id)) {
+                    const customer = customerMap.get(entry.user_id);
+                    const customerCreatedAt = new Date(customer.createdAt._seconds * 1000);
+                    isNewCustomer = (customerCreatedAt.getFullYear() === date.getFullYear() &&
+                        customerCreatedAt.getMonth() === date.getMonth());
+                }
+                if (entry.transaction_data && entry.transaction_data.amount) {
+                    const newCurrency = entry.transaction_data && entry.transaction_data.currency ? entry.transaction_data.currency.toUpperCase() : "";
+                    const amountInOriginalCurrency = entry.transaction_data.amount || 0;
+                    const conversionRate = rate["conversion_rates"][newCurrency];
+
+                    if (!conversionRate || isNaN(conversionRate)) {
+                        console.error(`Invalid conversion rate for currency: ${newCurrency}`);
+                        continue;
+                    }
+
+                    const amountInBaseCurrency = parseFloat((amountInOriginalCurrency / conversionRate).toFixed(2));
+
+                    if (!isNewCustomer) {
+                        monthData.revenue_from_old_customers += amountInBaseCurrency;
+                    } else {
+                        monthData.revenue_from_new_customers += amountInBaseCurrency;
+                    }
+                }
+                // Update current month revenue
+                if (date != "" && new Date().getMonth() === date.getMonth() && new Date().getFullYear() === year) {
+
+                    revenueData.current_month_revenue += (monthData.revenue_from_old_customers || 0) + (monthData.revenue_from_new_customers || 0);
+                }
+            }
+
+            // console.log(revenueData);
+            res.status(200).json({ message: 'Dashboard Report Data', result: revenueData });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

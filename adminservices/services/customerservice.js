@@ -539,14 +539,14 @@ class CustomerService {
         query = query.orderBy("workspace.next_payment", orderType);
       }
       if (sortdata != "" && sortdata.sort_text == "createdAt") {
-        query = query.orderBy("createdAt", orderType);
+        query = query.orderBy("created_at", orderType);
       }
       if (sortdata != "" && sortdata.sort_text == "license_usage") {
         query = query.orderBy("license_usage", orderType);
       }
 
     } else {
-      query = query.orderBy("createdAt", "desc");
+      query = query.orderBy("created_at", "desc");
     }
 
 
@@ -560,6 +560,7 @@ class CustomerService {
       const data = doc.data();
       const fullName = `${data.first_name} ${data.last_name}`;
       if (search_text != "" && search_text != null) {
+        console.log("object====search data=======",search_text)
         const searchText = search_text.toLowerCase();
 
         if (data.searchableIndex && data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
@@ -746,7 +747,7 @@ class CustomerService {
         let end_date = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
         query = query.where("workspace.subscription_date", "<=", Timestamp.fromDate(end_date));
       }
-query=query.orderBy("created_at","desc")
+
       // Execute the query
       const querySnapshot = await query.get();
 

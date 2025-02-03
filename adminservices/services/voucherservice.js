@@ -81,6 +81,7 @@ class VoucherService {
         endOfDay.setHours(23, 59, 59, 999); // End of the day
         query = query.where("created_at", ">=", startOfDay).where("created_at", "<=", endOfDay);
       }
+      query = query.orderBy("created_at", "desc")
       // Execute the query
       const snapshot = await query.get();
       // Collect the results

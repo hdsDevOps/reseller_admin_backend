@@ -227,7 +227,7 @@ class CustomerService {
           authentication,
           status: "active",
           account_status: "active",
-          created_at: new Date(),
+          createdAt: new Date(),
           customer_count: currentCount,
           searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), "", phone_no,],
         });
@@ -539,14 +539,14 @@ class CustomerService {
         query = query.orderBy("workspace.next_payment", orderType);
       }
       if (sortdata != "" && sortdata.sort_text == "createdAt") {
-        query = query.orderBy("created_at", orderType);
+        query = query.orderBy("createdAt", orderType);
       }
       if (sortdata != "" && sortdata.sort_text == "license_usage") {
         query = query.orderBy("license_usage", orderType);
       }
 
     } else {
-      query = query.orderBy("created_at", "desc");
+      query = query.orderBy("createdAt", "desc");
     }
 
 
@@ -559,8 +559,7 @@ class CustomerService {
     custSnapshot.forEach((doc) => {
       const data = doc.data();
       const fullName = `${data.first_name} ${data.last_name}`;
-      if (search_text != "" && search_text != null) {
-        console.log("object====search data=======",search_text)
+      if (search_text != "" && search_text != null) {       
         const searchText = search_text.toLowerCase();
 
         if (data.searchableIndex && data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
@@ -913,7 +912,7 @@ class CustomerService {
       //   domainRef.update({ domain: data.domain_name });
 
       // }
-      console.log("111111111111111")
+      
       let customer_name = data.customer_name ? data.customer_name.toLowerCase() : "";
       let payment_method = data.payment_method ? data.payment_method.toLowerCase() : "";
       let domain = data.domain ? data.domain.toLowerCase() : "";

@@ -746,7 +746,7 @@ class CustomerService {
         let end_date = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
         query = query.where("workspace.subscription_date", "<=", Timestamp.fromDate(end_date));
       }
-
+query=query.orderBy("created_at","desc")
       // Execute the query
       const querySnapshot = await query.get();
 

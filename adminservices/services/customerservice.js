@@ -4,7 +4,48 @@ const axios = require('axios');
 const url = require('url');
 const path = require('path');
 const { Timestamp } = require('firebase-admin').firestore;
-
+const permissions = [
+  {
+    name: "Dashboard",
+    value: true
+  },
+  {
+    name: "Profile",
+    value: true
+  },
+  {
+    name: "Domain",
+    value: true
+  },
+  {
+    name: "Payment Subscription",
+    value: true
+  },
+  {
+    name: "Email",
+    value: true
+  },
+  {
+    name: "Payment Method",
+    value: true
+  },
+  {
+    name: "Vouchers",
+    value: true
+  },
+  {
+    name: "My Staff",
+    value: true
+  },
+  {
+    name: "Billing History",
+    value: true
+  },
+  {
+    name: "Settings",
+    value: true
+  }
+];
 class CustomerService {
   async addCustomer(customerData) {
     try {
@@ -235,6 +276,61 @@ class CustomerService {
           email: email,
           password: password,
         });
+
+          const newSetting = {
+            user_type: "Super Admin",
+            user_id: customerRef.id,
+            permissions: permissions,
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          };
+
+          const docRef = await admin
+            .firestore()
+            .collection("settings")
+            .add(newSetting);
+
+            const emailphase = "12345678";
+            const { salt, hash } = helper.hashPassword(`${emailphase}`);
+          
+          // Create new staff document
+          const newStaff = {
+            customer_id: customerRef.id,
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            phone_no: phone_no,
+            user_type_id: "rfUPvrSCm31voJYQG3oC",
+            password: hash,
+            salt: salt,
+            is_staff: true,
+            created_at: admin.firestore.FieldValue.serverTimestamp(),
+          };
+
+          const docRefuser = await db.collection("users").add(newStaff);
+          docRefuser.update({ searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), phone_no] });
+          // Send welcome email
+          const emailData = {
+            email: email,
+            subject: "Welcome to Our Platform",
+            body: `
+        <h2>Welcome ${first_name} ${last_name}!</h2>
+        <p>Your account has been created successfully.</p>
+        <p style="line-height:1.2;"><strong>login credentials:</strong> <br><strong>User Name:</strong> ${email}<br><strong>Password:</strong>${emailphase}@123</p>
+      `,
+          };
+
+
+          await helper.sendMail(emailData.email,emailData.subject,emailData.body);
+
+
+
+
+        
+
+
+
+
+
         return {
           status: 200,
           message: "Customer added successfully",

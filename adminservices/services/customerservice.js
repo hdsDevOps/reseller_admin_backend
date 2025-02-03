@@ -708,7 +708,7 @@ class CustomerService {
 
       const filters = {
         country: data.country, // Set to null/undefined if not needed
-        state_name: data.state, // Set to null/undefined if not needed
+        state_name: data.state_name, // Set to null/undefined if not needed
         customer_count: data.license_usage,
         plan: data.plan,
         start_date: data.start_date,
@@ -721,9 +721,11 @@ class CustomerService {
 
       // Add dynamic filters
       if (filters.country && filters.country!="" && filters.country!=null) {
+        
         query = query.where("country", "==", filters.country);
       }
       if (filters.state_name && filters.state_name!="" && filters.state_name!=null) {
+        
         query = query.where("state", "==", filters.state_name);
       }
 

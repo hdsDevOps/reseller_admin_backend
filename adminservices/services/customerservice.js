@@ -720,26 +720,26 @@ class CustomerService {
       query = query.where("account_status", "==", "active");
 
       // Add dynamic filters
-      if (filters.country) {
+      if (filters.country && filters.country!="" && filters.country!=null) {
         query = query.where("country", "==", filters.country);
       }
-      if (filters.state_name) {
+      if (filters.state_name && filters.state_name!="" && filters.state_name!=null) {
         query = query.where("state", "==", filters.state_name);
       }
 
-      if (filters.customer_count) {
+      if (filters.customer_count && filters.customer_count!="" && filters.customer_count!=null) {
         query = query.where("license_usage", "==", filters.customer_count);
       }
-      if (filters.plan) {
+      if (filters.plan && filters.plan!="" && filters.plan!=null) {
         query = query.where("workspace.plan_name_id", "==", filters.plan);
       }
 
-      if (filters.start_date) {
+      if (filters.start_date && filters.start_date!="" && filters.start_date!=null) {
         let startDate = new Date(filters.start_date);
         let start_date = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
         query = query.where("workspace.subscription_date", ">=", Timestamp.fromDate(start_date));
       }
-      if (filters.end_date) {
+      if (filters.end_date && filters.end_date!="" && filters.end_date!=null) {
         let endDate = new Date(filters.end_date);
         let end_date = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
         query = query.where("workspace.subscription_date", "<=", Timestamp.fromDate(end_date));

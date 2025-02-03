@@ -41,15 +41,15 @@ async function getVoucherList(data) {
 
     if (data.sortdata) {
       if (data.sortdata.sort_text != "") {
-        sorttext=data.sortdata.sort_text == "discount" ? "discount_rate" : data.sortdata.sort_text;
-       let sortorder = data.sortdata.order;
+        sorttext = data.sortdata.sort_text == "discount" ? "discount_rate" : data.sortdata.sort_text;
+        let sortorder = data.sortdata.order;
         if (data.sortdata.order !== "asc" && data.sortdata.order !== "desc") {
           throw new Error("Invalid sort order. Must be either 'asc' or 'desc'.");
-      }
-        
+        }
+
         query = query.orderBy(sorttext, sortorder);
       }
-    }else{
+    } else {
       query = query.orderBy("created_at", "desc");
     }
 
@@ -242,7 +242,8 @@ async function sendvochermail(data) {
     }
     const voucherRef = db.collection(table_name).doc(data.record_id);
     const doc = await voucherRef.get();
-
+    const voucher_start_date = doc.data().start_date;
+    const voucher_end_date = doc.data().end_date;
     if (!doc.exists) {
       return { status: 404, message: "Voucher record not found" };
     }
@@ -262,8 +263,8 @@ async function sendvochermail(data) {
         voucher_id: data.record_id,
         customer_id: data.customer_id,
         status: "active",
-        active_date: doc.data().start_date,
-        expire_date: doc.data().end_date,
+        active_date: voucher_start_date,
+        expire_date: voucher_end_date,
         used_date: null,
         created_at: admin.firestore.FieldValue.serverTimestamp(),
 
@@ -281,7 +282,7 @@ async function sendvochermail(data) {
         // Build the query with filters
         let query = customersRef;
         if (country) query = query.where('country', '==', country);
-        if (region) query = query.where('state_name', '==', region);
+        if (region) query = query.where('state', '==', region);
         if (license_usage) query = query.where('customer_count', '==', Number(license_usage));
 
         // Execute the query
@@ -298,8 +299,8 @@ async function sendvochermail(data) {
             voucher_id: data.record_id,
             customer_id: doc.id,
             status: "active",
-            active_date: doc.data().start_date,
-            expire_date: doc.data().end_date,
+            active_date: voucher_start_date,
+            expire_date: voucher_end_date,
             used_date: null,
             created_at: admin.firestore.FieldValue.serverTimestamp(),
           };

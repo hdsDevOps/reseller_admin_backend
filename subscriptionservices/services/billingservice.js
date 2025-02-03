@@ -90,6 +90,30 @@ async function getrecordlist(data) {
           });
         }
       }
+      if (data.sortdata.sort_text == "domain") {
+        if (data.sortdata.order == "asc") {
+          billing_history.sort((a, b) => {
+            if (a.domain < b.domain) {
+              return -1;
+            }
+            if (a.domain > b.domain) {
+              return 1;
+            }
+            return 0;
+          });
+        }
+        if (data.sortdata.order == "desc") {
+          billing_history.sort((a, b) => {
+            if (a.domain < b.domain) {
+              return 1;
+            }
+            if (a.domain > b.domain) {
+              return -1;
+            }
+            return 0;
+          });
+        }
+      }
       if (data.sortdata.sort_text == "created_at") {
         if (data.sortdata.order == "desc") {
           billing_history.sort((a, b) => {

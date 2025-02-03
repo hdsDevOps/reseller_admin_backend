@@ -25,8 +25,8 @@ class dashboard_report {
 
             // Query the collection for documents within the current month 
             const snapshot = await db.collection('customers')
-                .where('createdAt', '>=', startTimestamp)
-                .where('createdAt', '<', endTimestamp)
+                .where('created_at', '>=', startTimestamp)
+                .where('created_at', '<', endTimestamp)
                 .get();
 
             const records = [];
@@ -171,7 +171,7 @@ class dashboard_report {
                 let isNewCustomer = false;
                 if (customerMap.has(entry.user_id)) {
                     const customer = customerMap.get(entry.user_id);
-                    const customerCreatedAt = new Date(customer.createdAt._seconds * 1000);
+                    const customerCreatedAt = new Date(customer.created_at._seconds * 1000);
                     isNewCustomer = (customerCreatedAt.getFullYear() === date.getFullYear() &&
                         customerCreatedAt.getMonth() === date.getMonth());
                 }

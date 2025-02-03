@@ -171,7 +171,7 @@ class dashboard_report {
                 let isNewCustomer = false;
                 if (customerMap.has(entry.user_id)) {
                     const customer = customerMap.get(entry.user_id);
-                    const customerCreatedAt = new Date(customer.created_at._seconds * 1000);
+                    const customerCreatedAt = new Date(customer.createdAt._seconds * 1000);
                     isNewCustomer = (customerCreatedAt.getFullYear() === date.getFullYear() &&
                         customerCreatedAt.getMonth() === date.getMonth());
                 }

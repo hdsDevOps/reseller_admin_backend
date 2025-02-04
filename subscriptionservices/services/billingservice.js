@@ -118,42 +118,28 @@ async function getrecordlist(data) {
         }
       }
       if (data.sortdata.sort_text == "created_at") {
-        if (data.sortdata.order == "desc") {
-          billing_history.sort((a, b) => {
-            let dateA = convertTimestamp(a.created_at);
-            let dateB = convertTimestamp(b.created_at);
-            if (dateA < dateB) return -1;
-            if (dateA > dateB) return 1;
-            return 0;
-          });
-        }
-        if (data.sortdata.order == "asc") {
-          billing_history.sort((a, b) => {
-            let dateA = convertTimestamp(a.created_at);
-            let dateB = convertTimestamp(b.created_at);
-            if (dateA < dateB) return 1;
-            if (dateA > dateB) return -1;
-            return 0;
-          });
-        }
+        billing_history.sort((a, b) => {
+          let dateA = convertTimestamp(a.date);
+          let dateB = convertTimestamp(b.date);
+          if (dateA && dateB) {
+            return (data.sortdata.order === "desc" ? dateB - dateA : dateA - dateB);
+          }
+          return 0;
+        });
       }
       if (data.sortdata.sort_text == "amount") {
         if (data.sortdata.order == "asc") {
           billing_history.sort((a, b) => {
-            if (!a.transaction_data || !b.transaction_data) {
-              if (!a.transaction_data) return 0; // Move a to the end
-              if (!b.transaction_data) return 0; // Move b to the end
+            
+            if (!a.amount || !b.amount) {
+              if (!a.amount) return 0; // Move a to the end
+              if (!b.amount) return 0; // Move b to the end
             }
-
-            // Check if amount is null or undefined
-            if (!a.transaction_data.amount || !b.transaction_data.amount) {
-              if (!a.transaction_data.amount) return 1; // Move a to the end
-              if (!b.transaction_data.amount) return -1; // Move b to the end
-            }
-            if (a.transaction_data.amount < b.transaction_data.amount) {
+            console.log("a.amount==============",a.amount)
+            if (String(a.amount).replace(/\D/g, '') < String(b.amount).replace(/\D/g, '')) {
               return -1;
             }
-            if (a.transaction_data.amount > b.transaction_data.amount) {
+            if (String(a.amount).replace(/\D/g, '') > String(b.amount).replace(/\D/g, '')) {
               return 1;
             }
             return 0;
@@ -161,21 +147,16 @@ async function getrecordlist(data) {
         }
         if (data.sortdata.order == "desc") {
           billing_history.sort((a, b) => {
-            if (!a.transaction_data || !b.transaction_data) {
-              if (!a.transaction_data) return 0; // Move a to the end
-              if (!b.transaction_data) return 0; // Move b to the end
+            if (!a.amount || !b.amount) {
+              if (!a.amount) return 0; // Move a to the end
+              if (!b.amount) return 0; // Move b to the end
             }
 
-            // Check if amount is null or undefined
-            if (!a.transaction_data.amount) {
-              a.transaction_data.amount = 0;
-            } if (!b.transaction_data.amount) {
-              b.transaction_data.amount = 0;
-            }
-            if (a.transaction_data.amount < b.transaction_data.amount) {
+        
+            if (String(a.amount).replace(/\D/g, '') < String(b.amount).replace(/\D/g, '')) {
               return 1;
             }
-            if (a.transaction_data.amount > b.transaction_data.amount) {
+            if (String(a.amount).replace(/\D/g, '') > String(b.amount).replace(/\D/g, '')) {
               return -1;
             }
             return 0;

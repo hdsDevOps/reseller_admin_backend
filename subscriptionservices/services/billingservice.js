@@ -40,6 +40,7 @@ async function getrecordlist(data) {
       billing_history.push({
         id: doc.id,
         ...doc.data(),
+        fullname:`${doc.data().customer_name.toLowerCase()}`
       });
     });
     snapshot2.forEach((doc) => {
@@ -48,6 +49,7 @@ async function getrecordlist(data) {
         billing_history.push({
           id: doc.id,
           ...doc.data(),
+          fullname:`${doc.data().customer_name.toLowerCase()}`
         });
       }
     });
@@ -60,6 +62,7 @@ async function getrecordlist(data) {
         billing_history.push({
           id: doc.id,
           ...doc.data(),
+          fullname:`${doc.data().customer_name && doc.data().customer_name!="" && doc.data().customer_name!=null?doc.data().customer_name.toLowerCase():""}`
         });
       });
     }
@@ -69,10 +72,10 @@ async function getrecordlist(data) {
       if (data.sortdata.sort_text == "customer_name") {
         if (data.sortdata.order == "asc") {
           billing_history.sort((a, b) => {
-            if (a.customer_name < b.customer_name) {
+            if (a.fullname < b.fullname) {
               return -1;
             }
-            if (a.customer_name > b.customer_name) {
+            if (a.fullname > b.fullname) {
               return 1;
             }
             return 0;
@@ -80,10 +83,10 @@ async function getrecordlist(data) {
         }
         if (data.sortdata.order == "desc") {
           billing_history.sort((a, b) => {
-            if (a.customer_name < b.customer_name) {
+            if (a.fullname < b.fullname) {
               return 1;
             }
-            if (a.customer_name > b.customer_name) {
+            if (a.fullname > b.fullname) {
               return -1;
             }
             return 0;

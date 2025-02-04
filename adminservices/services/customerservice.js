@@ -253,7 +253,8 @@ class CustomerService {
         const snapshot = await customersRef.get();
 
         const recordCount = snapshot.size;
-        const password = "12345678";
+        const password = email.split('@')[0] + '@123';       
+        const { salt, hash } = helper.hashPassword(password);
         let currentCount = recordCount + 1;
         const customerRef = await db.collection("customers").add({
           first_name,
@@ -265,8 +266,10 @@ class CustomerService {
           zipcode,
           phone_no,
           email,
+          salt,
+          hash,
           authentication,
-          status: "active",          
+          status: "active",
           createdAt: new Date(),
           customer_count: currentCount,
           searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), "", phone_no,],
@@ -287,9 +290,6 @@ class CustomerService {
           .firestore()
           .collection("settings")
           .add(newSetting);
-
-        const emailphase = "12345678";
-        const { salt, hash } = helper.hashPassword(`${emailphase}`);
 
         // Create new staff document
         const newStaff = {
@@ -663,10 +663,10 @@ class CustomerService {
 
         if (data.searchableIndex && data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
 
-          custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null,account_status:data.status });
+          custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, account_status: data.status });
         }
       } else {
-        custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null,account_status:data.status });
+        custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, account_status: data.status });
       }
 
       if (sortdata.sort_text == "name") {

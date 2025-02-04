@@ -60,7 +60,7 @@ const sendMail = async (to, subject, text) => {
         from: process.env.MAILUSER,
         to:to,
         subject:subject,
-        text:text
+        html:text
     };
     try {
         let info = await transporter.sendMail(mailOptions);

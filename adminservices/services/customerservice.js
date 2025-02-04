@@ -314,7 +314,7 @@ class CustomerService {
           body: `
         <h2>Welcome ${first_name} ${last_name}!</h2>
         <p>Your account has been created successfully.</p>
-        <p style="line-height:1.2;"><strong>login credentials:</strong> <br><strong>User Name:</strong> ${email}<br><strong>Password:</strong>${emailphase}@123</p>
+        <p style="line-height:1.2;"><strong>login credentials:</strong> <br><strong>User Name:</strong> ${email}<br><strong>Password:</strong>${password}@123</p>
       `,
         };
 

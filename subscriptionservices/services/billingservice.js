@@ -40,7 +40,7 @@ async function getrecordlist(data) {
       billing_history.push({
         id: doc.id,
         ...doc.data(),
-        fullname:`${doc.data().customer_name.toLowerCase()}`
+        fullname: `${doc.data().customer_name.toLowerCase()}`
       });
     });
     snapshot2.forEach((doc) => {
@@ -49,7 +49,7 @@ async function getrecordlist(data) {
         billing_history.push({
           id: doc.id,
           ...doc.data(),
-          fullname:`${doc.data().customer_name.toLowerCase()}`
+          fullname: `${doc.data().customer_name.toLowerCase()}`
         });
       }
     });
@@ -62,7 +62,7 @@ async function getrecordlist(data) {
         billing_history.push({
           id: doc.id,
           ...doc.data(),
-          fullname:`${doc.data().customer_name && doc.data().customer_name!="" && doc.data().customer_name!=null?doc.data().customer_name.toLowerCase():""}`
+          fullname: `${doc.data().customer_name && doc.data().customer_name != "" && doc.data().customer_name != null ? doc.data().customer_name.toLowerCase() : ""}`
         });
       });
     }
@@ -128,40 +128,21 @@ async function getrecordlist(data) {
         });
       }
       if (data.sortdata.sort_text == "amount") {
-        if (data.sortdata.order == "asc") {
-          billing_history.sort((a, b) => {
-            
-            if (!a.amount || !b.amount) {
-              if (!a.amount) return 0; // Move a to the end
-              if (!b.amount) return 0; // Move b to the end
-            }
-            console.log("a.amount==============",a.amount)
-            if (String(a.amount).replace(/\D/g, '') < String(b.amount).replace(/\D/g, '')) {
-              return -1;
-            }
-            if (String(a.amount).replace(/\D/g, '') > String(b.amount).replace(/\D/g, '')) {
-              return 1;
-            }
-            return 0;
-          });
-        }
-        if (data.sortdata.order == "desc") {
-          billing_history.sort((a, b) => {
-            if (!a.amount || !b.amount) {
-              if (!a.amount) return 0; // Move a to the end
-              if (!b.amount) return 0; // Move b to the end
-            }
+        billing_history.sort((a, b) => {
+          // Ensure amounts are strings
+          const amountA = String(a.amount || '').replace(/\D/g, '');
+          const amountB = String(b.amount || '').replace(/\D/g, '');
 
-        
-            if (String(a.amount).replace(/\D/g, '') < String(b.amount).replace(/\D/g, '')) {
-              return 1;
-            }
-            if (String(a.amount).replace(/\D/g, '') > String(b.amount).replace(/\D/g, '')) {
-              return -1;
-            }
-            return 0;
-          });
-        }
+          // Convert amounts to numbers
+          const numA = amountA ? Number(amountA) : 0;
+          const numB = amountB ? Number(amountB) : 0;
+
+          if (data.sortdata.order === 'asc') {
+            return numA - numB;
+          } else {
+            return numB - numA;
+          }
+        });
       }
     }
   }
@@ -185,6 +166,6 @@ module.exports = {
 const convertTimestamp = (timestamp) => {
   if (timestamp && timestamp._seconds !== undefined && timestamp._nanoseconds !== undefined) {
     return new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
-}
-return null;
+  }
+  return null;
 };

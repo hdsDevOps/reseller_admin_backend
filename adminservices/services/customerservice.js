@@ -266,8 +266,7 @@ class CustomerService {
           phone_no,
           email,
           authentication,
-          status: "active",
-          account_status: "active",
+          status: "active",          
           createdAt: new Date(),
           customer_count: currentCount,
           searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), "", phone_no,],
@@ -277,55 +276,55 @@ class CustomerService {
           password: password,
         });
 
-          const newSetting = {
-            user_type: "Super Admin",
-            user_id: customerRef.id,
-            permissions: permissions,
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-          };
+        const newSetting = {
+          user_type: "Super Admin",
+          user_id: customerRef.id,
+          permissions: permissions,
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        };
 
-          const docRef = await admin
-            .firestore()
-            .collection("settings")
-            .add(newSetting);
+        const docRef = await admin
+          .firestore()
+          .collection("settings")
+          .add(newSetting);
 
-            const emailphase = "12345678";
-            const { salt, hash } = helper.hashPassword(`${emailphase}`);
-          
-          // Create new staff document
-          const newStaff = {
-            customer_id: customerRef.id,
-            first_name: first_name,
-            last_name: last_name,
-            email: email,
-            phone_no: phone_no,
-            user_type_id: "rfUPvrSCm31voJYQG3oC",
-            password: hash,
-            salt: salt,
-            is_staff: true,
-            created_at: admin.firestore.FieldValue.serverTimestamp(),
-          };
+        const emailphase = "12345678";
+        const { salt, hash } = helper.hashPassword(`${emailphase}`);
 
-          const docRefuser = await db.collection("users").add(newStaff);
-          docRefuser.update({ searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), phone_no] });
-          // Send welcome email
-          const emailData = {
-            email: email,
-            subject: "Welcome to Our Platform",
-            body: `
+        // Create new staff document
+        const newStaff = {
+          customer_id: customerRef.id,
+          first_name: first_name,
+          last_name: last_name,
+          email: email,
+          phone_no: phone_no,
+          user_type_id: "rfUPvrSCm31voJYQG3oC",
+          password: hash,
+          salt: salt,
+          is_staff: true,
+          created_at: admin.firestore.FieldValue.serverTimestamp(),
+        };
+
+        const docRefuser = await db.collection("users").add(newStaff);
+        docRefuser.update({ searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), phone_no] });
+        // Send welcome email
+        const emailData = {
+          email: email,
+          subject: "Welcome to Our Platform",
+          body: `
         <h2>Welcome ${first_name} ${last_name}!</h2>
         <p>Your account has been created successfully.</p>
         <p style="line-height:1.2;"><strong>login credentials:</strong> <br><strong>User Name:</strong> ${email}<br><strong>Password:</strong>${emailphase}@123</p>
       `,
-          };
+        };
 
 
-          await helper.sendMail(emailData.email,emailData.subject,emailData.body);
+        await helper.sendMail(emailData.email, emailData.subject, emailData.body);
 
 
 
 
-        
+
 
 
 
@@ -380,6 +379,10 @@ class CustomerService {
       }
       if (updateData.hasOwnProperty('phone_no')) {
         searchableIndex.push(updateData.phone_no.toLowerCase());
+      }
+      if (updateData.hasOwnProperty('account_status')) {
+        updateData.status = updateData.account_status;
+        delete updateData[account_status];
       }
 
 
@@ -570,7 +573,7 @@ class CustomerService {
 
   async getCustomerList(data) {
     // try {
-      const sortdata = data.sortdata;
+    const sortdata = data.sortdata;
     let query = db
       .collection("customers");
     if (data.country != "" && data.country != null) {
@@ -629,7 +632,7 @@ class CustomerService {
     }
 
     let orderType = "";
-    if (data.hasOwnProperty("sortdata") && data.sortdata.sort_text != "") {     
+    if (data.hasOwnProperty("sortdata") && data.sortdata.sort_text != "") {
       orderType = sortdata.order;
       if (sortdata != "" && sortdata.sort_text == "next_payment") {
         query = query.orderBy("workspace.next_payment", orderType);
@@ -655,66 +658,66 @@ class CustomerService {
     custSnapshot.forEach((doc) => {
       const data = doc.data();
       const fullName = `${data.first_name} ${data.last_name}`;
-      if (search_text != "" && search_text != null) {       
+      if (search_text != "" && search_text != null) {
         const searchText = search_text.toLowerCase();
 
         if (data.searchableIndex && data.searchableIndex.some((entry) => entry.toLowerCase().includes(searchText.toLowerCase()))) {
 
-          custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+          custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null,account_status:data.status });
         }
       } else {
-        custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null, });
+        custList.push({ id: doc.id, fullName, ...data, created_at: doc.data().created_at ? doc.data().created_at.toDate() : null,account_status:data.status });
       }
-          
-        if (sortdata.sort_text == "name") {          
-          if (sortdata.order == "asc") {
-            custList.sort((a, b) => {
-              if (a.fullName < b.fullName) {
-                return -1;
-              }
-              if (a.fullName > b.fullName) {
-                return 1;
-              }
-              return 0;
-            });
-          }
-          if (sortdata.order == "desc") {
-            custList.sort((a, b) => {
-              if (a.fullName < b.fullName) {
-                return 1;
-              }
-              if (a.fullName > b.fullName) {
-                return -1;
-              }
-              return 0;
-            });
-          }
+
+      if (sortdata.sort_text == "name") {
+        if (sortdata.order == "asc") {
+          custList.sort((a, b) => {
+            if (a.fullName < b.fullName) {
+              return -1;
+            }
+            if (a.fullName > b.fullName) {
+              return 1;
+            }
+            return 0;
+          });
         }
-        if (sortdata.sort_text == "domain") {
-          if (sortdata.order == "asc") {
-            custList.sort((a, b) => {
-              if (a.domain < b.domain) {
-                return -1;
-              }
-              if (a.domain > b.domain) {
-                return 1;
-              }
-              return 0;
-            });
-          }
-          if (sortdata.order == "desc") {
-            custList.sort((a, b) => {
-              if (a.domain < b.domain) {
-                return 1;
-              }
-              if (a.domain > b.domain) {
-                return -1;
-              }
-              return 0;
-            });
-          }
+        if (sortdata.order == "desc") {
+          custList.sort((a, b) => {
+            if (a.fullName < b.fullName) {
+              return 1;
+            }
+            if (a.fullName > b.fullName) {
+              return -1;
+            }
+            return 0;
+          });
         }
-      
+      }
+      if (sortdata.sort_text == "domain") {
+        if (sortdata.order == "asc") {
+          custList.sort((a, b) => {
+            if (a.domain < b.domain) {
+              return -1;
+            }
+            if (a.domain > b.domain) {
+              return 1;
+            }
+            return 0;
+          });
+        }
+        if (sortdata.order == "desc") {
+          custList.sort((a, b) => {
+            if (a.domain < b.domain) {
+              return 1;
+            }
+            if (a.domain > b.domain) {
+              return -1;
+            }
+            return 0;
+          });
+        }
+      }
+
     });
 
 
@@ -816,28 +819,28 @@ class CustomerService {
       query = query.where("account_status", "==", "active");
 
       // Add dynamic filters
-      if (filters.country && filters.country!="" && filters.country!=null) {
-        
+      if (filters.country && filters.country != "" && filters.country != null) {
+
         query = query.where("country", "==", filters.country);
       }
-      if (filters.state_name && filters.state_name!="" && filters.state_name!=null) {
-        
+      if (filters.state_name && filters.state_name != "" && filters.state_name != null) {
+
         query = query.where("state", "==", filters.state_name);
       }
 
-      if (filters.customer_count && filters.customer_count!="" && filters.customer_count!=null) {
+      if (filters.customer_count && filters.customer_count != "" && filters.customer_count != null) {
         query = query.where("license_usage", "==", filters.customer_count);
       }
-      if (filters.plan && filters.plan!="" && filters.plan!=null) {
+      if (filters.plan && filters.plan != "" && filters.plan != null) {
         query = query.where("workspace.plan_name_id", "==", filters.plan);
       }
 
-      if (filters.start_date && filters.start_date!="" && filters.start_date!=null) {
+      if (filters.start_date && filters.start_date != "" && filters.start_date != null) {
         let startDate = new Date(filters.start_date);
         let start_date = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
         query = query.where("workspace.subscription_date", ">=", Timestamp.fromDate(start_date));
       }
-      if (filters.end_date && filters.end_date!="" && filters.end_date!=null) {
+      if (filters.end_date && filters.end_date != "" && filters.end_date != null) {
         let endDate = new Date(filters.end_date);
         let end_date = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
         query = query.where("workspace.subscription_date", "<=", Timestamp.fromDate(end_date));
@@ -1008,7 +1011,7 @@ class CustomerService {
       //   domainRef.update({ domain: data.domain_name });
 
       // }
-      
+
       let customer_name = data.customer_name ? data.customer_name.toLowerCase() : "";
       let payment_method = data.payment_method ? data.payment_method.toLowerCase() : "";
       let domain = data.domain ? data.domain.toLowerCase() : "";

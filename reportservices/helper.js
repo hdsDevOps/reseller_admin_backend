@@ -356,7 +356,7 @@ function getFirstLetters(str) {
 }
 async function getCurrencyRate(currency='USD') {
   try {
-    const response = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE}/latest/${currency}`);
+    const response = await axios.get(`https://v6.exchangerate-api.com/v6/fad774cad13429ff75220349/latest/${currency}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching currency rate:', error);

@@ -49,7 +49,7 @@ class SubscriptionService {
       if (data.hasOwnProperty('last_order') && data.last_order != "" && data.last_order != undefined) {
         plansRef = plansRef.where("order", ">", data.last_order);
       }
-      const snapshot = await plansRef.orderBy("order", "asc").get();
+      const snapshot = await plansRef.orderBy("created_at", "desc").get();
       const plans = [];
 
       snapshot.forEach(doc => {

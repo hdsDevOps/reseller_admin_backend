@@ -257,6 +257,7 @@ class CustomerService {
         const { salt, hash } = helper.hashPassword(password);
         let currentCount = recordCount + 1;
         const customerRef = await db.collection("customers").add({
+          profile_id: "HDS-" + helper.generateAlphanumericCode(6),
           first_name,
           last_name,
           address,
@@ -314,7 +315,7 @@ class CustomerService {
           body: `
         <h2>Welcome ${first_name} ${last_name}!</h2>
         <p>Your account has been created successfully.</p>
-        <p style="line-height:1.2;"><strong>login credentials:</strong> <br><strong>User Name:</strong> ${email}<br><strong>Password:</strong>${password}@123</p>
+        <p style="line-height:1.2;"><strong>login credentials:</strong> <br><strong>User Name:</strong> ${email}<br><strong>Password:</strong>${password}</p>
       `,
         };
 

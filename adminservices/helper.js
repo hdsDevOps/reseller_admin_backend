@@ -89,6 +89,15 @@ const sendMail = async (to, subject, text) => {
   function generateOtp() {
     return Math.floor(100000 + Math.random() * 900000);
   }
+  function generateAlphanumericCode(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
 module.exports = {
   getOffset,
   emptyOrRows,
@@ -96,5 +105,6 @@ module.exports = {
   sendMail,
   getFirstLetters,
   hashPassword,
-  generateOtp
+  generateOtp,
+  generateAlphanumericCode
 }

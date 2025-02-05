@@ -491,7 +491,7 @@ class AdminService {
     try {
       const bannerRef = db.collection("banners");
 
-      const snapshot = await bannerRef.orderBy("created_at", "asc").get();
+      const snapshot = await bannerRef.get();
       const banners = [];
 
       snapshot.forEach((doc) => {

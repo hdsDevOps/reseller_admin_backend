@@ -253,7 +253,7 @@ class CustomerService {
         const snapshot = await customersRef.get();
 
         const recordCount = snapshot.size;
-        const password = email.split('@')[0] + '@123';       
+        const password = email.split('@')[0] + '@123';
         const { salt, hash } = helper.hashPassword(password);
         let currentCount = recordCount + 1;
         const customerRef = await db.collection("customers").add({
@@ -298,7 +298,7 @@ class CustomerService {
           last_name: last_name,
           email: email,
           phone_no: phone_no,
-          user_type_id: "rfUPvrSCm31voJYQG3oC",
+          user_type_id: docRef.id,
           password: hash,
           salt: salt,
           is_staff: true,

@@ -61,6 +61,25 @@ class VoucherService {
   async editCustomerGroup(record_id, updateData) {
     try {
       updateData.group_name_lower = updateData.group_name.toLowerCase();
+
+      const checkgroupref = await db.collection("customer_groups").get();
+
+      let exists = checkgroupref.docs.some(doc => doc.data().group_name.toLowerCase() === updateData.group_name.toLowerCase() && doc.id != record_id);
+      let message = "";
+      if (exists) {
+        message += "Duplicate group name."
+      }
+      if (updateData.no_customer <= 0) {
+        message += "Customer no should be above 0";
+      }
+
+      if (exists || updateData.no_customer <= 0) {
+        return { status: 410, message: message }
+      }
+
+
+
+
       await db
         .collection("customer_groups")
         .doc(record_id)

@@ -803,7 +803,9 @@ class CustomerService {
 
   async getgroupcustomernumber(data) {
     try {
-
+      if (data.country == "" && data.state_name != "" && data.plan == "" && data.start_date == "" && data.end_date == "" && data.license_usage == "") {
+        return { status: 200, customer_count: 0, message: "Total customer count against filter" };
+      }
       const customerCollection = db.collection("customers");
 
       const filters = {

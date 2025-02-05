@@ -553,6 +553,14 @@ class AdminController {
       res.status(500).json({ message: error.message });
     }
   };
+  async add_smtp_details(req, res) {
+    try {
+      const result=await AdminService.addsmtpDetails(req.body);
+      res.status(200).json( result );
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 
 
 }

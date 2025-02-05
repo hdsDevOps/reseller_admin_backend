@@ -877,6 +877,9 @@ class AdminService {
     }
 
   }
+  addsmtpDetails= async(data)=>{
+
+  }
 }
 
 module.exports = new AdminService();

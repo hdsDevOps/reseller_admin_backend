@@ -915,5 +915,6 @@ router.post('/update_notification_status', authMiddleware, adminController.updat
 router.post('/getsubscriptiondata', authMiddleware, adminController.getsubscriptiondata);
 router.post('/getCustomerSubscription', authMiddleware, adminController.getCustomerSubscription);
 router.post('/get_address', authMiddleware, adminController.getaddress);
+router.post('/add_smtp_details', authMiddleware, adminController.add_smtp_details);
 
 module.exports = router;

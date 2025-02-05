@@ -47,7 +47,7 @@ let file_upload = (uploadPath, fieldName) => multer({
   }
 }).single(fieldName);
 
-
+  
 async function sendmail(req, res, next) {
   var transporter = nodemailer.createTransport({
     host: process.env.SMTP,

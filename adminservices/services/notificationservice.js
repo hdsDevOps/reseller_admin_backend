@@ -200,7 +200,7 @@ class NotificationService {
   async getemaillogs() {
     try {
       const emaillogRef = db.collection('email_logs');
-      const snapshot = await emaillogRef.get();
+      const snapshot = await emaillogRef.orderBy("created_at","desc").get();
       const emaillogs = [];
 
       snapshot.forEach(doc => {

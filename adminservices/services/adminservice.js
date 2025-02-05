@@ -32,7 +32,7 @@ class AdminService {
         otp: otp,
       };
     } catch (error) {
-      throw new Error("Login failed.Please check: " + error.message);
+      throw new Error("Login failed. Please check your user id & password.");
     }
   }
   async impersonateLogin({ email }) {

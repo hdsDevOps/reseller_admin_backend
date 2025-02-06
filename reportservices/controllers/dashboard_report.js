@@ -94,19 +94,19 @@ class dashboard_report {
 
             const revenue_current_month = [];
             let currentmonthrevenue = 0;
-            
+
             if (!snapshot_revenue_current_month.empty) {
                 let transactionMap = new Map(); // Create a map to store unique transactions
-            
+
                 snapshot_revenue_current_month.forEach(doc => {
                     let data = doc.data();
                     let date = data.date.toDate();
                     let dateString = date.toISOString().split('T')[0];
-            
+
                     if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency && data.transaction_data.currency != null && data.transaction_data.currency != undefined) {
                         let newCurrency = data.transaction_data.currency.toUpperCase();
                         let transactionId = data.transaction_id; // Assuming there's a unique transaction ID
-            
+
                         // Check if the transaction already exists in the map
                         if (transactionMap.has(transactionId)) {
                             let existingTransaction = transactionMap.get(transactionId);
@@ -130,14 +130,14 @@ class dashboard_report {
                         }
                     }
                 });
-            
+
                 // Convert the map values to an array
                 transactionMap.forEach(transaction => {
                     revenue_current_month.push(transaction);
                     currentmonthrevenue += transaction.convertedamount;
                 });
             }
-            
+
             const snapshot_stripe_use_current_month = await db.collection('billing_history').where('date', '>', startTimestamp).where('date', '<=', currentdate).where("payment_method", "==", "Stripe").get();
             const striperecords = [];
             if (!snapshot_stripe_use_current_month.empty) {
@@ -170,19 +170,33 @@ class dashboard_report {
             }
             const rate = await helper.getCurrencyRate(currency);
 
-
-
-
             let billing_history = [];
             let query = db.collection("billing_history");
             query = query.where('created_at', '>=', startOfYear).where('created_at', '<', endOfYear).orderBy('created_at', 'asc');
             const snapshot = await query.get();
 
             if (!snapshot.empty) {
+                let transactionMap = new Map(); // Map to store unique transactions
+
                 for (const doc of snapshot.docs) {
                     const data = doc.data();
-                    billing_history.push({ id: doc.id, ...doc.data() });
+                    const transactionId = data.transaction_id; // Assuming there's a unique transaction ID
+
+                    // Check if the transaction already exists in the map
+                    if (transactionMap.has(transactionId)) {
+                        let existingTransaction = transactionMap.get(transactionId);
+                        // Compare amounts and keep the greater one
+                        if (existingTransaction.transaction_data.amount < data.transaction_data.amount) {
+                            transactionMap.set(transactionId, data);
+                        }
+                    } else {
+                        transactionMap.set(transactionId, data);
+                    }
                 }
+
+                transactionMap.forEach((data, docId) => {
+                    billing_history.push({ id: docId, ...data });
+                });
             }
 
             let customers = [];
@@ -196,6 +210,7 @@ class dashboard_report {
             for (const customer of customers) {
                 customerMap.set(customer.id, customer);
             }
+
             // Process the data
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             const revenueData = {
@@ -245,8 +260,8 @@ class dashboard_report {
                 }
             }
 
-            // console.log(revenueData);
             res.status(200).json({ message: 'Dashboard Report Data', result: [revenueData] });
+
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

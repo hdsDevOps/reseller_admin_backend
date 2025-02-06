@@ -740,9 +740,8 @@ class CustomerService {
 
   async suspend_customer(record_id) {
     try {
-      await db.collection("customers").doc(record_id).update({
-        status: false,
-        account_status: "suspended",
+      await db.collection("customers").doc(record_id).update({       
+        status: "suspended",
         suspended_at: new Date(),
       });
 
@@ -811,7 +810,7 @@ class CustomerService {
 
       // Start the base query
       let query = customerCollection;
-      query = query.where("account_status", "==", "active");
+      query = query.where("status", "==", "active");
 
       // Add dynamic filters
       if (filters.country && filters.country != "" && filters.country != null) {
@@ -865,7 +864,7 @@ class CustomerService {
       const customerCollection = db.collection("customers");
       // Start the base query
       let query = customerCollection;
-      query = query.where("account_status", "==", "active");
+      query = query.where("status", "==", "active");
 
       // Execute the query
       const querySnapshot = await query.get();
@@ -877,7 +876,7 @@ class CustomerService {
           countrylist.push(data.country);
         }
       });
-      console.log("object========countrylist=========", countrylist);
+      
       const uniquecountrylist = [...new Set(countrylist)];
       return { status: 200, countrylist: uniquecountrylist, message: "Country List for customer" };
     } catch (error) {
@@ -895,7 +894,7 @@ class CustomerService {
       const customerCollection = db.collection("customers");
       // Start the base query
       let query = customerCollection;
-      query = query.where("account_status", "==", "active");
+      query = query.where("status", "==", "active");
 
       // Execute the query
       const querySnapshot = await query.get();

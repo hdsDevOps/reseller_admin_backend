@@ -35,10 +35,10 @@ class dashboard_report {
                     records.push({ id: doc.id, ...doc.data() });
                 });
             }
-
+           
             let query = db.collection('billing_history');
             query = query.where('date', '>', startOfprevoiusMonth);//last_month_revenue
-            query = query.where('date', '<=', endTimestamp);//last_month_revenue
+            query = query.where('date', '<=', startTimestamp);//last_month_revenue
             const snapshot_revenue_last_month = await query.get();
 
             const snapshot_revenue_current_month = await db.collection('billing_history').where('date', '>', startTimestamp).where('date', '<=', currentdate).get();

@@ -22,16 +22,16 @@ class dashboard_report {
             const startTimestamp = Timestamp.fromDate(startOfMonth);
             const endTimestamp = Timestamp.fromDate(startOfNextMonth);
             const currentdate = Timestamp.fromDate(now);
-
             // Query the collection for documents within the current month 
             const snapshot = await db.collection('customers')
-                .where('created_at', '>=', startTimestamp)
-                .where('created_at', '<', endTimestamp)
+                .where('createdAt', '>', startTimestamp)
+                .where('createdAt', '<=', endTimestamp)
+                .where('status','==','active')
                 .get();
 
             const records = [];
             if (!snapshot.empty) {
-                snapshot.forEach(doc => {
+                snapshot.forEach(doc => {                   
                     records.push({ id: doc.id, ...doc.data() });
                 });
             }

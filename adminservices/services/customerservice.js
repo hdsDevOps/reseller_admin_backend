@@ -268,7 +268,7 @@ class CustomerService {
           phone_no,
           email,
           salt,
-          passwordHash:hash,
+          passwordHash: hash,
           authentication,
           status: "active",
           createdAt: new Date(),
@@ -305,7 +305,7 @@ class CustomerService {
           is_staff: true,
           created_at: admin.firestore.FieldValue.serverTimestamp(),
         };
-       
+
         const docRefuser = await db.collection("users").add(newStaff);
         docRefuser.update({ searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), phone_no] });
         // Send welcome email
@@ -416,20 +416,20 @@ class CustomerService {
           updated_at: new Date(),
         });
 
-        const newStaff = {
-          customer_id: customerRef.id,
-          first_name: first_name,
-          last_name: last_name,
-          email: email,
-          phone_no: phone_no,
-          user_type_id: docRef.id,
-          password: hash,
-          salt: salt,
-          is_staff: true,
-          created_at: admin.firestore.FieldValue.serverTimestamp(),
-        };      
-      
 
+      const newStaff = {
+        password: hash,
+        salt: salt
+      };
+
+      const userQuery = await db.collection("users").where("email", "==", email).limit(1).get();
+
+      if (!userQuery.empty) {
+        const userDoc = userQuery.docs[0].ref; // Get the reference of the first document
+
+        // Update the user document with the new password and salt
+        await userDoc.update(newStaff);
+      }
 
 
       return {
@@ -756,7 +756,7 @@ class CustomerService {
 
   async suspend_customer(record_id) {
     try {
-      await db.collection("customers").doc(record_id).update({       
+      await db.collection("customers").doc(record_id).update({
         status: "suspended",
         suspended_at: new Date(),
       });
@@ -892,7 +892,7 @@ class CustomerService {
           countrylist.push(data.country);
         }
       });
-      
+
       const uniquecountrylist = [...new Set(countrylist)];
       return { status: 200, countrylist: uniquecountrylist, message: "Country List for customer" };
     } catch (error) {

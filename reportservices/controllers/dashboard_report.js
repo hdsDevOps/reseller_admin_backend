@@ -94,29 +94,50 @@ class dashboard_report {
 
             const revenue_current_month = [];
             let currentmonthrevenue = 0;
+            
             if (!snapshot_revenue_current_month.empty) {
+                let transactionMap = new Map(); // Create a map to store unique transactions
+            
                 snapshot_revenue_current_month.forEach(doc => {
                     let data = doc.data();
-                    // Convert Firestore Timestamp to JavaScript Date
                     let date = data.date.toDate();
-                    // Convert JavaScript Date to a readable date string
                     let dateString = date.toISOString().split('T')[0];
-
+            
                     if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency && data.transaction_data.currency != null && data.transaction_data.currency != undefined) {
                         let newCurrency = data.transaction_data.currency.toUpperCase();
-                        revenue_current_month.push({
-                            date: dateString,
-                            currency: data.transaction_data ? data.transaction_data.currency : null,
-                            amount: data.transaction_data ? data.transaction_data.amount : null,
-                            rate: rate["conversion_rates"][newCurrency],
-                            convertedamount: data.transaction_data.amount / rate["conversion_rates"][newCurrency]
-                        });
-
-                        convertedamount = rate["conversion_rates"][newCurrency]
-                        currentmonthrevenue = currentmonthrevenue + (data.transaction_data.amount / convertedamount);
+                        let transactionId = data.transaction_id; // Assuming there's a unique transaction ID
+            
+                        // Check if the transaction already exists in the map
+                        if (transactionMap.has(transactionId)) {
+                            let existingTransaction = transactionMap.get(transactionId);
+                            // Compare amounts and keep the greater one
+                            if (existingTransaction.amount < data.transaction_data.amount) {
+                                existingTransaction.amount = data.transaction_data.amount;
+                                existingTransaction.currency = data.transaction_data.currency;
+                                existingTransaction.rate = rate["conversion_rates"][newCurrency];
+                                existingTransaction.convertedamount = data.transaction_data.amount / rate["conversion_rates"][newCurrency];
+                            }
+                        } else {
+                            let convertedamount = rate["conversion_rates"][newCurrency];
+                            let transaction = {
+                                date: dateString,
+                                currency: data.transaction_data.currency,
+                                amount: data.transaction_data.amount,
+                                rate: rate["conversion_rates"][newCurrency],
+                                convertedamount: data.transaction_data.amount / convertedamount
+                            };
+                            transactionMap.set(transactionId, transaction);
+                        }
                     }
                 });
+            
+                // Convert the map values to an array
+                transactionMap.forEach(transaction => {
+                    revenue_current_month.push(transaction);
+                    currentmonthrevenue += transaction.convertedamount;
+                });
             }
+            
             const snapshot_stripe_use_current_month = await db.collection('billing_history').where('date', '>', startTimestamp).where('date', '<=', currentdate).where("payment_method", "==", "Stripe").get();
             const striperecords = [];
             if (!snapshot_stripe_use_current_month.empty) {

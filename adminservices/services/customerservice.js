@@ -406,40 +406,48 @@ class CustomerService {
     }
   }
   async edit_Customer_password(record_id, updateData) {
-    try {
+    // try {
 
-      await db
-        .collection("customers")
-        .doc(record_id)
-        .update({
-          ...updateData,
-          updated_at: new Date(),
-        });
+    const custSnapshot = await db
+      .collection("customers")
+      .doc(record_id)
+      .get();
 
 
-      const newStaff = {
-        password: updateData.passwordHash,
-        salt: updateData.salt
-      };
+    const customerData = custSnapshot.data();
+    const email = customerData.email;   
 
-      const userQuery = await db.collection("users").where("email", "==", updateData.email).limit(1).get();
-
-      if (!userQuery.empty) {
-        const userDoc = userQuery.docs[0].ref; // Get the reference of the first document
-
-        // Update the user document with the new password and salt
-        await userDoc.update(newStaff);
-      }
+    // Update the document using the document reference
+    await custSnapshot.ref.update({
+      ...updateData,
+      updated_at: new Date(),
+    });
 
 
-      return {
-        status: 200,
-        message: "Customer updated successfully",
-      };
 
-    } catch (error) {
-      throw new Error("Failed to update customer: " + error.message);
+    const newStaff = {
+      password: updateData.passwordHash,
+      salt: updateData.salt
+    };
+
+    const userQuery = await db.collection("users").where("email", "==", email).limit(1).get();
+
+    if (!userQuery.empty) {
+      const userDoc = userQuery.docs[0].ref; // Get the reference of the first document
+
+      // Update the user document with the new password and salt
+      await userDoc.update(newStaff);
     }
+
+
+    return {
+      status: 200,
+      message: "Customer updated successfully",
+    };
+
+    // } catch (error) {
+    //   throw new Error("Failed to update customer: " + error.message);
+    // }
   }
 
   // async getCustomerList(data) {

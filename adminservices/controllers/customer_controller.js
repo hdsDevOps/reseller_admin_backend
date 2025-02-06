@@ -87,15 +87,15 @@ class customercontroller {
   }
 
   async resetcustomerpassword(req, res) {
-    try {
+    // try {
       const { record_id, password } = req.body;
       const { salt, hash } = hashPassword(password);
       const { ...updateData } = { salt, passwordHash: hash };
       const result = await customerservice.edit_Customer_password(record_id, updateData);
       res.status(200).json(result);
-    } catch (error) {
-      res.status(400).json({ status: "error", message: error.message }); 
-    }
+    // } catch (error) {
+    //   res.status(400).json({ status: "error", message: error.message }); 
+    // }
   }
 
   async getcountrylist(req, res) {

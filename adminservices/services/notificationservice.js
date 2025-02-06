@@ -190,10 +190,10 @@ class NotificationService {
 
       return {
         status: 'success',
-        message: 'Test emails sent successfully'
+        message: 'Notification sent successfully'
       };
     } catch (error) {
-      throw new Error('Failed to send test emails: ' + error.message);
+      throw new Error('Failed to send notification: ' + error.message);
     }
   }
 

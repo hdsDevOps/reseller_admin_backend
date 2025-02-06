@@ -422,7 +422,7 @@ class CustomerService {
         salt: updateData.salt
       };
 
-      const userQuery = await db.collection("users").where("email", "==", email).limit(1).get();
+      const userQuery = await db.collection("users").where("email", "==", updateData.email).limit(1).get();
 
       if (!userQuery.empty) {
         const userDoc = userQuery.docs[0].ref; // Get the reference of the first document

@@ -27,7 +27,7 @@ const createuser = async (userData) => {
     password: rawPassword,
     disabled: false,
   });
-  await helper.sendMail(to_ary, subject, text);
+  await helper.sendMail(to_ary.to, subject, text);
   const newUser = {
     password: hashedPassword,
     ...userData

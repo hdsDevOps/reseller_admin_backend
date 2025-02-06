@@ -35,7 +35,7 @@ class dashboard_report {
                     records.push({ id: doc.id, ...doc.data() });
                 });
             }
-           
+
             let query = db.collection('billing_history');
             query = query.where('date', '>', startOfprevoiusMonth);//last_month_revenue
             query = query.where('date', '<=', startTimestamp);//last_month_revenue
@@ -138,13 +138,26 @@ class dashboard_report {
                 });
             }
 
-            const snapshot_stripe_use_current_month = await db.collection('billing_history').where('date', '>', startTimestamp).where('date', '<=', currentdate).where("payment_method", "==", "Stripe").get();
+            const snapshot_stripe_use_current_month = await db.collection('billing_history')
+                .where('date', '>', startTimestamp)
+                .where('date', '<=', currentdate)
+                .where("payment_method", "==", "Stripe")
+                .get();
+
             const striperecords = [];
+            const uniqueCustomerIds = new Set();
             if (!snapshot_stripe_use_current_month.empty) {
                 snapshot_stripe_use_current_month.forEach(doc => {
-                    striperecords.push({ id: doc.id, ...doc.data() });
+                    const data = doc.data();
+                    const customerId = data.customer_id; // Assuming customer_id is the field storing customer identifier
+
+                    if (!uniqueCustomerIds.has(customerId)) {
+                        uniqueCustomerIds.add(customerId);
+                        striperecords.push({ id: doc.id, ...data });
+                    }
                 });
             }
+
 
             const data_json = {
                 "last_month_revenue": (lastmonthrevenue / 100).toFixed(2),

@@ -418,8 +418,8 @@ class CustomerService {
 
 
       const newStaff = {
-        password: hash,
-        salt: salt
+        password: updateData.passwordHash,
+        salt: updateData.salt
       };
 
       const userQuery = await db.collection("users").where("email", "==", email).limit(1).get();

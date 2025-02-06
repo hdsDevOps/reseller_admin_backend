@@ -26,12 +26,12 @@ class dashboard_report {
             const snapshot = await db.collection('customers')
                 .where('createdAt', '>', startTimestamp)
                 .where('createdAt', '<=', endTimestamp)
-                .where('status','==','active')
+                .where('status', '==', 'active')
                 .get();
 
             const records = [];
             if (!snapshot.empty) {
-                snapshot.forEach(doc => {                   
+                snapshot.forEach(doc => {
                     records.push({ id: doc.id, ...doc.data() });
                 });
             }
@@ -47,6 +47,8 @@ class dashboard_report {
             let convertedamount = 0;
             const revenue_last_month = [];
             if (!snapshot_revenue_last_month.empty) {
+                let transactionMap = new Map(); // Create a map to store unique transactions
+
                 snapshot_revenue_last_month.forEach(doc => {
                     let data = doc.data();
                     // Convert Firestore Timestamp to JavaScript Date
@@ -54,20 +56,42 @@ class dashboard_report {
                     // Convert JavaScript Date to a readable date string
                     let dateString = date.toISOString().split('T')[0];
 
-                    if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency && data.transaction_data.currency != null && data.transaction_data.currency != undefined) {
-                        let newCurrency = data.transaction_data.currency.toUpperCase();
-                        revenue_last_month.push({
-                            date: dateString,
-                            currency: data.transaction_data ? data.transaction_data.currency : null,
-                            amount: data.transaction_data ? data.transaction_data.amount : null,
-                            rate: rate["conversion_rates"][newCurrency],
-                            convertedamount: data.transaction_data.amount / rate["conversion_rates"][newCurrency]
-                        });
-                        convertedamount = rate["conversion_rates"][newCurrency]
-                        lastmonthrevenue = lastmonthrevenue + (data.transaction_data.amount / convertedamount);
+                    if (data.transaction_data && data.transaction_data.amount && data.transaction_data.currency) {
+                        let transactionId = data.transaction_id;
+                        let amount = data.transaction_data.amount;
+
+                        // Check if the transaction already exists in the map
+                        if (transactionMap.has(transactionId)) {
+                            let existingData = transactionMap.get(transactionId);
+                            // Compare the amounts and keep the greater one
+                            if (existingData.amount < amount) {
+                                transactionMap.set(transactionId, data); // Update with new data if the amount is greater
+                            }
+                        } else {
+                            transactionMap.set(transactionId, data); // Add new transaction to the map
+                        }
                     }
                 });
+
+                // Iterate over the unique transactions and process them
+                transactionMap.forEach((data, transactionId) => {
+                    let date = data.date.toDate();
+                    let dateString = date.toISOString().split('T')[0];
+                    let newCurrency = data.transaction_data.currency.toUpperCase();
+
+                    revenue_last_month.push({
+                        date: dateString,
+                        currency: data.transaction_data.currency,
+                        amount: data.transaction_data.amount,
+                        rate: rate["conversion_rates"][newCurrency],
+                        convertedamount: data.transaction_data.amount / rate["conversion_rates"][newCurrency]
+                    });
+
+                    let convertedamount = rate["conversion_rates"][newCurrency];
+                    lastmonthrevenue = lastmonthrevenue + (data.transaction_data.amount / convertedamount);
+                });
             }
+
             const revenue_current_month = [];
             let currentmonthrevenue = 0;
             if (!snapshot_revenue_current_month.empty) {

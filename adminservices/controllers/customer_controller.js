@@ -89,8 +89,8 @@ class customercontroller {
   async resetcustomerpassword(req, res) {
     try {
       const { record_id, password } = req.body;
-      const { salt, passwordHash } = hashPassword(password);
-      const { ...updateData } = { salt, passwordHash };
+      const { salt, hash } = hashPassword(password);
+      const { ...updateData } = { salt, passwordHash: hash };
       const result = await customerservice.edit_Customer_password(record_id, updateData);
       res.status(200).json(result);
     } catch (error) {

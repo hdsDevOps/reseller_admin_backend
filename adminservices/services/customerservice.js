@@ -416,6 +416,22 @@ class CustomerService {
           updated_at: new Date(),
         });
 
+        const newStaff = {
+          customer_id: customerRef.id,
+          first_name: first_name,
+          last_name: last_name,
+          email: email,
+          phone_no: phone_no,
+          user_type_id: docRef.id,
+          password: hash,
+          salt: salt,
+          is_staff: true,
+          created_at: admin.firestore.FieldValue.serverTimestamp(),
+        };      
+      
+
+
+
       return {
         status: 200,
         message: "Customer updated successfully",
@@ -902,8 +918,8 @@ class CustomerService {
       const regionlist = [];
       querySnapshot.forEach(doc => {
         const data = doc.data(); // Get the document data
-        if (data.state_name) { // Check if the country field exists
-          regionlist.push(data.state_name);
+        if (data.state) { // Check if the country field exists
+          regionlist.push(data.state);
         }
       });
 

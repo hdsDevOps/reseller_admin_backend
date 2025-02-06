@@ -149,7 +149,7 @@ class dashboard_report {
             if (!snapshot_stripe_use_current_month.empty) {
                 snapshot_stripe_use_current_month.forEach(doc => {
                     const data = doc.data();
-                    const customerId = data.customer_id; // Assuming customer_id is the field storing customer identifier
+                    const customerId = data.user_id; // Assuming customer_id is the field storing customer identifier
 
                     if (!uniqueCustomerIds.has(customerId)) {
                         uniqueCustomerIds.add(customerId);

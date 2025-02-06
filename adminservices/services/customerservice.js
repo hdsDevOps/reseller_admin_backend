@@ -268,7 +268,7 @@ class CustomerService {
           phone_no,
           email,
           salt,
-          hash,
+          passwordHash:hash,
           authentication,
           status: "active",
           createdAt: new Date(),
@@ -305,7 +305,7 @@ class CustomerService {
           is_staff: true,
           created_at: admin.firestore.FieldValue.serverTimestamp(),
         };
-
+       
         const docRefuser = await db.collection("users").add(newStaff);
         docRefuser.update({ searchableIndex: [first_name.toLowerCase(), last_name.toLowerCase(), `${first_name.toLowerCase()} ${last_name.toLowerCase()}`, email.toLowerCase(), phone_no] });
         // Send welcome email
@@ -321,14 +321,6 @@ class CustomerService {
 
 
         await helper.sendMail(emailData.email, emailData.subject, emailData.body);
-
-
-
-
-
-
-
-
 
 
         return {

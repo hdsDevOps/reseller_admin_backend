@@ -94,7 +94,7 @@ class customercontroller {
       const result = await customerservice.edit_Customer_password(record_id, updateData);
       res.status(200).json(result);
     } catch (error) {
-      res.status(400).json({ status: "error", message: error.message });
+      res.status(400).json({ status: "error", message: error.message }); 
     }
   }
 

@@ -137,9 +137,9 @@ const createQuery = (field, searchText, role) => {
 
 
 //   };
-const getallusers = async (role, searchValue,sortdata) => {
+const getallusers = async (role, searchValue, sortdata) => {
   const searchText = searchValue;
-  try {
+  // try {
     let query = db.collection(USERS_COLLECTION);
     if (role && role.trim() !== "") {
       query = query.where('role', '==', role);
@@ -147,30 +147,60 @@ const getallusers = async (role, searchValue,sortdata) => {
     if (searchValue && searchValue.trim() !== "") {
       query = query.where('searchableIndex', 'array-contains', searchValue.toString().toLowerCase());
     }
-   
-    if (sortdata) {
-      if (sortdata.sort_text && sortdata.sort_text != "") {        
-        query = query.orderBy("first_name", sortdata.order);
-      }else{
-        query = query.orderBy("created_at", "desc");
+
+    // if (sortdata) {
+    //   if (sortdata.sort_text && sortdata.sort_text != "") {        
+    //     query = query.orderBy("first_name", sortdata.order);
+    //   }else{
+
+    //   }
+    // }
+
+    query = query.orderBy("created_at", "desc");
+    const querySnapshot = await query.get();
+    const users = [];
+    querySnapshot.docs.forEach((doc) => {
+      let data = doc.data();
+      if (!doc.data().customer_id) {
+        users.push({
+          id: doc.id,
+          ...doc.data(),
+          fullname: `${data.first_name.toLowerCase()} ${data.last_name.toLowerCase()}`
+        });
+      }
+    });
+
+    if (sortdata.sort_text == "first_name") {
+      if (sortdata.order == "asc") {
+        users.sort((a, b) => {
+          if (a.fullname < b.fullname) {
+            return -1;
+          }
+          if (a.fullname > b.fullname) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+      if (sortdata.order == "desc") {
+        users.sort((a, b) => {
+          if (a.fullname < b.fullname) {
+            return 1;
+          }
+          if (a.fullname > b.fullname) {
+            return -1;
+          }
+          return 0;
+        });
       }
     }
 
 
-    const querySnapshot = await query.get();
-    const users = [];
-    querySnapshot.docs.forEach((doc) => {
-      if (!doc.data().customer_id) {
-        users.push({
-          id: doc.id,
-          ...doc.data()
-        });
-      }
-    });
+
     return users;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw new Error('Failed to fetch search results');
-  }
+  // } catch (error) {
+  //   console.error('Error fetching data:', error);
+  //   throw new Error('Failed to fetch search results');
+  // }
 }
 module.exports = { createuser, updateuser, deleteuser, getallusers };

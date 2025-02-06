@@ -877,7 +877,14 @@ class AdminService {
     }
 
   }
-  addsmtpDetails= async(data)=>{
+  addsmtpDetails = async (data) => {
+    if (data.email != "" || data.password != "" || data.provider_name != "" || data.smtp_port_number != "" || data.smtp_provider != "" || data.smtp_server != "" || data.username != "") {
+      return { status: 410, message: "Can not blank required field." };
+    }
+
+    // await db.collection("smtp_details").add({
+
+    // })
 
   }
 }

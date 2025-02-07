@@ -916,5 +916,7 @@ router.post('/getsubscriptiondata', authMiddleware, adminController.getsubscript
 router.post('/getCustomerSubscription', authMiddleware, adminController.getCustomerSubscription);
 router.post('/get_address', authMiddleware, adminController.getaddress);
 router.post('/add_smtp_details', authMiddleware, adminController.add_smtp_details);
+router.post('/delete_auth_user', authMiddleware, adminController.delete_auth_user);
+
 
 module.exports = router;

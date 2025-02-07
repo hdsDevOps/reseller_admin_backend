@@ -20,7 +20,7 @@ async function generateOTP(data) {
         // Send OTP via email
         helper.sendMail(email, 'Password Reset OTP', `Your OTP for password reset is: ${otp}`);
 
-        response_result = {status: 200, message: 'OTP sent to user email address.',otp:otp};
+        response_result = {status: 200, message: 'OTP sent to user email address.'};
     } catch (error) {
         response_result = {status: 400, message: 'Error generating OTP', error: error.message};
     }

@@ -39,7 +39,7 @@ async function login_admin(data){
     let otp = Math.floor(100000 + Math.random() * 900000);
     const login_otp = CryptoJS.AES.encrypt(""+otp+"", process.env.CRYPTOTOKEN).toString();
     
-                    response_result = { status: 200,message: 'User login token generated', uid: decodedToken.uid, login_otp: otp };
+                    response_result = { status: 200,message: 'User login token generated', uid: decodedToken.uid };
   } catch (error) {
                     response_result = { status: 400, message: 'Error logging in user', error: error.message };
   }
@@ -54,7 +54,7 @@ async function generate_forget_password_link(data){
       .then(result=>{
         //console.log(result);
         const otp = helper.generateOtp();
-        response_result = {status: 200, message: 'Password reset OTP send to email.', otp: otp };
+        response_result = {status: 200, message: 'Password reset OTP send to email.' };
         helper.sendMail(email, 'Password Reset OTP', otp);
       })
       //const link = await admin.auth().generatePasswordResetLink(email);

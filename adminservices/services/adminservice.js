@@ -29,7 +29,7 @@ class AdminService {
         status: 200,
         message: "OTP sent successfully",
         userId: userRecord.uid,
-        otp: otp,
+        // otp: otp,
       };
     } catch (error) {
       throw new Error("Login failed. Please check your user id & password.");
@@ -881,6 +881,37 @@ class AdminService {
     if (data.email != "" || data.password != "" || data.provider_name != "" || data.smtp_port_number != "" || data.smtp_provider != "" || data.smtp_server != "" || data.username != "") {
       return { status: 410, message: "Can not blank required field." };
     }
+
+    // await db.collection("smtp_details").add({
+
+    // })
+
+  }
+  deleteauthuser = async (data) => {
+   
+    const custref = await db.collection("users").where("customer_id", "!=", "").get();
+
+    if (!custref.empty) {
+      for (const doc of custref.docs) {
+        const userData = doc.data();
+        const customerId = userData.customer_id;
+  
+        try {
+          // Delete user from Firebase Authentication
+          // await admin.auth().deleteUser(customerId);
+          console.log(`Deleted user from Firebase Auth with customer_id: ${customerId}`);
+  
+          // Delete user document from Firestore
+          // await db.collection("users").doc(doc.id).delete();
+          console.log(`Deleted Firestore document for customer_id: ${customerId}`);
+        } catch (error) {
+          console.error(`Error deleting user with customer_id: ${customerId}`, error);
+        }
+      }
+    } else {
+      console.log("No matching documents found.");
+    }
+
 
     // await db.collection("smtp_details").add({
 

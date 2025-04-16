@@ -11,7 +11,7 @@ app.get('/subscriptionservices', postLogger, (req,res)=>{
 })
 app.get('/subscriptionservices/test', postLogger, (req,res)=>{
     res.send("We Are Calling User Test API");
-})
+}) 
      
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));

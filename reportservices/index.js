@@ -15,7 +15,7 @@ app.use(
   );
 app.get('/customerservices', postLogger, (req,res)=>{
     res.send("We are calling customer users API");
-})
+}) 
   
 app.get('/reportservices', postLogger, (req,res)=>{
     res.send("We are calling report API");

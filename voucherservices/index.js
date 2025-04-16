@@ -24,7 +24,7 @@ app.get('/voucherservices/test', postLogger, (req,res)=>{
 }) 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use('/voucherservices/voucher/api/v1',voucherroute); 
+app.use('/voucherservices/voucher/api/v1',postLogger,voucherroute); 
 
 // Start the server and listen on the specified port
 app.listen(PORT,()=>{

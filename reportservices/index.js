@@ -19,11 +19,11 @@ app.get('/customerservices', postLogger, (req,res)=>{
   
 app.get('/reportservices', postLogger, (req,res)=>{
     res.send("We are calling report API");
-})
+});
      
 app.get('/reportservices/test', postLogger, (req,res)=>{
     res.send("We Are Calling User Test API");
-})
+});
 app.use('/reportservices/users/api/v1', postLogger, reportRoute);
 // Start the server and listen on the specified port
 app.listen(PORT,()=>{

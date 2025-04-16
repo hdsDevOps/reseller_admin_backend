@@ -6,24 +6,25 @@ var cors = require('cors');
 require('dotenv').config(); 
 app.use(cors());
 const reportRoute  = require('./routes/reportroute.js');
+const postLogger = require("./middleware/postLogger.js");
 app.use(express.json());
 app.use(
     express.urlencoded({
       extended: true,
     })
   );
-app.get('/customerservices',(req,res)=>{
+app.get('/customerservices', postLogger, (req,res)=>{
     res.send("We are calling customer users API");
 })
   
-app.get('/reportservices',(req,res)=>{
+app.get('/reportservices', postLogger, (req,res)=>{
     res.send("We are calling report API");
 })
      
-app.get('/reportservices/test',(req,res)=>{
+app.get('/reportservices/test', postLogger, (req,res)=>{
     res.send("We Are Calling User Test API");
 })
-app.use('/reportservices/users/api/v1',reportRoute);
+app.use('/reportservices/users/api/v1', postLogger, reportRoute);
 // Start the server and listen on the specified port
 app.listen(PORT,()=>{
     console.log(`Calling report Services ${PORT}`);

@@ -6,21 +6,22 @@ var cors = require('cors');
 require('dotenv').config(); 
 app.use(cors());
 const adminCredentialsRoute  = require('./routes/loginroute.js');
+const postLogger = require("./middleware/postLogger.js");
 app.use(express.json());
 app.use(
     express.urlencoded({
       extended: true,
     })
   );
-app.get('/customerservices',(req,res)=>{
+app.get('/customerservices', postLogger, (req,res)=>{
     res.send("We are calling customer users API");
 })
      
-app.get('/customerservices/test',(req,res)=>{
+app.get('/customerservices/test', postLogger, (req,res)=>{
     res.send("We Are Calling User Test API");
 })
        
-app.use('/customerservices',adminCredentialsRoute);
+app.use('/customerservices', postLogger, adminCredentialsRoute);
 // Start the server and listen on the specified port
 app.listen(PORT,()=>{
     console.log("Calling customer Services");

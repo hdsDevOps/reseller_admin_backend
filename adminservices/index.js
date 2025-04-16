@@ -28,23 +28,23 @@ app.use(
   })
 );
 
-app.get('/', (req, res) => {
+app.get('/', postLogger, (req, res) => {
   res.redirect("/api-docs");
 });
-app.get('/adminservices', (req, res) => {
+app.get('/adminservices', postLogger, (req, res) => {
   res.send("We are calling admin services API");
 });
 
-app.get('/test', (req, res) => {
+app.get('/test', postLogger, (req, res) => {
   res.send("We are calling admin services API");
 });
 
-app.get('/adminservices/test', (req, res) => {
+app.get('/adminservices/test', postLogger, (req, res) => {
   res.send("We Are Calling admin Test API");
 });
 
-app.use('/adminservices', loginroute);
-app.post('/adminservices/upload', (req, res) => {
+app.use('/adminservices', postLogger, loginroute);
+app.post('/adminservices/upload', postLogger, (req, res) => {
   const uploadPath = "uploads"; // Define your upload path here
   const fieldName = "file"; // Define the field name in the form
   const upload = helper.file_upload(uploadPath, fieldName);
@@ -56,7 +56,7 @@ app.post('/adminservices/upload', (req, res) => {
   });
 });
     
-app.post('/adminservices/send-email', (req, res) => {
+app.post('/adminservices/send-email', postLogger, (req, res) => {
   const { to, subject, text } = req.body;
   addEmailToQueue(to, subject, text);
   res.send("Email queued for sending");

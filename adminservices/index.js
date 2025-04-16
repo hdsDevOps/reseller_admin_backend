@@ -17,6 +17,7 @@ const notificationroutes = require('./routes/notificationroute');
 const voucherroutes = require('./routes/voucherroute.js');
 const userroutes = require('./routes/userroute.js');
 const roleroutes = require('./routes/roleroute.js');
+const postLogger = require("./middleware/postLogger.js");
 
       
 app.use(cors());
@@ -61,16 +62,16 @@ app.post('/adminservices/send-email', (req, res) => {
   res.send("Email queued for sending");
 });
     
-app.use('/adminservices/forgotpassword/api/v1', forgotpasswordroutes);
-app.use('/adminservices/customers', adminservicesroutes);
+app.use('/adminservices/forgotpassword/api/v1', postLogger, forgotpasswordroutes);
+app.use('/adminservices/customers', postLogger, adminservicesroutes);
    
-app.use('/adminservices/admin/api/v1', adminroutes);
-app.use('/adminservices/subscription/api/v1', subscriptionroutes);
-app.use('/adminservices/notification/api/v1', notificationroutes);
-app.use('/adminservices/voucher/api/v1', voucherroutes);
-app.use('/adminservices/customer/api/v1', customerroutes);
-app.use('/adminservices/users/api/v1', userroutes);
-app.use('/adminservices/users/api/v1', roleroutes);
+app.use('/adminservices/admin/api/v1', postLogger, adminroutes);
+app.use('/adminservices/subscription/api/v1', postLogger, subscriptionroutes);
+app.use('/adminservices/notification/api/v1', postLogger, notificationroutes);
+app.use('/adminservices/voucher/api/v1', postLogger, voucherroutes);
+app.use('/adminservices/customer/api/v1', postLogger, customerroutes);
+app.use('/adminservices/users/api/v1', postLogger, userroutes);
+app.use('/adminservices/users/api/v1', postLogger, roleroutes);
       
 // Start the server and listen on the specified port
 app.listen(PORT, () => {

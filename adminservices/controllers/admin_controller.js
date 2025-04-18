@@ -80,7 +80,7 @@ class AdminController {
   async deleteFaq(req, res) {
     try {
       await db.collection("faqs").doc(req.body.record_id).delete();
-
+     
       res.status(200).send({ status: 200, message: "FAQ deleted successfully" });
 
     } catch (error) {

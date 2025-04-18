@@ -84,7 +84,8 @@ class AdminController {
       res.status(200).send({ status: 200, message: "FAQ deleted successfully" });
 
     } catch (error) {
-      throw new Error("Error deleting FAQ" + error);
+      res.status(400).json({ status: "error", message: error.message });
+      // throw new Error("Error deleting FAQ" + error);
     }
   }
 
